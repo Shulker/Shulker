@@ -19,6 +19,8 @@ public class ChatMessageTypeWrapperV112R1 extends ChatMessageTypeWrapper
 	@Override
 	public Object fromShulker(ChatMessageType shulkerObject)
 	{
+		if (shulkerObject == null)
+			return null;
 		switch (shulkerObject)
 		{
 			case CHAT:
@@ -34,6 +36,8 @@ public class ChatMessageTypeWrapperV112R1 extends ChatMessageTypeWrapper
 	@Override
 	public ChatMessageType toShulker(Object object)
 	{
+		if (!(object instanceof net.minecraft.server.v1_12_R1.ChatMessageType))
+			return null;
 		switch ((net.minecraft.server.v1_12_R1.ChatMessageType) object)
 		{
 			case CHAT:
@@ -44,5 +48,11 @@ public class ChatMessageTypeWrapperV112R1 extends ChatMessageTypeWrapper
 				return ChatMessageType.ACTION_BAR;
 		}
 		return null;
+	}
+
+	@Override
+	public Class<?> getObjectClass()
+	{
+		return net.minecraft.server.v1_12_R1.ChatMessageType.class;
 	}
 }

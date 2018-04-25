@@ -31,4 +31,11 @@ public interface Wrapper<X>
 	 * @return The Shulker object.
 	 */
 	X toShulker(Object object);
+
+	/**
+	 * Gets the server object type.
+	 *
+	 * @return The server object class.
+	 */
+	Class<?> getObjectClass();
 }

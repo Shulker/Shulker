@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.shulker.core.packets.ShulkerPacket;
 
 /**
+ * The packet which modifies the header and the footer of the player list.
  * This packet may be used by custom servers to display additional information above/below the player list. It is never sent by the Notchian server.
  *
  * @param <T> The server object type.
@@ -46,9 +47,9 @@ public abstract class ShulkerPacketPlayerListHeaderFooter<T> extends ShulkerPack
 	 * Sets the header of the player list.
 	 * To remove the header, send a empty translatable component.
 	 *
-	 * @param components Player list's header.
+	 * @param header Player list's header.
 	 */
-	public abstract void setHeader(BaseComponent... components);
+	public abstract void setHeader(BaseComponent... header);
 
 	/**
 	 * Gets the footer of the player list.
@@ -61,7 +62,14 @@ public abstract class ShulkerPacketPlayerListHeaderFooter<T> extends ShulkerPack
 	 * Sets the footer of the player list.
 	 * To remove the footer, send a empty translatable component.
 	 *
-	 * @param components Player list's footer.
+	 * @param footer Player list's footer.
 	 */
-	public abstract void setFooter(BaseComponent... components);
+	public abstract void setFooter(BaseComponent... footer);
+
+	@Override
+	public void reset()
+	{
+		setHeader();
+		setFooter();
+	}
 }

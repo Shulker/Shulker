@@ -14,6 +14,11 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.packets.ShulkerPacket;
 
+/**
+ * The packet which send a message to the player.
+ *
+ * @param <T> The server object type.
+ */
 public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 {
 	public ShulkerPacketPlayOutChat()
@@ -54,7 +59,8 @@ public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 
 	/**
 	 * Sets the message in the raw format.
-	 * Please use JSON for the 0 and 1 position. Use the deprecated §-based format for the 2 position or use Title packet
+	 * <p>
+	 * Please use JSON for the 0 and 1 position. Use the deprecated §-based format for the 2 position or use {@link ShulkerPacketTitle Title packet}
 	 * instead.
 	 *
 	 * @param raw The raw message.
@@ -63,12 +69,11 @@ public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 
 	/**
 	 * Gets the position of the message to display.
-	 * <br />
-	 * <lt>
+	 * <ul>
 	 * <li>0: Chat (Chat box)</li>
 	 * <li>1: System message (Chat box)</li>
 	 * <li>2: Game info (Above hotbar).</li>
-	 * </lt>
+	 * </ul>
 	 *
 	 * @return The position of the message.
 	 */
@@ -76,17 +81,22 @@ public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 
 	/**
 	 * Sets the position of the message to display.
-	 * <br />
-	 * <lt>
+	 * <ul>
 	 * <li>0: Chat (Chat box)</li>
 	 * <li>1: System message (Chat box)</li>
 	 * <li>2: Game info (Above hotbar).</li>
-	 * </lt>
-	 * <br />
+	 * </ul>
 	 * Warning: If you attempt to display a message in Game info, please not that it doesn't accept JSON (And all Component),
 	 * although the deprecated §-based formatting works. Please use Title packet instead.
 	 *
 	 * @param position The position of the message.
 	 */
 	public abstract void setPosition(ChatMessageType position);
+
+	@Override
+	public void reset()
+	{
+		setMessage();
+		setPosition(null);
+	}
 }

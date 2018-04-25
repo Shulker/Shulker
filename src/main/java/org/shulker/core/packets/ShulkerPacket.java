@@ -31,4 +31,9 @@ public abstract class ShulkerPacket<T>
 	{
 		return packet;
 	}
+
+	/**
+	 * Resets all the value of the packet.
+	 */
+	public abstract void reset();
 }

@@ -37,8 +37,8 @@ public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerList
 	public ReflectPacketPlayerListHeaderFooter(@NotNull BaseComponent[] header, @NotNull BaseComponent[] footer)
 	{
 		this(newInstance(CONSTRUCTOR.get()));
-		HEADER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(header)));
-		FOOTER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(footer)));
+		setHeader(header);
+		setFooter(footer);
 	}
 
 	public ReflectPacketPlayerListHeaderFooter(Object packet)
@@ -55,9 +55,9 @@ public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerList
 	}
 
 	@Override
-	public void setHeader(BaseComponent... components)
+	public void setHeader(BaseComponent... header)
 	{
-		HEADER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)));
+		HEADER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(header)));
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerList
 	}
 
 	@Override
-	public void setFooter(BaseComponent... components)
+	public void setFooter(BaseComponent... footer)
 	{
-		FOOTER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)));
+		FOOTER_FIELD.ifPresent(field -> setValue(packet, field, Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(footer)));
 	}
 }

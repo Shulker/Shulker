@@ -17,22 +17,26 @@ import org.jetbrains.annotations.Nullable;
 import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
+import org.shulker.core.impl.reflect.packets.ReflectPacketTitle;
 import org.shulker.core.impl.v112R1.entity.ShulkerPlayerV112R1;
 import org.shulker.core.impl.v112R1.packets.ShulkerPacketPlayOutChatV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatComponentWrapperV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatMessageTypeWrapperV112R1;
+import org.shulker.core.impl.v112R1.wrappers.TitleActionWrapperV112R1;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
+import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.core.wrappers.TitleActionWrapper;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class MinecraftManagerV112R1 implements MinecraftManager
 {
-	private static final WrapperManagerV112R1 wrapperManager = new WrapperManagerV112R1();
-	private final HashMap<UUID, ShulkerPlayer<Player>> players = new HashMap<>();
+	private static final WrapperManagerV112R1                 wrapperManager = new WrapperManagerV112R1();
+	private final        HashMap<UUID, ShulkerPlayer<Player>> players        = new HashMap<>();
 
 	@Override
 	public ShulkerPlayer<Player> getPlayer(@Nullable Player player)
@@ -106,6 +110,36 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 	}
 
 	@Override
+	public ShulkerPacketTitle newPacketTitle()
+	{
+		return new ReflectPacketTitle();
+	}
+
+	@Override
+	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action)
+	{
+		return new ReflectPacketTitle(action);
+	}
+
+	@Override
+	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent[] chatValue)
+	{
+		return new ReflectPacketTitle(action, chatValue);
+	}
+
+	@Override
+	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut)
+	{
+		return new ReflectPacketTitle(action, fadeIn, stay, fadeOut);
+	}
+
+	@Override
+	public ShulkerPacketTitle newPacketTitle(Object packet)
+	{
+		return new ReflectPacketTitle(packet);
+	}
+
+	@Override
 	public WrapperManager getWrapperManager()
 	{
 		return wrapperManager;
@@ -129,6 +163,12 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 		public ChatMessageTypeWrapper getChatMessageTypeWrapper()
 		{
 			return ChatMessageTypeWrapperV112R1.INSTANCE;
+		}
+
+		@Override
+		public TitleActionWrapper getTitleActionWrapper()
+		{
+			return TitleActionWrapperV112R1.INSTANCE;
 		}
 
 		@Override

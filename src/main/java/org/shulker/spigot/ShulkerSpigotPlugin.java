@@ -129,6 +129,10 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		Bukkit.getPluginManager().registerEvents(new ShulkerListener(), this);
 		Bukkit.getOnlinePlayers().forEach(p -> mcManager.addPlayer(p));
 
+		Metrics metrics = new Metrics(this);
+		metrics.addCustomChart(new Metrics.SimplePie("internal_version", ShulkerSpigotPlugin::getServerVersion));
+		metrics.addCustomChart(new Metrics.SimplePie("minecraft_manager_used", () -> mcManager.getName()));
+
 		setupCommand("libraries", new LibrariesCommand());
 		setupCommand("test", new TestCommand());
 	}

@@ -31,9 +31,9 @@ public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
 	}
 
 	@Override
-	public void sendMessage(BaseComponent ... components)
+	public void sendMessage(BaseComponent ... message)
 	{
-		player.spigot().sendMessage(components);
+		player.spigot().sendMessage(message);
 	}
 
 	@Override

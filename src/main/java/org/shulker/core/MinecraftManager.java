@@ -17,8 +17,10 @@ import org.jetbrains.annotations.Nullable;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
+import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.core.wrappers.TitleActionWrapper;
 
 import java.util.UUID;
 
@@ -49,6 +51,16 @@ public interface MinecraftManager extends Nameable
 
 	ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet);
 
+	ShulkerPacketTitle newPacketTitle();
+
+	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action);
+
+	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent[] chatValue);
+
+	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
+
+	ShulkerPacketTitle newPacketTitle(Object packet);
+
 	WrapperManager getWrapperManager();
 
 	static interface WrapperManager extends Nameable
@@ -56,5 +68,7 @@ public interface MinecraftManager extends Nameable
 		ChatComponentWrapper getChatComponentWrapper();
 
 		ChatMessageTypeWrapper getChatMessageTypeWrapper();
+
+		TitleActionWrapper getTitleActionWrapper();
 	}
 }

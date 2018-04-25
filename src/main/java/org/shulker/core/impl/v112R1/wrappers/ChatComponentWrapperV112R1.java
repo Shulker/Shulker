@@ -19,14 +19,24 @@ public class ChatComponentWrapperV112R1 extends ChatComponentWrapper
 	public static final ChatComponentWrapperV112R1 INSTANCE = new ChatComponentWrapperV112R1();
 
 	@Override
-	public Object fromShulker(BaseComponent ... shulkerObject)
+	public Object fromShulker(BaseComponent... shulkerObject)
 	{
+		if (shulkerObject == null)
+			return null;
 		return IChatBaseComponent.ChatSerializer.a(ComponentSerializer.toString(shulkerObject));
 	}
 
 	@Override
 	public BaseComponent[] toShulker(Object object)
 	{
+		if (!(object instanceof IChatBaseComponent))
+			return null;
 		return ComponentSerializer.parse(IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) object));
+	}
+
+	@Override
+	public Class<?> getObjectClass()
+	{
+		return IChatBaseComponent.class;
 	}
 }
