@@ -1,0 +1,92 @@
+/*
+ * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ *
+ * This file is part of shulker.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
+package org.shulker.core.packets.mc.play;
+
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.jetbrains.annotations.NotNull;
+import org.shulker.core.packets.ShulkerPacket;
+
+public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
+{
+	public ShulkerPacketPlayOutChat()
+	{
+		super();
+	}
+
+	public ShulkerPacketPlayOutChat(@NotNull BaseComponent... components)
+	{
+		this();
+	}
+
+	public ShulkerPacketPlayOutChat(T packet)
+	{
+		super(packet);
+	}
+
+	/**
+	 * Gets the message.
+	 *
+	 * @return The message as a component.
+	 */
+	public abstract BaseComponent[] getMessage();
+
+	/**
+	 * Sets the message.
+	 *
+	 * @param components The component of the message.
+	 */
+	public abstract void setMessage(BaseComponent... components);
+
+	/**
+	 * Gets the message in the raw JSON format.
+	 *
+	 * @return The message in JSON.
+	 */
+	public abstract String getMessageRaw();
+
+	/**
+	 * Sets the message in the raw format.
+	 * Please use JSON for the 0 and 1 position. Use the deprecated §-based format for the 2 position or use Title packet
+	 * instead.
+	 *
+	 * @param raw The raw message.
+	 */
+	public abstract void setMessageRaw(String raw);
+
+	/**
+	 * Gets the position of the message to display.
+	 * <br />
+	 * <lt>
+	 * <li>0: Chat (Chat box)</li>
+	 * <li>1: System message (Chat box)</li>
+	 * <li>2: Game info (Above hotbar).</li>
+	 * </lt>
+	 *
+	 * @return The position of the message.
+	 */
+	public abstract ChatMessageType getPosition();
+
+	/**
+	 * Sets the position of the message to display.
+	 * <br />
+	 * <lt>
+	 * <li>0: Chat (Chat box)</li>
+	 * <li>1: System message (Chat box)</li>
+	 * <li>2: Game info (Above hotbar).</li>
+	 * </lt>
+	 * <br />
+	 * Warning: If you attempt to display a message in Game info, please not that it doesn't accept JSON (And all Component),
+	 * although the deprecated §-based formatting works. Please use Title packet instead.
+	 *
+	 * @param position The position of the message.
+	 */
+	public abstract void setPosition(ChatMessageType position);
+}

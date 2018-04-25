@@ -1,0 +1,86 @@
+/*
+ * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ *
+ * This file is part of shulker.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+group = 'org.shulker'
+version = '1.0.0'
+def authors = '[LambdAurora]'
+
+sourceCompatibility = 10
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    maven { url = 'https://aperlambda.github.io/maven' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    mavenCentral()
+    // For Spigot and NMS - NB: First build spigot with BuildTools
+    mavenLocal()
+}
+
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
+dependencies {
+    compile 'org.aperlambda:lambdajcommon:1.4.1'
+    provided 'net.md-5:bungeecord-chat:1.12-SNAPSHOT'
+    provided 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "plugin.yml"
+        include "config.json"
+
+        expand 'version': project.version.toString().replace("#", ""), 'authors': authors.toString()
+    }
+}
+
+jar {
+    from 'LICENSE'
+
+    dependsOn configurations.runtime
+    from {
+        (configurations.runtime - configurations.provided).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        shulker(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId = 'shulker'
+            version = project.version
+
+            artifact sourcesJar
+        }
+    }
+    repositories {
+        maven { url = 'file:///home/lambdaurora/maven' }
+    }
+}

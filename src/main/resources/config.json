@@ -1,0 +1,11 @@
+{
+  "version": "${version}",
+  "commands": {
+    "error": {
+      "usage": "&4[Usage] &c/\${command.usage}",
+      "permission": "&4[Permission] &cYou don't have enough permissions!",
+      "runtime": "&4[Error] &cAn error occurred!",
+      "only_player": "&4[Error] &cYou must be a player to execute this."
+    }
+  }
+}

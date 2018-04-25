@@ -1,0 +1,45 @@
+#
+# AperLambda ignore file
+#
+# v0.3
+
+# JetBrains
+.idea/
+*.iml
+## Intellij IDEA
+out/
+## CLion
+cmake-build-debug/
+cmake-build-release/
+## Eclipse
+eclipse
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# Build system
+## Cargo
+Cargo.lock
+## CMake
+CMakeCache.txt
+## Gradle
+.gradle/
+## Maven
+target/
+## Node.JS
+node_modules/
+package-lock.json
+
+# Editors
+## VSCode
+.vscode/
+
+# Logging
+logs/
+
+# Common
+bin/
+build/
+run/

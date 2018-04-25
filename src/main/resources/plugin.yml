@@ -1,0 +1,21 @@
+name: Shulker
+version: ${version}
+authors: ${authors}
+description: An API to links NMS and make things easier.
+
+main: org.shulker.spigot.ShulkerSpigotPlugin
+load: startup
+
+commands:
+  libraries:
+    usage: <command> [library]
+    description: Lists libraries or display info about one.
+  test:
+    usage: OWO
+    description: OWO
+
+permissions:
+  shulker.*:
+    default: op
+    children:
+      shulker.commands.libraries: true
