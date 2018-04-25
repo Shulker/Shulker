@@ -20,12 +20,12 @@ public class ShulkerListener implements Listener
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e)
 	{
-		Shulker.getMinecraftManager().addPlayer(e.getPlayer());
+		Shulker.getMCManager().addPlayer(e.getPlayer());
 	}
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent e)
 	{
-		Shulker.getMinecraftManager().removePlayer(e.getPlayer().getUniqueId());
+		Shulker.getMCManager().removePlayer(e.getPlayer().getUniqueId());
 	}
 }

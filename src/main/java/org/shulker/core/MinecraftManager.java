@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
+import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
 
@@ -41,6 +42,12 @@ public interface MinecraftManager extends Nameable
 	ShulkerPacketPlayOutChat<?> newPacketPlayOutChat(BaseComponent... components);
 
 	ShulkerPacketPlayOutChat<?> newPacketPlayOutChat(Object packet);
+
+	ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter();
+
+	ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer);
+
+	ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet);
 
 	WrapperManager getWrapperManager();
 

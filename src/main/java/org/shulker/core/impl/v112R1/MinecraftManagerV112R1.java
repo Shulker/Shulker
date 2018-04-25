@@ -16,11 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
+import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
 import org.shulker.core.impl.v112R1.entity.ShulkerPlayerV112R1;
 import org.shulker.core.impl.v112R1.packets.ShulkerPacketPlayOutChatV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatComponentWrapperV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatMessageTypeWrapperV112R1;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
+import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
 
@@ -83,6 +85,24 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 		if (!(packet instanceof PacketPlayOutChat))
 			throw new IllegalArgumentException("packet must be of type PacketPlayOutChat.");
 		return new ShulkerPacketPlayOutChatV112R1((PacketPlayOutChat) packet);
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter()
+	{
+		return new ReflectPacketPlayerListHeaderFooter();
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer)
+	{
+		return new ReflectPacketPlayerListHeaderFooter(header, footer);
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet)
+	{
+		return new ReflectPacketPlayerListHeaderFooter(packet);
 	}
 
 	@Override

@@ -9,6 +9,8 @@
 
 package org.shulker.core;
 
+import org.aperlambda.lambdacommon.system.LambdaSystem;
+import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.config.ConfigManager;
@@ -16,6 +18,8 @@ import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
 
 import java.io.File;
+
+import static org.fusesource.jansi.Ansi.*;
 
 public class Shulker
 {
@@ -28,6 +32,8 @@ public class Shulker
 		SHULKER = plugin;
 
 		logInfo(getPrefix(), "Loading Shulker...");
+		logInfo(getPrefix(), ansi().a("Running on: ").fg(Color.CYAN).a(LambdaSystem.getOS().getName()).fg(Color.WHITE).a(" arch ").fg(Color.CYAN).a(System.getProperty("os.arch")).reset().toString());
+		logInfo(getPrefix(), ansi().a("Java version: ").fg(Color.CYAN).a(System.getProperty("java.version")).reset().toString());
 	}
 
 	/**
@@ -151,7 +157,7 @@ public class Shulker
 	 *
 	 * @return Shulker's Minecraft manager.
 	 */
-	public static MinecraftManager getMinecraftManager()
+	public static MinecraftManager getMCManager()
 	{
 		return SHULKER.getMinecraftManager();
 	}

@@ -16,15 +16,19 @@ import org.jetbrains.annotations.Nullable;
 import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
+import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
+import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.spigot.ShulkerSpigotPlugin;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class ReflectMinecraftManager implements MinecraftManager
 {
+	public static final Class<?> ICHATBASECOMPONENT_CLASS = ShulkerSpigotPlugin.getNmsClass("IChatBaseComponent");
 	private static final ReflectWrapperManager wrapperManager = new ReflectWrapperManager();
 	private final HashMap<UUID, ShulkerPlayer<Player>> players = new HashMap<>();
 
@@ -77,6 +81,24 @@ public class ReflectMinecraftManager implements MinecraftManager
 	public ShulkerPacketPlayOutChat<?> newPacketPlayOutChat(Object packet)
 	{
 		throw new UnsupportedOperationException("newPacketPlayOutChat(Object) is not implemented.");
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter()
+	{
+		return new ReflectPacketPlayerListHeaderFooter();
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer)
+	{
+		return new ReflectPacketPlayerListHeaderFooter(header, footer);
+	}
+
+	@Override
+	public ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet)
+	{
+		return new ReflectPacketPlayerListHeaderFooter(packet);
 	}
 
 	@Override

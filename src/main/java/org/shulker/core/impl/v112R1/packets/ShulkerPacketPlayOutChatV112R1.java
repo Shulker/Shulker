@@ -22,7 +22,7 @@ import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import java.lang.reflect.Field;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
-import static org.shulker.core.Shulker.getMinecraftManager;
+import static org.shulker.core.Shulker.getMCManager;
 
 public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<PacketPlayOutChat>
 {
@@ -38,7 +38,7 @@ public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<Pac
 
 	public ShulkerPacketPlayOutChatV112R1(@NotNull BaseComponent... components)
 	{
-		this(new PacketPlayOutChat((IChatBaseComponent) getMinecraftManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)));
+		this(new PacketPlayOutChat((IChatBaseComponent) getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)));
 	}
 
 	public ShulkerPacketPlayOutChatV112R1(PacketPlayOutChat packet)
@@ -49,13 +49,13 @@ public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<Pac
 	@Override
 	public BaseComponent[] getMessage()
 	{
-		return mcComponentField.map(field -> getMinecraftManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field))).getOrElse(packet.components);
+		return mcComponentField.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field))).getOrElse(packet.components);
 	}
 
 	@Override
 	public void setMessage(BaseComponent... components)
 	{
-		mcComponentField.ifPresentOrElse(field -> setValue(packet, field, getMinecraftManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)),
+		mcComponentField.ifPresentOrElse(field -> setValue(packet, field, getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)),
 										 () -> packet.components = components);
 	}
 
@@ -75,12 +75,12 @@ public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<Pac
 	@Override
 	public ChatMessageType getPosition()
 	{
-		return getMinecraftManager().getWrapperManager().getChatMessageTypeWrapper().toShulker(getFieldValue(packet, positionField.get()));
+		return getMCManager().getWrapperManager().getChatMessageTypeWrapper().toShulker(getFieldValue(packet, positionField.get()));
 	}
 
 	@Override
 	public void setPosition(ChatMessageType position)
 	{
-		setValue(packet, positionField.get(), getMinecraftManager().getWrapperManager().getChatMessageTypeWrapper().fromShulker(position));
+		setValue(packet, positionField.get(), getMCManager().getWrapperManager().getChatMessageTypeWrapper().fromShulker(position));
 	}
 }

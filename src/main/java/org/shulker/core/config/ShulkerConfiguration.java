@@ -17,6 +17,7 @@ import org.shulker.core.Shulker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import static org.shulker.core.ShulkerConstants.RES_CONFIG;
 import static org.shulker.core.config.ConfigManager.getConfigManager;
@@ -50,7 +51,7 @@ public class ShulkerConfiguration
 		{
 			try
 			{
-				Files.copy(config.getFile().toPath(), new File(config.getFile().getParent(), "config.json.backup").toPath());
+				Files.copy(config.getFile().toPath(), new File(config.getFile().getParent(), "config.json.backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
 			}
 			catch (IOException e)
 			{
