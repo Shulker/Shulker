@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.packets.ShulkerPacket;
 
+import java.util.Arrays;
+
 /**
  * The packet which manages the titles.
  * <p>
@@ -157,6 +159,14 @@ public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 		setAction(null);
 		setTimes(0, 0, 0);
 		setChatComponentValue();
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ShulkerPacketTitle{action:" + getAction().getName() + ",chat:" +
+				Arrays.toString(getChatComponentValue()) + ",fadeIn:" + getFadeIn() + ",stay:" + getStay() +
+				",fadeOut:" + getFadeOut() + "}";
 	}
 
 	/**

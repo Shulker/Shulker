@@ -50,7 +50,7 @@ public interface ShulkerPlayer<T>
 	 */
 	default void sendTitle(BaseComponent[] title, BaseComponent[] subTitle, int fadeIn, int stay, int fadeOut)
 	{
-		// Times
+		// Reset
 		var packet = Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.RESET);
 		sendPacket(packet);
 		// Title
@@ -68,9 +68,9 @@ public interface ShulkerPlayer<T>
 			sendPacket(packet);
 		}
 
+		packet.reset();
 		packet.setAction(ShulkerPacketTitle.TitleAction.TIMES);
 		packet.setTimes(fadeIn, stay, fadeOut);
-		System.out.println("Action: " + packet.getAction() + ", fadeIn: " + packet.getFadeIn() + ", stay: " + packet.getStay() + ", fadeOut: " + packet.getFadeOut());
 		sendPacket(packet);
 	}
 
@@ -79,7 +79,7 @@ public interface ShulkerPlayer<T>
 	 */
 	default void resetTitle()
 	{
-
+		sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.RESET));
 	}
 
 	/**

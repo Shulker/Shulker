@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
 import org.shulker.core.commands.CommandResult;
 import org.shulker.core.commands.ShulkerCommandExecutor;
-import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 
 import java.util.ArrayList;
 import java.util.List;
