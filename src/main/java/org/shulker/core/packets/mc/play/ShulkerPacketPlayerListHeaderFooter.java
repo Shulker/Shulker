@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.shulker.core.packets.ShulkerPacket;
 
 /**
- * The packet which modifies the header and the footer of the player list.
+ * ShulkerPacketPlayerListHeaderFooter represents the packet which modifies the header and the footer of the player list.
  * This packet may be used by custom servers to display additional information above/below the player list. It is never sent by the Notchian server.
  *
  * @param <T> The server object type.

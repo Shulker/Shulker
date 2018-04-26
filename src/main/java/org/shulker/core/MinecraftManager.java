@@ -20,6 +20,7 @@ import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.core.wrappers.ChatVisibilityWrapper;
 import org.shulker.core.wrappers.TitleActionWrapper;
 
 import java.util.UUID;
@@ -68,6 +69,8 @@ public interface MinecraftManager extends Nameable
 		ChatComponentWrapper getChatComponentWrapper();
 
 		ChatMessageTypeWrapper getChatMessageTypeWrapper();
+
+		ChatVisibilityWrapper getChatVisibilityWrapper();
 
 		TitleActionWrapper getTitleActionWrapper();
 	}

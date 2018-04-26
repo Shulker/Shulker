@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.shulker.core.packets.ShulkerPacket;
 
 /**
- * The packet which send a message to the player.
+ * ShulkerPacketPlayOutChat represents the packet which send a message to the player.
  *
  * @param <T> The server object type.
  */

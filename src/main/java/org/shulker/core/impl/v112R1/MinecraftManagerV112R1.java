@@ -22,12 +22,14 @@ import org.shulker.core.impl.v112R1.entity.ShulkerPlayerV112R1;
 import org.shulker.core.impl.v112R1.packets.ShulkerPacketPlayOutChatV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatComponentWrapperV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatMessageTypeWrapperV112R1;
+import org.shulker.core.impl.v112R1.wrappers.ChatVisibilityWrapperV112R1;
 import org.shulker.core.impl.v112R1.wrappers.TitleActionWrapperV112R1;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.core.wrappers.ChatVisibilityWrapper;
 import org.shulker.core.wrappers.TitleActionWrapper;
 
 import java.util.HashMap;
@@ -163,6 +165,12 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 		public ChatMessageTypeWrapper getChatMessageTypeWrapper()
 		{
 			return ChatMessageTypeWrapperV112R1.INSTANCE;
+		}
+
+		@Override
+		public ChatVisibilityWrapper getChatVisibilityWrapper()
+		{
+			return ChatVisibilityWrapperV112R1.INSTANCE;
 		}
 
 		@Override

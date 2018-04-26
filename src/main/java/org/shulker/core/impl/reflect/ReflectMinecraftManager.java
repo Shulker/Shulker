@@ -24,6 +24,7 @@ import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.core.wrappers.ChatMessageTypeWrapper;
+import org.shulker.core.wrappers.ChatVisibilityWrapper;
 import org.shulker.core.wrappers.TitleActionWrapper;
 
 import java.util.HashMap;
@@ -157,6 +158,12 @@ public class ReflectMinecraftManager implements MinecraftManager
 
 		@Override
 		public ChatMessageTypeWrapper getChatMessageTypeWrapper()
+		{
+			return null;
+		}
+
+		@Override
+		public ChatVisibilityWrapper getChatVisibilityWrapper()
 		{
 			return null;
 		}

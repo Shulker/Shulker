@@ -43,9 +43,7 @@ public class TestCommand extends ShulkerCommandExecutor
 		var hello = new ComponentBuilder("Hello world!").color(GREEN).create();
 		var componentsOwO = new ComponentBuilder("OwO\n").append("Ping: ").color(GREEN).append(
 				"" + shPlayer.getPing()).color(GOLD).create();
-		var packetChat = Shulker.getMCManager().newPacketPlayOutChat(components);
-		packetChat.setPosition(ChatMessageType.SYSTEM);
-		shPlayer.sendPacket(packetChat);
+		shPlayer.sendMessage(components);
 
 		shPlayer.sendPacket(Shulker.getMCManager().newPacketPlayOutPlayerListHeaderFooter(componentsOwO,
 																						  new TextComponent[]{

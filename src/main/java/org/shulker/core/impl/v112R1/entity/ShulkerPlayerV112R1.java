@@ -9,12 +9,15 @@
 
 package org.shulker.core.impl.v112R1.entity;
 
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.Packet;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.shulker.core.Shulker;
+import org.shulker.core.chat.ChatVisibility;
 import org.shulker.core.entity.ShulkerPlayer;
 
 public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
@@ -31,9 +34,12 @@ public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
 	}
 
 	@Override
-	public void sendMessage(BaseComponent ... message)
+	public void sendMessage(ChatMessageType type, BaseComponent... message)
 	{
-		player.spigot().sendMessage(message);
+		var chatVisibility = getChatVisibility();
+		if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
+			return;
+		player.spigot().sendMessage(type, message);
 	}
 
 	@Override
@@ -53,6 +59,12 @@ public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
 	public String getLocale()
 	{
 		return mcPlayer.locale;
+	}
+
+	@Override
+	public ChatVisibility getChatVisibility()
+	{
+		return Shulker.getMCManager().getWrapperManager().getChatVisibilityWrapper().toShulker(mcPlayer.getChatFlags());
 	}
 
 	@Override

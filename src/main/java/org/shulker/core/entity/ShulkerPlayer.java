@@ -9,14 +9,17 @@
 
 package org.shulker.core.entity;
 
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
+import org.shulker.core.chat.ChatVisibility;
 import org.shulker.core.packets.ShulkerPacket;
+import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 
 /**
- * Represents a player.
+ * ShulkerPlayer represents a Minecraft player.
  *
  * @param <T> The server object type.
  */
@@ -24,10 +27,24 @@ public interface ShulkerPlayer<T>
 {
 	/**
 	 * Sends a message to the player.
+	 * <p>NOTE: The default {@code ChatMessageType} here is {@code SYSTEM}. Please respect the use of the types.</p>
 	 *
-	 * @param message The components to send.
+	 * @param message The message to send.
+	 * @see ShulkerPlayer#sendMessage(ChatMessageType, BaseComponent...)
 	 */
-	void sendMessage(BaseComponent... message);
+	default void sendMessage(BaseComponent... message)
+	{
+		sendMessage(ChatMessageType.SYSTEM, message);
+	}
+
+	/**
+	 * Sends a message to the player.
+	 * <p><b>NOTE:</b> Please use {@link #sendActionBar(BaseComponent...)} for {@link ChatMessageType#ACTION_BAR action bar type}.</p>
+	 *
+	 * @param type    The type of the message.
+	 * @param message The message to send.
+	 */
+	void sendMessage(ChatMessageType type, BaseComponent... message);
 
 	/**
 	 * Sends a message in the action bar to the player.
@@ -112,6 +129,13 @@ public interface ShulkerPlayer<T>
 	 * @return The locale as a string.
 	 */
 	String getLocale();
+
+	/**
+	 * Gets the chat visibility flag of the player.
+	 *
+	 * @return The chat visibility flag.
+	 */
+	ChatVisibility getChatVisibility();
 
 	/**
 	 * Gets the player handle.

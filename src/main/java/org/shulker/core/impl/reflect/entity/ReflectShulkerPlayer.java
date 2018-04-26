@@ -9,9 +9,11 @@
 
 package org.shulker.core.impl.reflect.entity;
 
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.shulker.core.chat.ChatVisibility;
 import org.shulker.core.entity.ShulkerPlayer;
 
 public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
@@ -19,7 +21,7 @@ public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 	@NotNull
 	private Player player;
 
-	private Object nmsPlayer;
+	private Object mcPlayer;
 
 	public ReflectShulkerPlayer(@NotNull Player player)
 	{
@@ -27,9 +29,12 @@ public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 	}
 
 	@Override
-	public void sendMessage(BaseComponent ... message)
+	public void sendMessage(ChatMessageType type, BaseComponent... message)
 	{
-		player.spigot().sendMessage(message);
+		var chatVisibility = getChatVisibility();
+		if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
+			return;
+		player.spigot().sendMessage(type, message);
 	}
 
 	@Override
@@ -48,6 +53,12 @@ public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 	public String getLocale()
 	{
 		return null;
+	}
+
+	@Override
+	public ChatVisibility getChatVisibility()
+	{
+		return ChatVisibility.FULL;
 	}
 
 	@NotNull
