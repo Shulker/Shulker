@@ -10,7 +10,7 @@
 package org.shulker.core.impl.v112R1.wrappers;
 
 import net.minecraft.server.v1_12_R1.EntityHuman;
-import org.shulker.core.chat.ChatVisibility;
+import org.mcelytra.chat.ChatVisibility;
 import org.shulker.core.wrappers.ChatVisibilityWrapper;
 
 public class ChatVisibilityWrapperV112R1 extends ChatVisibilityWrapper

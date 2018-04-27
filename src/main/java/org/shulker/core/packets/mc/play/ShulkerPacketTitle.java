@@ -72,7 +72,7 @@ public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 	 * <ul>
 	 * <li>{@link TitleAction#TITLE TITLE}</li>
 	 * <li>{@link TitleAction#SUBTITLE SUBTITLE}</li>
-	 * <li>{@link TitleAction#ACTIONBAR ACTIONBAR}</li>
+	 * <li>{@link TitleAction#ACTION_BAR ACTION_BAR}</li>
 	 * </ul>
 	 *
 	 * @return The ChatComponent value.
@@ -81,7 +81,7 @@ public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 
 	/**
 	 * Sets the ChatComponent value.
-	 * The value can be null, only define it for the actions: {@code TITLE}, {@code SUBTITLE}, {@code ACTIONBAR}.
+	 * The value can be null, only define it for the actions: {@code TITLE}, {@code SUBTITLE}, {@code ACTION_BAR}.
 	 *
 	 * @param components The ChatComponent value, mays be null.
 	 */
@@ -176,7 +176,7 @@ public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 	{
 		TITLE("Set title", "TITLE"),
 		SUBTITLE("Set subtitle", "SUBTITLE"),
-		ACTIONBAR("Set action bar", "ACTIONBAR"),
+		ACTION_BAR("Set action bar", "ACTION_BAR"),
 		TIMES("Set times and display", "TIMES"),
 		HIDE("Hide", "CLEAR"),
 		RESET("Reset", "RESET");

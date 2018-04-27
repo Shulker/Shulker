@@ -9,7 +9,7 @@
 
 package org.shulker.core.wrappers;
 
-import net.md_5.bungee.api.ChatMessageType;
+import org.mcelytra.chat.ChatMessageType;
 
 /**
  * Represents a ChatMessageType wrapper.

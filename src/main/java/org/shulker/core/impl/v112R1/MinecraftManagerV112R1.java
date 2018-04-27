@@ -124,7 +124,7 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent[] chatValue)
+	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue)
 	{
 		return new ReflectPacketTitle(action, chatValue);
 	}

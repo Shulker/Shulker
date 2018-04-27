@@ -13,13 +13,13 @@ import org.aperlambda.lambdacommon.utils.Nameable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
  * SubCommand represents a sub-command in the command hierarchy.
- * <p>
- * A sub-command is defined by:
+ * <p>A sub-command is defined by:</p>
  * <ul>
  * <li>An usage.</li>
  * <li>A description.</li>
@@ -27,12 +27,12 @@ import java.util.List;
  * <li>An execution method.</li>
  * <li>A tab completion method.</li>
  * </ul>
- * </p>
  */
 public interface SubCommand extends Nameable
 {
 	/**
 	 * Gets the usage of the sub-command.
+	 * <p>The format is {@code <command> <required_argument> [optional_argument]} you can simply put ${@code <command>} for the command name, Shulker will replace it automatically in the usage error message.</p>
 	 *
 	 * @return The usage.
 	 */
@@ -53,6 +53,16 @@ public interface SubCommand extends Nameable
 	@NotNull List<String> getAliases();
 
 	/**
+	 * Gets the permission that is required to execute this sub-command.
+	 *
+	 * @return The required permission.
+	 */
+	default @Nullable String getPermissionRequired()
+	{
+		return null;
+	}
+
+	/**
 	 * Represents the execution process of the sub-command.
 	 * <p>The {@code args} argument represents the arguments of the sub-command and not the arguments of the parent command.</p>
 	 *
@@ -65,4 +75,14 @@ public interface SubCommand extends Nameable
 	@NotNull CommandResult execute(CommandSender sender, Command parent, String label, String[] args);
 
 	List<String> onTabComplete(CommandSender sender, Command parent, String label, String[] args);
+
+	interface SubCommandExecutor
+	{
+		@NotNull CommandResult execute(CommandSender sender, Command parent, String label, String[] args);
+	}
+
+	interface SubCommandTabCompleter
+	{
+		List<String> complete(CommandSender sender, Command parent, String label, String[] args);
+	}
 }

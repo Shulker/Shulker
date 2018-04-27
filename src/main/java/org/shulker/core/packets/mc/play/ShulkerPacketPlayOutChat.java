@@ -9,9 +9,9 @@
 
 package org.shulker.core.packets.mc.play;
 
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
+import org.mcelytra.chat.ChatMessageType;
 import org.shulker.core.packets.ShulkerPacket;
 
 /**

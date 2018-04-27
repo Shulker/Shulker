@@ -13,21 +13,30 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
-import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
+import static org.shulker.core.Shulker.getMCManager;
 
 public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerListHeaderFooter<Object>
 {
-	private static final Class<?>                           PACKET_CLASS = ShulkerSpigotPlugin.getNmsClass("PacketPlayOutPlayerListHeaderFooter");
-	private static final Optional<? extends Constructor<?>> CONSTRUCTOR  = getConstructor(PACKET_CLASS);
-	private static final Optional<Field>                    HEADER_FIELD = getFirstFieldOfType(PACKET_CLASS, ReflectMinecraftManager.ICHATBASECOMPONENT_CLASS);
-	private static final Optional<Field>                    FOOTER_FIELD = getLastFieldOfType(PACKET_CLASS, ReflectMinecraftManager.ICHATBASECOMPONENT_CLASS);
+	private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
+	private static final Optional<Field>                    HEADER_FIELD;
+	private static final Optional<Field>                    FOOTER_FIELD;
+
+	static
+	{
+		final Class<?> PACKET_CLASS = ShulkerSpigotPlugin.getNmsClass("PacketPlayOutPlayerListHeaderFooter");
+		Objects.requireNonNull(PACKET_CLASS, "Cannot initialize ReflectPacketPlayerListHeaderFooter: NMS class cannot be found!");
+		CONSTRUCTOR = getConstructor(PACKET_CLASS);
+		HEADER_FIELD = getFirstFieldOfType(PACKET_CLASS, getMCManager().getWrapperManager().getChatComponentWrapper().getObjectClass());
+		FOOTER_FIELD = getLastFieldOfType(PACKET_CLASS, getMCManager().getWrapperManager().getChatComponentWrapper().getObjectClass());
+	}
 
 	public ReflectPacketPlayerListHeaderFooter()
 	{

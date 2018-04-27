@@ -7,5 +7,10 @@
  * see the LICENSE file.
  */
 
-rootProject.name = 'shulker'
-include 'chat'
+package org.shulker.core.js;
+
+import org.shulker.core.ShulkerConstants;
+
+public class JSPluginEngine
+{
+}

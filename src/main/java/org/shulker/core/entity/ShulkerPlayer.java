@@ -9,13 +9,12 @@
 
 package org.shulker.core.entity;
 
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.mcelytra.chat.ChatMessageType;
+import org.mcelytra.chat.ChatVisibility;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
-import org.shulker.core.chat.ChatVisibility;
 import org.shulker.core.packets.ShulkerPacket;
-import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
 
 /**
@@ -53,7 +52,7 @@ public interface ShulkerPlayer<T>
 	 */
 	default void sendActionBar(BaseComponent... message)
 	{
-		sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.ACTIONBAR, message));
+		sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.ACTION_BAR, message));
 	}
 
 	/**

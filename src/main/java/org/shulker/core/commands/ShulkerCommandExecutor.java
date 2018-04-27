@@ -41,7 +41,10 @@ public abstract class ShulkerCommandExecutor implements TabExecutor
 			if (hasSubCommand(subLabel))
 			{
 				SubCommand sc = getSubCommand(subLabel).get();
-				result = sc.execute(sender, command, subLabel, Arrays.copyOfRange(args, 1, args.length));
+				if (sc.getPermissionRequired() != null && !sender.hasPermission(sc.getPermissionRequired()))
+					result = CommandResult.ERROR_PERMISSION;
+				else
+					result = sc.execute(sender, command, subLabel, Arrays.copyOfRange(args, 1, args.length));
 				usage = command.getName() + " " + sc.getUsage().replace("<command>", sc.getName());
 			}
 			else
@@ -78,7 +81,10 @@ public abstract class ShulkerCommandExecutor implements TabExecutor
 		{
 			if (subCommands.isEmpty())
 				return onTabCompletion(sender, command, label, args);
-			List<String> subCommands2 = subCommands.stream().map(Nameable::getName).collect(Collectors.toList());
+			List<String> subCommands2 = subCommands.stream()
+					.filter(sc -> sc.getPermissionRequired() == null ||
+							sender.hasPermission(sc.getPermissionRequired()))
+					.map(Nameable::getName).collect(Collectors.toList());
 			List<String> additionalCompletion = onTabCompletion(sender, command, label, args);
 			if (additionalCompletion != null)
 				subCommands2.addAll(additionalCompletion);
@@ -88,8 +94,13 @@ public abstract class ShulkerCommandExecutor implements TabExecutor
 		}
 		else if (args.length > 1)
 			if (hasSubCommand(args[0]))
-				return getSubCommand(args[0]).get().onTabComplete(sender, command, label, Arrays.copyOfRange(args, 1,
-																											 args.length));
+			{
+				var subCommand = getSubCommand(args[0]);
+				if (subCommand.get().getPermissionRequired() == null ||
+						sender.hasPermission(subCommand.get().getPermissionRequired()))
+					return subCommand.get().onTabComplete(sender, command, label, Arrays.copyOfRange(args, 1,
+																									 args.length));
+			}
 		return onTabCompletion(sender, command, label, args);
 	}
 

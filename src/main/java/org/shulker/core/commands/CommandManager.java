@@ -7,5 +7,8 @@
  * see the LICENSE file.
  */
 
-rootProject.name = 'shulker'
-include 'chat'
+package org.shulker.core.commands;
+
+public class CommandManager
+{
+}

@@ -10,7 +10,7 @@
 package org.shulker.core.commands;
 
 /**
- * Represents the result of a command.
+ * CommandResult represents the result of a command.
  *
  * @author lambdaurora
  *
@@ -23,5 +23,6 @@ public enum CommandResult
 	ERROR_RUNTIME,
 	ERROR_USAGE,
 	ERROR_PERMISSION,
+	ERROR_OBJECT_NOT_FOUND,
 	ERROR_ONLY_PLAYER
 }

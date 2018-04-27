@@ -9,7 +9,7 @@
 
 package org.shulker.core.wrappers;
 
-import org.shulker.core.chat.ChatVisibility;
+import org.mcelytra.chat.ChatVisibility;
 
 /**
  * ChatVisibilityWrapper represents the wrapper of the enum {@link ChatVisibility}.

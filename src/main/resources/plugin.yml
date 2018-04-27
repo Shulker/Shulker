@@ -10,12 +10,17 @@ commands:
   libraries:
     usage: <command> [library]
     description: Lists libraries or display info about one.
-  test:
-    usage: OWO
-    description: OWO
+  shulker:
+    usage: <command> [subcommand [args]]
+    description: The Shulker command.
 
 permissions:
   shulker.*:
     default: op
     children:
+      shulker.reload: true
+      shulker.commands.help: true
       shulker.commands.libraries: true
+  shulker.reload:
+    description: Allows to reload Shulker.
+    default: op

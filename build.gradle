@@ -33,7 +33,8 @@ configurations {
 }
 
 dependencies {
-    compile 'org.aperlambda:lambdajcommon:1.4.1'
+    compile 'org.aperlambda:lambdajcommon:1.4.4'
+    compile project(':chat')
     provided 'net.md-5:bungeecord-chat:1.12-SNAPSHOT'
     provided 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
 }

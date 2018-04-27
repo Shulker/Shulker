@@ -9,11 +9,11 @@
 
 package org.shulker.core.impl.reflect.entity;
 
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.shulker.core.chat.ChatVisibility;
+import org.mcelytra.chat.ChatMessageType;
+import org.mcelytra.chat.ChatVisibility;
 import org.shulker.core.entity.ShulkerPlayer;
 
 public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
@@ -34,7 +34,7 @@ public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 		var chatVisibility = getChatVisibility();
 		if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
 			return;
-		player.spigot().sendMessage(type, message);
+		player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.valueOf(type.name()), message);
 	}
 
 	@Override

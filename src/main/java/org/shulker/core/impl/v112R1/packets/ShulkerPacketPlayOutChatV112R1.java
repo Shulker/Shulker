@@ -9,7 +9,6 @@
 
 package org.shulker.core.impl.v112R1.packets;
 
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.ChatComponentText;
@@ -17,6 +16,7 @@ import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
+import org.mcelytra.chat.ChatMessageType;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 
 import java.lang.reflect.Field;

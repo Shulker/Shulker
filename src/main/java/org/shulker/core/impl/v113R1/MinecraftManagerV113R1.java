@@ -7,14 +7,13 @@
  * see the LICENSE file.
  */
 
-package org.shulker.core.impl.reflect;
+package org.shulker.core.impl.v113R1;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.MinecraftManager;
-import org.shulker.core.Shulker;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
 import org.shulker.core.impl.reflect.packets.ReflectPacketPlayOutChat;
@@ -31,10 +30,10 @@ import org.shulker.core.wrappers.TitleActionWrapper;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ReflectMinecraftManager implements MinecraftManager
+public class MinecraftManagerV113R1 implements MinecraftManager
 {
-	private static final ReflectWrapperManager                wrapperManager           = new ReflectWrapperManager();
-	private final        HashMap<UUID, ShulkerPlayer<Player>> players                  = new HashMap<>();
+	private static final WrapperManagerV113R1                 WRAPPER_MANAGER = new WrapperManagerV113R1();
+	private final        HashMap<UUID, ShulkerPlayer<Player>> players         = new HashMap<>();
 
 	@Override
 	public ShulkerPlayer<Player> getPlayer(@Nullable Player player)
@@ -138,18 +137,17 @@ public class ReflectMinecraftManager implements MinecraftManager
 	@Override
 	public WrapperManager getWrapperManager()
 	{
-		return wrapperManager;
+		return WRAPPER_MANAGER;
 	}
 
 	@Override
 	public @NotNull String getName()
 	{
-		return "MinecraftManager reflection mode";
+		return "Minecraft v1.13.R1";
 	}
 
-	public static class ReflectWrapperManager implements WrapperManager
+	public static class WrapperManagerV113R1 implements WrapperManager
 	{
-
 		@Override
 		public ChatComponentWrapper getChatComponentWrapper()
 		{
@@ -177,7 +175,7 @@ public class ReflectMinecraftManager implements MinecraftManager
 		@Override
 		public @NotNull String getName()
 		{
-			return "WrapperManager reflection mode";
+			return "WrapperManager v1.13.R1";
 		}
 	}
 }

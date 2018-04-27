@@ -20,7 +20,6 @@ public class TitleActionWrapperV112R1 extends TitleActionWrapper
 	@Override
 	public Object fromShulker(ShulkerPacketTitle.TitleAction shulkerObject)
 	{
-		System.out.println("fromShulker IN: " + shulkerObject);
 		if (shulkerObject == null)
 			return null;
 		switch (shulkerObject)
@@ -30,7 +29,7 @@ public class TitleActionWrapperV112R1 extends TitleActionWrapper
 				return PacketPlayOutTitle.EnumTitleAction.TITLE;
 			case SUBTITLE:
 				return PacketPlayOutTitle.EnumTitleAction.SUBTITLE;
-			case ACTIONBAR:
+			case ACTION_BAR:
 				return PacketPlayOutTitle.EnumTitleAction.ACTIONBAR;
 			case TIMES:
 				return PacketPlayOutTitle.EnumTitleAction.TIMES;
@@ -46,7 +45,6 @@ public class TitleActionWrapperV112R1 extends TitleActionWrapper
 	@Override
 	public ShulkerPacketTitle.TitleAction toShulker(Object object)
 	{
-		System.out.println("toShulker IN: " + object);
 		if (!(object instanceof PacketPlayOutTitle.EnumTitleAction))
 			return null;
 		switch ((PacketPlayOutTitle.EnumTitleAction) object)
@@ -56,7 +54,7 @@ public class TitleActionWrapperV112R1 extends TitleActionWrapper
 			case SUBTITLE:
 				return ShulkerPacketTitle.TitleAction.SUBTITLE;
 			case ACTIONBAR:
-				return ShulkerPacketTitle.TitleAction.ACTIONBAR;
+				return ShulkerPacketTitle.TitleAction.ACTION_BAR;
 			case TIMES:
 				return ShulkerPacketTitle.TitleAction.TIMES;
 			case CLEAR:

@@ -23,6 +23,7 @@ import org.shulker.core.ShulkerLibrary;
 import org.shulker.core.ShulkerPlugin;
 import org.shulker.core.commands.ShulkerCommandExecutor;
 import org.shulker.core.commands.defaults.LibrariesCommand;
+import org.shulker.core.commands.defaults.ShulkerCommand;
 import org.shulker.core.commands.defaults.TestCommand;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
@@ -134,7 +135,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		metrics.addCustomChart(new Metrics.SimplePie("minecraft_manager_used", () -> mcManager.getName()));
 
 		setupCommand("libraries", new LibrariesCommand());
-		setupCommand("test", new TestCommand());
+		setupCommand("shulker", new ShulkerCommand());
 	}
 
 	@Override

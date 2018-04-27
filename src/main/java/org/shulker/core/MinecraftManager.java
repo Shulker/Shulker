@@ -56,7 +56,7 @@ public interface MinecraftManager extends Nameable
 
 	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action);
 
-	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent[] chatValue);
+	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue);
 
 	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
 
