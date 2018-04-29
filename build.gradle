@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-    compile 'org.aperlambda:lambdajcommon:1.4.4'
+    compile 'org.aperlambda:kimiko:1.0.5'
     compile project(':chat')
     provided 'net.md-5:bungeecord-chat:1.12-SNAPSHOT'
     provided 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
@@ -44,7 +44,7 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include "plugin.yml"
-        include "config.json"
+        include "config.yml"
 
         expand 'version': project.version.toString().replace("#", ""), 'authors': authors.toString()
     }

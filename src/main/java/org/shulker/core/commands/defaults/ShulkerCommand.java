@@ -9,44 +9,35 @@
 
 package org.shulker.core.commands.defaults;
 
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.command.Command;
+import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandContext;
+import org.aperlambda.kimiko.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.shulker.core.commands.CommandResult;
-import org.shulker.core.commands.HelpSubCommand;
-import org.shulker.core.commands.ShulkerCommandExecutor;
-import org.shulker.core.commands.defaults.shulker.ReloadCommand;
+import org.shulker.core.commands.BukkitCommandExecutor;
+import org.shulker.core.commands.BukkitCommandResult;
+import org.shulker.core.commands.BukkitCommandTabCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShulkerCommand extends ShulkerCommandExecutor
+public class ShulkerCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
-	private HelpSubCommand helpCommand;
-
-	public ShulkerCommand()
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, Command<CommandSender> command)
 	{
-		helpCommand = new HelpSubCommand(this, "shulker.commands.help", ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, ChatColor.GOLD);
-		helpCommand.setTitle("Shulker Help");
-		addSubCommand(helpCommand);
-		addSubCommand(new ReloadCommand());
+		return command.getSubCommand("help").map(sc -> sc.execute(context, "help", new String[0])).getOrElse(BukkitCommandResult.ERROR_RUNTIME);
 	}
 
 	@Override
-	public @NotNull CommandResult execute(CommandSender sender, Command command, String label)
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
-		return helpCommand.execute(sender, command, label, new String[0]);
-	}
-
-	@Override
-	public @NotNull CommandResult execute(CommandSender sender, Command command, String label, String[] args)
-	{
+		if (args.length == 0)
+			return execute(context, command);
 		return CommandResult.ERROR_USAGE;
 	}
 
 	@Override
-	public List<String> onTabCompletion(CommandSender sender, Command command, String label, String[] args)
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		return new ArrayList<>();
 	}

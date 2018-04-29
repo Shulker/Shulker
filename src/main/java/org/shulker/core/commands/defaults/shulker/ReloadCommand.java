@@ -9,14 +9,14 @@
 
 package org.shulker.core.commands.defaults.shulker;
 
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.command.Command;
+import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandContext;
+import org.aperlambda.kimiko.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.shulker.core.Shulker;
-import org.shulker.core.commands.CommandResult;
-import org.shulker.core.commands.SubCommand;
+import org.shulker.core.commands.BukkitCommandExecutor;
+import org.shulker.core.commands.BukkitCommandTabCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,57 +24,27 @@ import java.util.List;
 import static net.md_5.bungee.api.ChatColor.GOLD;
 import static net.md_5.bungee.api.ChatColor.GREEN;
 
-public class ReloadCommand implements SubCommand
+public class ReloadCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
 	@Override
-	public @NotNull String getUsage()
-	{
-		return "<command>";
-	}
-
-	@Override
-	public @NotNull String getDescription()
-	{
-		return "Reloads Shulker.";
-	}
-
-	@Override
-	public @NotNull List<String> getAliases()
-	{
-		return new ArrayList<>();
-	}
-
-	@Override
-	public @Nullable String getPermissionRequired()
-	{
-		return "shulker.reload";
-	}
-
-	@Override
-	public @NotNull CommandResult execute(CommandSender sender, Command parent, String label, String[] args)
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		if (args.length != 0)
 			return CommandResult.ERROR_USAGE;
 
-		sender.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading...");
-		sender.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "configuration" + GREEN + "...");
+		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading...");
+		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "configuration" + GREEN + "...");
 		Shulker.getConfiguration().load();
-		sender.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "symbols" + GREEN + "...");
+		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "symbols" + GREEN + "...");
 		Shulker.getSymbolsManager().load();
-		sender.sendMessage(Shulker.getPrefixIG() + GREEN + " Reload done!");
+		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reload done!");
 
 		return CommandResult.SUCCESS;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command parent, String label, String[] args)
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		return new ArrayList<>();
-	}
-
-	@Override
-	public @NotNull String getName()
-	{
-		return "reload";
 	}
 }

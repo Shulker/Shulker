@@ -1,0 +1,13 @@
+# Do not edit manually! Else the plugin will regenerate entirely the configuration (but it will backup the old one and recover the old values).
+version: ${version}
+# The messages sections, please edit them to set your messages.
+commands:
+  error:
+    # The usage message, displayed when a player fails a command.
+    usage: "&4[Usage] &c/\${command.usage}"
+    # The permission message, displayed when a player doesn't have enough permissions to execute the command.
+    permission: "&4[Permission] &cYou don't have enough permissions!"
+    # The runtime error message, displayed when there is a runtime error in the command execution process.
+    runtime: "&4[Error] &cAn error occurred!"
+    # The message displayed to the console when it tried to execute a player only command.
+    only_player: "&4[Error] &cYou must be a player to execute this."

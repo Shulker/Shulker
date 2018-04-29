@@ -9,51 +9,50 @@
 
 package org.shulker.core.commands.defaults;
 
-import org.bukkit.command.Command;
+import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandContext;
+import org.aperlambda.kimiko.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
 import org.shulker.core.ShulkerLibrary;
-import org.shulker.core.commands.CommandResult;
-import org.shulker.core.commands.ShulkerCommandExecutor;
+import org.shulker.core.commands.BukkitCommandExecutor;
+import org.shulker.core.commands.BukkitCommandTabCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static net.md_5.bungee.api.ChatColor.GOLD;
-import static net.md_5.bungee.api.ChatColor.RED;
-import static net.md_5.bungee.api.ChatColor.RESET;
+import static net.md_5.bungee.api.ChatColor.*;
 
-public class LibrariesCommand extends ShulkerCommandExecutor
+public class LibrariesCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
 	@NotNull
-	@Override
-	public CommandResult execute(CommandSender sender, Command command, String label)
+	public CommandResult execute(CommandSender sender)
 	{
-		if (!sender.hasPermission("shulker.commands.libraries"))
-			return CommandResult.ERROR_PERMISSION;
-
 		var libraries = Shulker.getShulker().getLibraries();
-		var string = new StringBuilder();
-		string.append("Libraries (").append(libraries.size()).append("): ");
 
-		for (var library : libraries)
-			string.append(library.getLoadState().getPrefixColor()).append(library.getName()).append(RESET).append(", ");
+		if (libraries.size() == 0)
+			sender.sendMessage("No libraries installed.");
+		else
+		{
 
-		sender.sendMessage(string.substring(0, string.length() - 4));
+			var string = new StringBuilder();
+			string.append("Libraries (").append(libraries.size()).append("): ");
+
+			for (var library : libraries)
+				string.append(library.getLoadState().getPrefixColor()).append(library.getName()).append(RESET).append(", ");
+
+			sender.sendMessage(string.substring(0, string.length() - 4));
+		}
 
 		return CommandResult.SUCCESS;
 	}
 
 	@NotNull
-	@Override
-	public CommandResult execute(CommandSender sender, Command command, String label, String[] args)
+	public CommandResult execute(CommandSender sender, String[] args)
 	{
-		if (!sender.hasPermission("shulker.commands.libraries"))
-			return CommandResult.ERROR_PERMISSION;
-
 		if (args.length > 1)
 			return CommandResult.ERROR_USAGE;
 
@@ -72,9 +71,17 @@ public class LibrariesCommand extends ShulkerCommandExecutor
 	}
 
 	@Override
-	public List<String> onTabCompletion(CommandSender sender, Command command, String label, String[] args)
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
-		if (sender.hasPermission("shulker.commands.libraries") && args.length == 1)
+		if (args.length == 0)
+			return execute(context.getSender());
+		return execute(context.getSender(), args);
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+	{
+		if (context.hasPermission("shulker.commands.libraries") && args.length == 1)
 			return Shulker.getShulker().getLibraries().stream()
 					.map(ShulkerLibrary::getName)
 					.filter(l -> l.startsWith(args[0]))

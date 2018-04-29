@@ -22,6 +22,14 @@ import java.util.HashMap;
 
 import static org.aperlambda.lambdacommon.resources.ResourcesManager.getDefaultResourcesManager;
 
+/**
+ * Represents the manager of the configurations.
+ * Supported configuration types:
+ * <ul>
+ * <li>YAML</li>
+ * <li>JSON</li>
+ * </ul>
+ */
 public class ConfigManager
 {
 	private static final ConfigManager                 CONFIG_MANAGER = new ConfigManager();
@@ -65,6 +73,40 @@ public class ConfigManager
 			saveResource(def, name, "json", false);
 
 		var config = new JsonConfig(file);
+		configs.put(name, config);
+		return config;
+	}
+
+	public @NotNull YamlConfig newYamlConfig(@NotNull ResourceName name)
+	{
+		return newYamlConfig(name, null);
+	}
+
+	/**
+	 * Adds a new Yaml Configuration.
+	 *
+	 * @param name Resource name of the configuration.
+	 * @param def  InputStream of the default configuration, can be null.
+	 * @return The new Json Configuration.
+	 */
+	public @NotNull YamlConfig newYamlConfig(@NotNull ResourceName name, @Nullable InputStream def)
+	{
+		if (hasConfig(name))
+		{
+			var existingConfig = getConfiguration(name);
+			if (existingConfig instanceof YamlConfig)
+				return (YamlConfig) existingConfig;
+			else
+				throw new IllegalArgumentException("A configuration with the name '" + name.toString() +
+														   "' already exists in another type than YamlConfig!");
+		}
+
+		var file = new File(Shulker.getConfigurationDirectory(), name.getDomain() + "/" + name.getName() + ".yml");
+
+		if (def != null)
+			saveResource(def, name, "yml", false);
+
+		var config = new YamlConfig(file);
 		configs.put(name, config);
 		return config;
 	}

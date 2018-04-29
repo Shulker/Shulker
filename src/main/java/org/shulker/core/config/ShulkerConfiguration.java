@@ -12,6 +12,7 @@ package org.shulker.core.config;
 import org.aperlambda.lambdacommon.config.JsonConfig;
 import org.aperlambda.lambdacommon.config.VirtualJsonConfig;
 import org.aperlambda.lambdacommon.resources.ResourcesManager;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.shulker.core.Shulker;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class ShulkerConfiguration
 	private static final String COMMANDS_ERROR_ONLY_PLAYER_KEY = "commands.error.only_player";
 	private static final String COMMANDS_ERROR_ONLY_PLAYER_DEF = "&4[Error] &cYou must be a player to execute this.";
 
-	private JsonConfig config;
+	private YamlConfig config;
 
 	/**
 	 * Loads or reloads the configuration file.
@@ -42,7 +43,7 @@ public class ShulkerConfiguration
 	public void load()
 	{
 		if (config == null)
-			config = getConfigManager().newJsonConfig(RES_CONFIG, ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.json"));
+			config = getConfigManager().newYamlConfig(RES_CONFIG, ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.yml"));
 
 		Shulker.logInfo(Shulker.getPrefix(), "Loading configuration...");
 		config.load();
@@ -51,7 +52,7 @@ public class ShulkerConfiguration
 		{
 			try
 			{
-				Files.copy(config.getFile().toPath(), new File(config.getFile().getParent(), "config.json.backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(config.getFile().toPath(), new File(config.getFile().getParent(), "config.yml.backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
 			}
 			catch (IOException e)
 			{
@@ -60,14 +61,14 @@ public class ShulkerConfiguration
 			}
 
 			// Replacing
-			getConfigManager().saveResource(ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.json"), RES_CONFIG, "json", true);
+			getConfigManager().saveResource(ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.yml"), RES_CONFIG, "yml", true);
 
-			var oldConfig = new VirtualJsonConfig(config.getConfig());
+			var oldConfig = new MemoryConfiguration(config.getConfig());
 			config.load();
-			config.set(COMMANDS_ERROR_USAGE_KEY, oldConfig.at(COMMANDS_ERROR_USAGE_KEY, COMMANDS_ERROR_USAGE_DEF));
-			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldConfig.at(COMMANDS_ERROR_PERMISSION_KEY, COMMANDS_ERROR_PERMISSION_DEF));
-			config.set(COMMANDS_ERROR_RUNTIME_KEY, oldConfig.at(COMMANDS_ERROR_RUNTIME_KEY, COMMANDS_ERROR_RUNTIME_DEF));
-			config.set(COMMANDS_ERROR_ONLY_PLAYER_KEY, oldConfig.at(COMMANDS_ERROR_ONLY_PLAYER_KEY, COMMANDS_ERROR_ONLY_PLAYER_DEF));
+			config.set(COMMANDS_ERROR_USAGE_KEY, oldConfig.get(COMMANDS_ERROR_USAGE_KEY, COMMANDS_ERROR_USAGE_DEF));
+			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldConfig.get(COMMANDS_ERROR_PERMISSION_KEY, COMMANDS_ERROR_PERMISSION_DEF));
+			config.set(COMMANDS_ERROR_RUNTIME_KEY, oldConfig.get(COMMANDS_ERROR_RUNTIME_KEY, COMMANDS_ERROR_RUNTIME_DEF));
+			config.set(COMMANDS_ERROR_ONLY_PLAYER_KEY, oldConfig.get(COMMANDS_ERROR_ONLY_PLAYER_KEY, COMMANDS_ERROR_ONLY_PLAYER_DEF));
 			config.save();
 		}
 	}

@@ -9,6 +9,9 @@
 
 package org.shulker.core.commands;
 
-public class CommandManager
+import org.aperlambda.kimiko.CommandExecutor;
+import org.bukkit.command.CommandSender;
+
+public interface BukkitCommandExecutor extends CommandExecutor<CommandSender>
 {
 }

@@ -13,9 +13,12 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandContext;
+import org.aperlambda.kimiko.CommandResult;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.aperlambda.lambdacommon.utils.Nameable;
 import org.aperlambda.lambdacommon.utils.Optional;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -28,26 +31,30 @@ import java.util.stream.Collectors;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
 
-public class HelpSubCommand implements SubCommand
+public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
-	private ShulkerCommandExecutor parent;
-	private String                 title;
-	private ChatColor              mainColor;
-	private ChatColor              secondaryColor;
-	private Optional<ChatColor>    commandColor = Optional.empty();
-	private String                 permission;
+	private String              title;
+	private ChatColor           mainColor;
+	private ChatColor           secondaryColor;
+	private Optional<ChatColor> commandColor = Optional.empty();
 
-	public HelpSubCommand(ShulkerCommandExecutor parent, String permission, ChatColor mainColor, ChatColor secondaryColor)
+	private Command<CommandSender> command;
+
+	public HelpSubCommand(String permission, ChatColor mainColor, ChatColor secondaryColor)
 	{
-		this.parent = parent;
-		this.permission = permission;
 		this.mainColor = mainColor;
 		this.secondaryColor = secondaryColor;
+		this.command = new Command<>(new ResourceName("", "help"));
+		command.setUsage("<command> [subcommand]");
+		command.setDescription("Displays the help message.");
+		command.setPermissionRequired(permission);
+		command.setExecutor(this);
+		command.setTabCompleter(this);
 	}
 
-	public HelpSubCommand(ShulkerCommandExecutor parent, String permission, ChatColor mainColor, ChatColor secondaryColor, @Nullable ChatColor commandColor)
+	public HelpSubCommand(String permission, ChatColor mainColor, ChatColor secondaryColor, @Nullable ChatColor commandColor)
 	{
-		this(parent, permission, mainColor, secondaryColor);
+		this(permission, mainColor, secondaryColor);
 		this.commandColor = Optional.ofNullable(commandColor);
 	}
 
@@ -101,98 +108,82 @@ public class HelpSubCommand implements SubCommand
 		this.commandColor = Optional.ofNullable(commandColor);
 	}
 
-	@Override
-	public @NotNull String getUsage()
+	/**
+	 * Gets the command created by {@code HelpSubCommand}.
+	 *
+	 * @return The new command.
+	 */
+	public Command<CommandSender> getResultCommand()
 	{
-		return "<command> [command]";
+		return command;
 	}
 
 	@Override
-	public @NotNull String getDescription()
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
-		// @TODO: Add the Lang Manager.
-		return "Displays help message.";
-	}
+		var parent = command.getParent();
+		if (parent == null)
+			return CommandResult.ERROR_RUNTIME;
 
-	@Override
-	public @NotNull List<String> getAliases()
-	{
-		return new ArrayList<>();
-	}
-
-	@Override
-	public @Nullable String getPermissionRequired()
-	{
-		return permission;
-	}
-
-	@Override
-	public @NotNull CommandResult execute(CommandSender sender, Command parent, String label, String[] args)
-	{
 		if (args.length > 1)
 			return CommandResult.ERROR_USAGE;
 
 		if (args.length == 1)
 		{
-			var sc = this.parent.getSubCommand(args[0].toLowerCase());
+			var sc = parent.getSubCommand(args[0].toLowerCase());
 			if (!sc.isPresent())
 				return CommandResult.ERROR_RUNTIME;
-			sender.sendMessage(mainColor + "====== " + secondaryColor + sc.get().getName() + mainColor + " ======");
-			sender.sendMessage(mainColor + "Usage: " + commandColor +
-									   sc.get().getUsage().replace("<command>", sc.get().getName()));
-			sender.sendMessage(mainColor + "Description: " + GRAY + sc.get().getDescription());
-			sender.sendMessage(mainColor + "Aliases: " + commandColor + String.join(",", sc.get().getAliases()));
-			sender.sendMessage(mainColor + "Permission required: " + secondaryColor +
-									   (sc.get().getPermissionRequired() == null ? "none" :
-										sc.get().getPermissionRequired()));
+			context.sendMessage(mainColor + "====== " + secondaryColor + sc.get().getName() + mainColor + " ======");
+			context.sendMessage(mainColor + "Usage: " + commandColor.getOrElse(secondaryColor) +
+										sc.get().getUsage().replace("<command>", sc.get().getName()));
+			context.sendMessage(mainColor + "Description: " + GRAY + sc.get().getDescription());
+			context.sendMessage(mainColor + "Aliases: " + commandColor.getOrElse(secondaryColor) +
+										String.join(",", sc.get().getAliases()));
+			context.sendMessage(mainColor + "Permission required: " + secondaryColor +
+										(sc.get().getPermissionRequired() == null ? "none" :
+										 sc.get().getPermissionRequired()));
 			return CommandResult.SUCCESS;
 		}
 
 		String baseCmd = "/" + parent.getName() + " ";
-		sender.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
-		sender.sendMessage(commandColor.getOrElse(secondaryColor) + baseCmd);
-		if (sender instanceof Player)
+		context.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
+		context.sendMessage(commandColor.getOrElse(secondaryColor) + baseCmd);
+		if (context.getSender() instanceof Player)
 		{
-			var player = Shulker.getMCManager().getPlayer((Player) sender);
+			var player = Shulker.getMCManager().getPlayer((Player) context.getSender());
 			var hoverMessage = new ComponentBuilder("Click on the command to insert it in the chat.").color(GRAY).create();
-			this.parent.getSubCommands().forEach(subCommand -> player.sendMessage(new ComponentBuilder(
+			parent.getSubCommands().forEach(subCommand -> player.sendMessage(new ComponentBuilder(
 					"├─ " +
 							subCommand.getUsage().replace("<command>", subCommand.getName()))
-																						  .color(commandColor.getOrElse(secondaryColor))
-																						  .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-																												baseCmd +
-																														subCommand.getName()))
-																						  .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage))
-																						  .append(" - " +
-																										  subCommand.getDescription(), ComponentBuilder.FormatRetention.NONE)
-																						  .color(GRAY)
-																						  .create()));
+																					 .color(commandColor.getOrElse(secondaryColor))
+																					 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
+																										   baseCmd +
+																												   subCommand.getName()))
+																					 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage))
+																					 .append(" - " +
+																									 subCommand.getDescription(), ComponentBuilder.FormatRetention.NONE)
+																					 .color(GRAY)
+																					 .create()));
 		}
 		else
-			this.parent.getSubCommands().forEach(subCommand -> sender.sendMessage(
+			parent.getSubCommands().forEach(subCommand -> context.sendMessage(
 					commandColor.getOrElse(secondaryColor) + "├─ " +
 							subCommand.getUsage().replace("<command>", subCommand.getName()) + GRAY + " - " +
 							subCommand.getDescription()));
-		sender.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
+		context.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
 
 		return CommandResult.SUCCESS;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command parent, String label, String[] args)
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		if (args.length == 1)
-			return this.parent.getSubCommands().stream()
+			return Optional.ofNullable(command.getParent()).map(parent -> parent.getSubCommands().stream()
 					.filter(sc -> sc.getPermissionRequired() == null ||
-							sender.hasPermission(sc.getPermissionRequired()))
+							context.hasPermission(sc.getPermissionRequired()))
 					.map(Nameable::getName)
-					.sorted().collect(Collectors.toList());
+					.sorted().collect(Collectors.toList())).getOrElse(new ArrayList<>());
 		return new ArrayList<>();
-	}
-
-	@Override
-	public @NotNull String getName()
-	{
-		return "help";
 	}
 }

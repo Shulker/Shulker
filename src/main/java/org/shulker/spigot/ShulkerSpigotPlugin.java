@@ -10,10 +10,13 @@
 package org.shulker.spigot;
 
 import com.google.common.collect.ImmutableList;
+import net.md_5.bungee.api.ChatColor;
+import org.aperlambda.kimiko.CommandBuilder;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.aperlambda.lambdacommon.utils.LambdaReflection;
 import org.aperlambda.lambdacommon.utils.Optional;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,10 +24,11 @@ import org.shulker.core.MinecraftManager;
 import org.shulker.core.Shulker;
 import org.shulker.core.ShulkerLibrary;
 import org.shulker.core.ShulkerPlugin;
-import org.shulker.core.commands.ShulkerCommandExecutor;
+import org.shulker.core.commands.BukkitCommandManager;
+import org.shulker.core.commands.HelpSubCommand;
 import org.shulker.core.commands.defaults.LibrariesCommand;
 import org.shulker.core.commands.defaults.ShulkerCommand;
-import org.shulker.core.commands.defaults.TestCommand;
+import org.shulker.core.commands.defaults.shulker.ReloadCommand;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
@@ -43,11 +47,24 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 {
-	private static Optional<Method> addUrl = LambdaReflection.getMethod(URLClassLoader.class, "addURL", true, URL.class);
+	private static Optional<Method> addUrl;
+
+	static
+	{
+		try
+		{
+			addUrl = Optional.ofNullable(URLClassLoader.class.getDeclaredMethod("addURL", URL.class));
+		}
+		catch (NoSuchMethodException e)
+		{
+			addUrl = Optional.empty();
+		}
+	}
 
 	private File pluginsDir = getDataFolder().getParentFile();
 	private File baseDir    = pluginsDir.getParentFile();
 
+	private BukkitCommandManager commandManager;
 	private ShulkerConfiguration config  = new ShulkerConfiguration();
 	private ShulkerSymbols       symbols = new ShulkerSymbols();
 
@@ -106,6 +123,8 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 					libraries.add(library);
 				}
 			}
+
+		commandManager = new BukkitCommandManager();
 	}
 
 	@Override
@@ -134,8 +153,22 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		metrics.addCustomChart(new Metrics.SimplePie("internal_version", ShulkerSpigotPlugin::getServerVersion));
 		metrics.addCustomChart(new Metrics.SimplePie("minecraft_manager_used", () -> mcManager.getName()));
 
-		setupCommand("libraries", new LibrariesCommand());
-		setupCommand("shulker", new ShulkerCommand());
+		LibrariesCommand librariesCommand = new LibrariesCommand();
+		commandManager.register(new CommandBuilder<CommandSender>(new ResourceName(getName(), "libraries"))
+										.usage("<command> [library]").description("Lists libraries or display info about one.")
+										.permission("shulker.commands.libraries").executor(librariesCommand)
+										.tabCompleter(librariesCommand).build());
+		ShulkerCommand shulkerCommandExecutor = new ShulkerCommand();
+		var shulkerCommand = new CommandBuilder<CommandSender>(new ResourceName(getName(), "shulker"))
+				.usage("<command> [subcommand [args]]").description("The Shulker command.")
+				.executor(shulkerCommandExecutor).tabCompleter(shulkerCommandExecutor).build();
+		var reloadSubCommand = new ReloadCommand();
+		shulkerCommand.addSubCommand(new ResourceName(getName(), "reload"), "<command>", "Reloads Shulker", "shulker.reload", new ArrayList<>(), reloadSubCommand, reloadSubCommand);
+		var shulkerHelpCommand = new HelpSubCommand("shulker.commands.help", ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, ChatColor.GOLD);
+		shulkerHelpCommand.setTitle("Shulker");
+		shulkerCommand.addSubCommand(shulkerHelpCommand.getResultCommand());
+		shulkerCommand.setPermissionRequired(shulkerHelpCommand.getResultCommand().getPermissionRequired());
+		commandManager.register(shulkerCommand);
 	}
 
 	@Override
@@ -189,6 +222,12 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	}
 
 	@Override
+	public @NotNull BukkitCommandManager getCommandManager()
+	{
+		return commandManager;
+	}
+
+	@Override
 	public ShulkerSymbols getSymbolsManager()
 	{
 		return symbols;
@@ -210,13 +249,6 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	public List<ShulkerLibrary> getLibraries()
 	{
 		return ImmutableList.copyOf(libraries);
-	}
-
-	public void setupCommand(String command, ShulkerCommandExecutor executor)
-	{
-		PluginCommand cmd = getCommand(command);
-		cmd.setExecutor(executor);
-		cmd.setTabCompleter(executor);
 	}
 
 	/**

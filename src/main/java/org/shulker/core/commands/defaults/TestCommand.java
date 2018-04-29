@@ -13,55 +13,49 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandBuilder;
+import org.aperlambda.kimiko.CommandContext;
+import org.aperlambda.kimiko.CommandResult;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.Shulker;
-import org.shulker.core.commands.Command;
-import org.shulker.core.commands.CommandResult;
+import org.shulker.core.commands.BukkitCommandExecutor;
+import org.shulker.core.commands.BukkitCommandResult;
+import org.shulker.core.commands.BukkitCommandTabCompleter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static net.md_5.bungee.api.ChatColor.*;
 
-public class TestCommand extends Command
+public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
+	private Command<CommandSender> command;
+
 	public TestCommand()
 	{
-		super("test");
+		command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "test"))
+				.usage("<command>")
+				.description("OwO")
+				.executor(this)
+				.tabCompleter(this)
+				.build();
 	}
 
 	@Override
-	public @NotNull String getUsage()
+	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @Nullable Command<CommandSender> command, String label, String[] args)
 	{
-		return "<command>";
-	}
-
-	@Override
-	public @NotNull String getDescription()
-	{
-		return "OwO";
-	}
-
-	@Override
-	public @NotNull List<String> getAliases()
-	{
-		return Collections.singletonList("shulker_test");
-	}
-
-	@Override
-	public @NotNull CommandResult execute(CommandSender sender, @Nullable Command parent, String label, String[] args)
-	{
-		if (!(sender instanceof Player))
-			return CommandResult.ERROR_ONLY_PLAYER;
+		if (!(context.getSender() instanceof Player))
+			return BukkitCommandResult.ERROR_ONLY_PLAYER;
 
 		if (args.length != 0)
 			return CommandResult.ERROR_USAGE;
 
-		var player = (Player) sender;
+		var player = (Player) context.getSender();
 		var shPlayer = Shulker.getMCManager().getPlayer(player);
 		var components = new ComponentBuilder("Hello, it's a ").color(GREEN).append("test").color(DARK_AQUA).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Hover event!\nPing: ").append(
 				"" +
@@ -82,8 +76,13 @@ public class TestCommand extends Command
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args)
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		return new ArrayList<>();
+	}
+
+	public Command<CommandSender> getCommand()
+	{
+		return command;
 	}
 }

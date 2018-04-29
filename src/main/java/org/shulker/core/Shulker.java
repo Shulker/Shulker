@@ -13,6 +13,7 @@ import org.aperlambda.lambdacommon.system.LambdaSystem;
 import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.shulker.core.commands.BukkitCommandManager;
 import org.shulker.core.config.ConfigManager;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
@@ -129,6 +130,16 @@ public class Shulker
 	public static @NotNull ConfigManager getConfigManager()
 	{
 		return SHULKER.getConfigManager();
+	}
+
+	/**
+	 * Gets the Shulker's command manager.
+	 *
+	 * @return The command manager.
+	 */
+	public static @NotNull BukkitCommandManager getCommandManager()
+	{
+		return SHULKER.getCommandManager();
 	}
 
 	/**
