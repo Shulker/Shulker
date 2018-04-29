@@ -9,6 +9,7 @@
 
 package org.shulker.core.config;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.aperlambda.lambdacommon.config.JsonConfig;
 import org.aperlambda.lambdacommon.config.VirtualJsonConfig;
 import org.aperlambda.lambdacommon.resources.ResourcesManager;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Hashtable;
 
 import static org.shulker.core.ShulkerConstants.RES_CONFIG;
 import static org.shulker.core.config.ConfigManager.getConfigManager;
@@ -63,12 +65,15 @@ public class ShulkerConfiguration
 			// Replacing
 			getConfigManager().saveResource(ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.yml"), RES_CONFIG, "yml", true);
 
-			var oldConfig = new MemoryConfiguration(config.getConfig());
+			var oldCommandsErrorUsage = config.at(COMMANDS_ERROR_USAGE_KEY, COMMANDS_ERROR_USAGE_DEF);
+			var oldCommandsErrorPermission = config.at(COMMANDS_ERROR_PERMISSION_KEY, COMMANDS_ERROR_PERMISSION_DEF);
+			var oldCommandsErrorRuntime = config.at(COMMANDS_ERROR_RUNTIME_KEY, COMMANDS_ERROR_RUNTIME_DEF);
+			var oldCommandsErrorOnlyPlayer = config.at(COMMANDS_ERROR_ONLY_PLAYER_KEY, COMMANDS_ERROR_ONLY_PLAYER_DEF);
 			config.load();
-			config.set(COMMANDS_ERROR_USAGE_KEY, oldConfig.get(COMMANDS_ERROR_USAGE_KEY, COMMANDS_ERROR_USAGE_DEF));
-			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldConfig.get(COMMANDS_ERROR_PERMISSION_KEY, COMMANDS_ERROR_PERMISSION_DEF));
-			config.set(COMMANDS_ERROR_RUNTIME_KEY, oldConfig.get(COMMANDS_ERROR_RUNTIME_KEY, COMMANDS_ERROR_RUNTIME_DEF));
-			config.set(COMMANDS_ERROR_ONLY_PLAYER_KEY, oldConfig.get(COMMANDS_ERROR_ONLY_PLAYER_KEY, COMMANDS_ERROR_ONLY_PLAYER_DEF));
+			config.set(COMMANDS_ERROR_USAGE_KEY, oldCommandsErrorUsage);
+			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldCommandsErrorPermission);
+			config.set(COMMANDS_ERROR_RUNTIME_KEY, oldCommandsErrorRuntime);
+			config.set(COMMANDS_ERROR_ONLY_PLAYER_KEY, oldCommandsErrorOnlyPlayer);
 			config.save();
 		}
 	}
