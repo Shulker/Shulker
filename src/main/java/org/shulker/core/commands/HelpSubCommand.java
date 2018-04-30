@@ -18,7 +18,6 @@ import org.aperlambda.kimiko.CommandContext;
 import org.aperlambda.kimiko.CommandResult;
 import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.aperlambda.lambdacommon.utils.Nameable;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +26,7 @@ import org.shulker.core.Shulker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
@@ -134,10 +134,10 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 			if (!sc.isPresent())
 				return CommandResult.ERROR_RUNTIME;
 			context.sendMessage(mainColor + "====== " + secondaryColor + sc.get().getName() + mainColor + " ======");
-			context.sendMessage(mainColor + "Usage: " + commandColor.getOrElse(secondaryColor) +
+			context.sendMessage(mainColor + "Usage: " + commandColor.orElse(secondaryColor) +
 										sc.get().getUsage().replace("<command>", sc.get().getName()));
 			context.sendMessage(mainColor + "Description: " + GRAY + sc.get().getDescription());
-			context.sendMessage(mainColor + "Aliases: " + commandColor.getOrElse(secondaryColor) +
+			context.sendMessage(mainColor + "Aliases: " + commandColor.orElse(secondaryColor) +
 										String.join(",", sc.get().getAliases()));
 			context.sendMessage(mainColor + "Permission required: " + secondaryColor +
 										(sc.get().getPermissionRequired() == null ? "none" :
@@ -147,7 +147,7 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 
 		String baseCmd = "/" + parent.getName() + " ";
 		context.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
-		context.sendMessage(commandColor.getOrElse(secondaryColor) + baseCmd);
+		context.sendMessage(commandColor.orElse(secondaryColor) + baseCmd);
 		if (context.getSender() instanceof Player)
 		{
 			var player = Shulker.getMCManager().getPlayer((Player) context.getSender());
@@ -155,7 +155,7 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 			parent.getSubCommands().forEach(subCommand -> player.sendMessage(new ComponentBuilder(
 					"├─ " +
 							subCommand.getUsage().replace("<command>", subCommand.getName()))
-																					 .color(commandColor.getOrElse(secondaryColor))
+																					 .color(commandColor.orElse(secondaryColor))
 																					 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
 																										   baseCmd +
 																												   subCommand.getName()))
@@ -167,7 +167,7 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 		}
 		else
 			parent.getSubCommands().forEach(subCommand -> context.sendMessage(
-					commandColor.getOrElse(secondaryColor) + "├─ " +
+					commandColor.orElse(secondaryColor) + "├─ " +
 							subCommand.getUsage().replace("<command>", subCommand.getName()) + GRAY + " - " +
 							subCommand.getDescription()));
 		context.sendMessage(mainColor + "====== " + secondaryColor + title + mainColor + " ======");
@@ -183,7 +183,7 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 					.filter(sc -> sc.getPermissionRequired() == null ||
 							context.hasPermission(sc.getPermissionRequired()))
 					.map(Nameable::getName)
-					.sorted().collect(Collectors.toList())).getOrElse(new ArrayList<>());
+					.sorted().collect(Collectors.toList())).orElse(new ArrayList<>());
 		return new ArrayList<>();
 	}
 }

@@ -25,7 +25,7 @@ public class ShulkerCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 {
 	public @NotNull CommandResult execute(CommandContext<CommandSender> context, Command<CommandSender> command)
 	{
-		return command.getSubCommand("help").map(sc -> sc.execute(context, "help", new String[0])).getOrElse(BukkitCommandResult.ERROR_RUNTIME);
+		return command.getSubCommand("help").map(sc -> sc.execute(context, "help", new String[0])).orElse(BukkitCommandResult.ERROR_RUNTIME);
 	}
 
 	@Override

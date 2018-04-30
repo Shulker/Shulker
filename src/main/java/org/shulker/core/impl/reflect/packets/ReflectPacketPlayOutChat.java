@@ -11,7 +11,6 @@ package org.shulker.core.impl.reflect.packets;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.mcelytra.chat.ChatMessageType;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
@@ -20,6 +19,7 @@ import org.shulker.spigot.ShulkerSpigotPlugin;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 import static org.shulker.core.Shulker.getMCManager;
@@ -63,7 +63,7 @@ public class ReflectPacketPlayOutChat extends ShulkerPacketPlayOutChat<Object>
 	public BaseComponent[] getMessage()
 	{
 		return MESSAGE_FIELD.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field)))
-				.getOrElse(COMPONENTS_FIELD.map(field -> getFieldValue(packet, field, new BaseComponent[0])).getOrElse(new BaseComponent[0]));
+				.orElse(COMPONENTS_FIELD.map(field -> getFieldValue(packet, field, new BaseComponent[0])).orElse(new BaseComponent[0]));
 	}
 
 	@Override

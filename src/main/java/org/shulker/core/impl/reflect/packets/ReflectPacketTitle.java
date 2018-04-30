@@ -10,7 +10,6 @@
 package org.shulker.core.impl.reflect.packets;
 
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.Shulker;
@@ -20,6 +19,7 @@ import org.shulker.spigot.ShulkerSpigotPlugin;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 import static org.shulker.core.Shulker.getMCManager;
@@ -78,7 +78,7 @@ public class ReflectPacketTitle extends ShulkerPacketTitle<Object>
 	{
 		return ACTION_FIELD.map(field -> getFieldValue(packet, field))
 				.map(o -> Shulker.getMCManager().getWrapperManager().getTitleActionWrapper().toShulker(o))
-				.getOrElse(TitleAction.RESET);
+				.orElse(TitleAction.RESET);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class ReflectPacketTitle extends ShulkerPacketTitle<Object>
 	{
 		return CHAT_FIELD.map(field -> getFieldValue(packet, field))
 				.map(o -> Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(o))
-				.getOrElse(new BaseComponent[0]);
+				.orElse(new BaseComponent[0]);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class ReflectPacketTitle extends ShulkerPacketTitle<Object>
 	@Override
 	public int getFadeIn()
 	{
-		return FADEIN_FIELD.map(field -> getFieldValue(packet, field, 0)).getOrElse(0);
+		return FADEIN_FIELD.map(field -> getFieldValue(packet, field, 0)).orElse(0);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class ReflectPacketTitle extends ShulkerPacketTitle<Object>
 	@Override
 	public int getStay()
 	{
-		return STAY_FIELD.map(field -> getFieldValue(packet, field, 0)).getOrElse(0);
+		return STAY_FIELD.map(field -> getFieldValue(packet, field, 0)).orElse(0);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class ReflectPacketTitle extends ShulkerPacketTitle<Object>
 	@Override
 	public int getFadeOut()
 	{
-		return FADEOUT_FIELD.map(field -> getFieldValue(packet, field, 0)).getOrElse(0);
+		return FADEOUT_FIELD.map(field -> getFieldValue(packet, field, 0)).orElse(0);
 	}
 
 	@Override

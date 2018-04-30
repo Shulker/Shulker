@@ -10,7 +10,6 @@
 package org.shulker.core.impl.reflect.packets;
 
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
@@ -19,6 +18,7 @@ import org.shulker.spigot.ShulkerSpigotPlugin;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 import static org.shulker.core.Shulker.getMCManager;
@@ -60,7 +60,7 @@ public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerList
 	{
 		return HEADER_FIELD.map(field -> getFieldValue(packet, field))
 				.map(o -> Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(o))
-				.getOrElse(new BaseComponent[0]);
+				.orElse(new BaseComponent[0]);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ReflectPacketPlayerListHeaderFooter extends ShulkerPacketPlayerList
 	{
 		return FOOTER_FIELD.map(field -> getFieldValue(packet, field))
 				.map(o -> Shulker.getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(o))
-				.getOrElse(new BaseComponent[0]);
+				.orElse(new BaseComponent[0]);
 	}
 
 	@Override

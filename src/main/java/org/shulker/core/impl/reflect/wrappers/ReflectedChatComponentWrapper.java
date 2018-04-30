@@ -12,13 +12,13 @@ package org.shulker.core.impl.reflect.wrappers;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.shulker.core.Shulker;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.getMethod;
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.invokeMethod;
@@ -48,7 +48,7 @@ public class ReflectedChatComponentWrapper extends ChatComponentWrapper
 			return null;
 		var start = System.currentTimeMillis();
 		var temp = FROM_SHULKER_METHOD.map(method -> invokeMethod(null, method, ComponentSerializer.toString(shulkerObject)))
-				.getOrElse(null);
+				.orElse(null);
 		Shulker.logDebug("ChatComponentWrapper#fromShulker in " + (System.currentTimeMillis() - start) + "ms");
 		return temp;
 	}
@@ -60,7 +60,7 @@ public class ReflectedChatComponentWrapper extends ChatComponentWrapper
 		if (!WRAPPER_CLASS.isInstance(object))
 			return null;
 		var temp = ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))
-										  .getOrElse("{}"));
+													 .orElse("{}"));
 		Shulker.logDebug("ChatComponentWrapper#toShulker in " + (System.currentTimeMillis() - start) + "ms");
 		return temp;
 		//return ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))

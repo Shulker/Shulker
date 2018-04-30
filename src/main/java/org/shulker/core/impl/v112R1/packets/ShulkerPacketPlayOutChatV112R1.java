@@ -14,12 +14,12 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.ChatComponentText;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
-import org.aperlambda.lambdacommon.utils.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.mcelytra.chat.ChatMessageType;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 import static org.shulker.core.Shulker.getMCManager;
@@ -49,7 +49,7 @@ public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<Pac
 	@Override
 	public BaseComponent[] getMessage()
 	{
-		return mcComponentField.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field))).getOrElse(packet.components);
+		return mcComponentField.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field))).orElse(packet.components);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<Pac
 	@Override
 	public String getMessageRaw()
 	{
-		return mcComponentField.map(field -> IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) getFieldValue(packet, field))).getOrElse(ComponentSerializer.toString(packet.components));
+		return mcComponentField.map(field -> IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) getFieldValue(packet, field))).orElse(ComponentSerializer.toString(packet.components));
 	}
 
 	@Override
