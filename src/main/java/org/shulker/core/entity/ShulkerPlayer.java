@@ -105,6 +105,7 @@ public interface ShulkerPlayer<T>
 	 */
 	default void sendPacket(@NotNull ShulkerPacket<?> packet)
 	{
+		Shulker.logDebug(Shulker.getPrefix(), "Packet send '" + packet.toString() + "'.");
 		sendRawPacket(packet.getHandle());
 	}
 

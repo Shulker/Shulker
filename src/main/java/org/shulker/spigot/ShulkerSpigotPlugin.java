@@ -28,6 +28,7 @@ import org.shulker.core.commands.BukkitCommandManager;
 import org.shulker.core.commands.HelpSubCommand;
 import org.shulker.core.commands.defaults.LibrariesCommand;
 import org.shulker.core.commands.defaults.ShulkerCommand;
+import org.shulker.core.commands.defaults.TestCommand;
 import org.shulker.core.commands.defaults.shulker.ReloadCommand;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
@@ -153,6 +154,10 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		metrics.addCustomChart(new Metrics.SimplePie("internal_version", ShulkerSpigotPlugin::getServerVersion));
 		metrics.addCustomChart(new Metrics.SimplePie("minecraft_manager_used", () -> mcManager.getName()));
 
+		/*
+			COMMANDS SECTION
+		 */
+
 		LibrariesCommand librariesCommand = new LibrariesCommand();
 		commandManager.register(new CommandBuilder<CommandSender>(new ResourceName(getName(), "libraries"))
 										.usage("<command> [library]").description("Lists libraries or display info about one.")
@@ -169,6 +174,9 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		shulkerCommand.addSubCommand(shulkerHelpCommand.getResultCommand());
 		shulkerCommand.setPermissionRequired(shulkerHelpCommand.getResultCommand().getPermissionRequired());
 		commandManager.register(shulkerCommand);
+
+		if (config.hasDebug())
+			commandManager.register(new TestCommand().getResultCommand());
 	}
 
 	@Override
@@ -197,6 +205,18 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		if (prefix != null)
 			p = prefix + " ";
 		System.out.println(p + ansi().fg(Color.WHITE).a(message).reset().toString());
+	}
+
+	@Override
+	public void logDebug(@Nullable String prefix, @NotNull String message)
+	{
+		if (config.hasDebug())
+		{
+			String p = " ";
+			if (prefix != null)
+				p = prefix + " ";
+			System.out.println("[DEBUG]" + p + ansi().fg(Color.WHITE).a(message).reset().toString());
+		}
 	}
 
 	@Override

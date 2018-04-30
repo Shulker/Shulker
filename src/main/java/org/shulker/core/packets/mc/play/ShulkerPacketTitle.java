@@ -158,7 +158,7 @@ public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 	{
 		setAction(null);
 		setTimes(0, 0, 0);
-		setChatComponentValue();
+		setChatComponentValue((BaseComponent[]) null);
 	}
 
 	@Override

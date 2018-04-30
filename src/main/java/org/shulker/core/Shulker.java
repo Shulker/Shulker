@@ -87,6 +87,16 @@ public class Shulker
 		SHULKER.logInfo(prefix, message);
 	}
 
+	public static void logDebug(@NotNull String message)
+	{
+		SHULKER.logDebug(message);
+	}
+
+	public static void logDebug(@Nullable String prefix, @NotNull String message)
+	{
+		SHULKER.logDebug(prefix, message);
+	}
+
 	public static void logError(@NotNull String message)
 	{
 		SHULKER.logError(message);

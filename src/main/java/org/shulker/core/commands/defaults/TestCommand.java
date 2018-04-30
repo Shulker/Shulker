@@ -41,6 +41,7 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 		command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "test"))
 				.usage("<command>")
 				.description("OwO")
+				.permission("shulker.commands.test")
 				.executor(this)
 				.tabCompleter(this)
 				.build();
@@ -70,7 +71,7 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 																								  new TextComponent("OwO")}));
 
 		shPlayer.sendTitle(hello, new BaseComponent[]{new TextComponent("OwO")}, 20, 70, 10);
-		shPlayer.sendActionBar(hello);
+		//shPlayer.sendActionBar(hello);
 
 		return CommandResult.SUCCESS;
 	}
@@ -81,7 +82,7 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 		return new ArrayList<>();
 	}
 
-	public Command<CommandSender> getCommand()
+	public Command<CommandSender> getResultCommand()
 	{
 		return command;
 	}

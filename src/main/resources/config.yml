@@ -1,5 +1,9 @@
 # Do not edit manually! Else the plugin will regenerate entirely the configuration (but it will backup the old one and recover the old values).
 version: ${version}
+# Enables debug mode, when enabled it logs every debug message in the console and ad the "test" command to test packets
+# and some other features.
+# Default: false
+enable_debug: false
 # The messages sections, please edit them to set your messages.
 commands:
   error:
