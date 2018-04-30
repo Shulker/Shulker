@@ -11,6 +11,7 @@ permissions:
     default: op
     children:
       shulker.reload: true
+      shulker.commands.about: true
       shulker.commands.help: true
       shulker.commands.libraries: true
   shulker.reload:

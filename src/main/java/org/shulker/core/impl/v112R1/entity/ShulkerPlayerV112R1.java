@@ -58,7 +58,7 @@ public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
 	@Override
 	public String getLocale()
 	{
-		return mcPlayer.locale;
+		return player.getLocale();
 	}
 
 	@Override

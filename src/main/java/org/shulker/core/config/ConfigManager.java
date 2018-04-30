@@ -38,7 +38,7 @@ public class ConfigManager
 	private ConfigManager()
 	{}
 
-	public static final ConfigManager getConfigManager()
+	public static ConfigManager getConfigManager()
 	{
 		return CONFIG_MANAGER;
 	}

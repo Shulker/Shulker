@@ -66,28 +66,18 @@ public interface ShulkerPlayer<T>
 	 */
 	default void sendTitle(BaseComponent[] title, BaseComponent[] subTitle, int fadeIn, int stay, int fadeOut)
 	{
+		// Note: here I don't use the Spigot Title API because there isn't any instance of Player available here.
+
 		// Reset
-		var packet = Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.RESET);
-		sendPacket(packet);
+		resetTitle();
 		// Title
 		if (title != null)
-		{
-			packet.setAction(ShulkerPacketTitle.TitleAction.TITLE);
-			packet.setChatComponentValue(title);
-			sendPacket(packet);
-		}
+			sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.TITLE, title));
 		// Subtitle
 		if (subTitle != null)
-		{
-			packet.setAction(ShulkerPacketTitle.TitleAction.SUBTITLE);
-			packet.setChatComponentValue(subTitle);
-			sendPacket(packet);
-		}
+			sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.SUBTITLE, subTitle));
 
-		packet.reset();
-		packet.setAction(ShulkerPacketTitle.TitleAction.TIMES);
-		packet.setTimes(fadeIn, stay, fadeOut);
-		sendPacket(packet);
+		sendPacket(Shulker.getMCManager().newPacketTitle(ShulkerPacketTitle.TitleAction.TIMES, fadeIn, stay, fadeOut));
 	}
 
 	/**

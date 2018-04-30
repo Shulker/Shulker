@@ -12,13 +12,18 @@ package org.shulker.core.commands;
 import net.md_5.bungee.api.ChatColor;
 import org.aperlambda.kimiko.Command;
 import org.aperlambda.kimiko.CommandResult;
+import org.aperlambda.lambdacommon.utils.Optional;
 import org.aperlambda.lambdacommon.utils.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.plugin.Plugin;
 import org.shulker.core.Shulker;
+import org.shulker.core.plugin.UnknownPlugin;
 
 import java.util.List;
 
-public class CommandImpl extends org.bukkit.command.Command
+public class CommandImpl extends org.bukkit.command.Command implements PluginIdentifiableCommand
 {
 	protected Command<CommandSender> command;
 
@@ -81,5 +86,15 @@ public class CommandImpl extends org.bukkit.command.Command
 	public Command<CommandSender> getKimikoCommand()
 	{
 		return command;
+	}
+
+	@Override
+	public Plugin getPlugin()
+	{
+		return Optional.ofNullable(Bukkit.getPluginManager().getPlugin(command.getResourceName().getDomain())).getOrElseGet(() -> {
+			Shulker.getShulker().logError("[CommandManager]", "WARNING: command '" + command.getResourceName() +
+					"' has an invalid ResourceName's domain. (Domain must correspond to a plugin).");
+			return UnknownPlugin.INSTANCE;
+		});
 	}
 }

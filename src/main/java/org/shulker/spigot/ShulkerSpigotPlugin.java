@@ -17,6 +17,8 @@ import org.aperlambda.lambdacommon.utils.LambdaReflection;
 import org.aperlambda.lambdacommon.utils.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,11 +31,13 @@ import org.shulker.core.commands.HelpSubCommand;
 import org.shulker.core.commands.defaults.LibrariesCommand;
 import org.shulker.core.commands.defaults.ShulkerCommand;
 import org.shulker.core.commands.defaults.TestCommand;
+import org.shulker.core.commands.defaults.shulker.AboutCommand;
 import org.shulker.core.commands.defaults.shulker.ReloadCommand;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.impl.v112R1.MinecraftManagerV112R1;
+import org.shulker.core.plugin.js.JSPluginLoader;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -41,7 +45,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.fusesource.jansi.Ansi.Color;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -81,6 +87,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	{
 		super.onLoad();
 		Shulker.init(this);
+		config.load();
 
 		var file = new File(baseDir, "addons/libs");
 		file.mkdirs();
@@ -126,6 +133,23 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 			}
 
 		commandManager = new BukkitCommandManager();
+
+		if (config.useJavascriptSupport())
+		{
+			getServer().getPluginManager().registerInterface(JSPluginLoader.class);
+			logInfo(getPrefix(), "Loading Javascript plugins...");
+			Arrays.stream(Objects.requireNonNull(pluginsDir.listFiles(), "An unexpected error occurred (Cannot lists plugins folder)!"))
+					.filter(f -> f.getName().endsWith(".jsar")).forEach(f -> {
+				try
+				{
+					getServer().getPluginManager().loadPlugin(f);
+				}
+				catch (InvalidPluginException | InvalidDescriptionException e)
+				{
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	@Override
@@ -133,7 +157,6 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	{
 		super.onEnable();
 
-		config.load();
 		symbols.load();
 
 		switch (getServerVersion())
@@ -167,6 +190,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		var shulkerCommand = new CommandBuilder<CommandSender>(new ResourceName(getName(), "shulker"))
 				.usage("<command> [subcommand [args]]").description("The Shulker command.")
 				.executor(shulkerCommandExecutor).tabCompleter(shulkerCommandExecutor).build();
+		shulkerCommand.addSubCommand(new AboutCommand().getResultCommand());
 		var reloadSubCommand = new ReloadCommand();
 		shulkerCommand.addSubCommand(new ResourceName(getName(), "reload"), "<command>", "Reloads Shulker", "shulker.reload", new ArrayList<>(), reloadSubCommand, reloadSubCommand);
 		var shulkerHelpCommand = new HelpSubCommand("shulker.commands.help", ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE, ChatColor.GOLD);
@@ -212,10 +236,64 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	{
 		if (config.hasDebug())
 		{
+			StringBuilder string = new StringBuilder();
+			for (int i = 0; i < message.length(); i++)
+			{
+				char c = message.charAt(i);
+				if (i + 1 != message.length())
+				{
+					if (c == '=' || c == ':')
+					{
+						if (Character.isDigit(message.charAt(i + 1)))
+						{
+							i++;
+							string.append(c).append(ansi().fg(Color.CYAN).toString());
+							while (i < message.length() && Character.isDigit(message.charAt(i)))
+							{
+								string.append(message.charAt(i));
+								i++;
+							}
+							string.append(ansi().fg(Color.WHITE)).append(message.charAt(i));
+							continue;
+						}
+						else if (Character.isLetter(message.charAt(i + 1)))
+						{
+							i++;
+							if (((i + 3) < message.length()) && message.charAt(i) == 'n' &&
+									message.charAt(i + 1) == 'u' && message.charAt(i + 2) == 'l' &&
+									message.charAt(i + 3) == 'l')
+							{
+								string.append(c).append(ansi().fg(Color.YELLOW).a("null").fg(Color.WHITE).toString());
+								i = i + 3;
+								continue;
+							}
+							else
+							{
+								string.append(c).append(message.charAt(i));
+								continue;
+							}
+						}
+					}
+					else if (c == '"' || c == '\'')
+					{
+						if (i == 0 || message.charAt(i - 1) == ':' || message.charAt(i - 1) == '=')
+						{
+							string.append(c).append(ansi().fgBright(Color.GREEN));
+							continue;
+						}
+						else if (i + 1 < message.length() &&
+								(message.charAt(i + 1) == ',' || message.charAt(i + 1) == '}' ||
+										message.charAt(i + 1) == ']'))
+							string.append(ansi().fg(Color.WHITE));
+					}
+				}
+				string.append(c);
+			}
+
 			String p = " ";
 			if (prefix != null)
 				p = prefix + " ";
-			System.out.println("[DEBUG]" + p + ansi().fg(Color.WHITE).a(message).reset().toString());
+			System.out.println("[DEBUG]" + p + ansi().fg(Color.WHITE).a(string.toString()).reset().toString());
 		}
 	}
 

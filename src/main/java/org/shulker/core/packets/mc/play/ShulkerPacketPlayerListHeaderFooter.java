@@ -13,6 +13,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.packets.ShulkerPacket;
 
+import java.util.Arrays;
+
 /**
  * ShulkerPacketPlayerListHeaderFooter represents the packet which modifies the header and the footer of the player list.
  * This packet may be used by custom servers to display additional information above/below the player list. It is never sent by the Notchian server.
@@ -71,5 +73,12 @@ public abstract class ShulkerPacketPlayerListHeaderFooter<T> extends ShulkerPack
 	{
 		setHeader();
 		setFooter();
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ShulkerPacketPlayerListHeaderFooter{header:" +
+				Arrays.toString(getHeader()) + ",footer:" + Arrays.toString(getFooter()) + "}";
 	}
 }

@@ -18,6 +18,7 @@ import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
 import org.shulker.core.impl.reflect.packets.ReflectPacketTitle;
+import org.shulker.core.impl.reflect.wrappers.ReflectedChatComponentWrapper;
 import org.shulker.core.impl.v112R1.entity.ShulkerPlayerV112R1;
 import org.shulker.core.impl.v112R1.packets.ShulkerPacketPlayOutChatV112R1;
 import org.shulker.core.impl.v112R1.wrappers.ChatComponentWrapperV112R1;
@@ -158,7 +159,7 @@ public class MinecraftManagerV112R1 implements MinecraftManager
 		@Override
 		public ChatComponentWrapper getChatComponentWrapper()
 		{
-			return ChatComponentWrapperV112R1.INSTANCE;
+			return ReflectedChatComponentWrapper.INSTANCE;
 		}
 
 		@Override

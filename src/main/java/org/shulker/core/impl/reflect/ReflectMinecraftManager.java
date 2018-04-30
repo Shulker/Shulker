@@ -20,6 +20,7 @@ import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
 import org.shulker.core.impl.reflect.packets.ReflectPacketPlayOutChat;
 import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
 import org.shulker.core.impl.reflect.packets.ReflectPacketTitle;
+import org.shulker.core.impl.reflect.wrappers.ReflectedChatComponentWrapper;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
 import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
@@ -33,8 +34,8 @@ import java.util.UUID;
 
 public class ReflectMinecraftManager implements MinecraftManager
 {
-	private static final ReflectWrapperManager                wrapperManager           = new ReflectWrapperManager();
-	private final        HashMap<UUID, ShulkerPlayer<Player>> players                  = new HashMap<>();
+	private static final ReflectWrapperManager                wrapperManager = new ReflectWrapperManager();
+	private final        HashMap<UUID, ShulkerPlayer<Player>> players        = new HashMap<>();
 
 	@Override
 	public ShulkerPlayer<Player> getPlayer(@Nullable Player player)
@@ -153,7 +154,7 @@ public class ReflectMinecraftManager implements MinecraftManager
 		@Override
 		public ChatComponentWrapper getChatComponentWrapper()
 		{
-			return null;
+			return ReflectedChatComponentWrapper.INSTANCE;
 		}
 
 		@Override

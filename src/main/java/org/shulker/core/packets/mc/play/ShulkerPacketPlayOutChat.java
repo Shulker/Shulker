@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mcelytra.chat.ChatMessageType;
 import org.shulker.core.packets.ShulkerPacket;
 
+import java.util.Arrays;
+
 /**
  * ShulkerPacketPlayOutChat represents the packet which send a message to the player.
  *
@@ -98,5 +100,11 @@ public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 	{
 		setMessage();
 		setPosition(null);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ShulkerPacketPlayOutChat{message:" + Arrays.toString(getMessage()) + ",position:" + getPosition() + "}";
 	}
 }

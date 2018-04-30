@@ -52,7 +52,7 @@ public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 	@Override
 	public String getLocale()
 	{
-		return null;
+		return player.getLocale();
 	}
 
 	@Override

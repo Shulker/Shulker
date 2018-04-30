@@ -7,10 +7,12 @@
  * see the LICENSE file.
  */
 
-package org.shulker.core.js;
+package org.shulker.core.plugin.js;
 
 import com.google.common.base.Charsets;
-import org.aperlambda.lambdacommon.config.FileConfig;
+import jdk.nashorn.api.scripting.NashornScriptEngine;
+import org.aperlambda.kimiko.CommandBuilder;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.aperlambda.lambdacommon.resources.ResourcesManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -25,6 +27,7 @@ import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginLogger;
 import org.shulker.core.Shulker;
 
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +48,8 @@ public class JSPlugin extends PluginBase
 
 	private File              configFile;
 	private FileConfiguration newConfig;
+
+	private NashornScriptEngine scriptEngine;
 
 	@Override
 	public final File getDataFolder()
@@ -149,19 +154,64 @@ public class JSPlugin extends PluginBase
 	@Override
 	public void onDisable()
 	{
-
+		try
+		{
+			scriptEngine.invokeFunction("onDisable");
+		}
+		catch (ScriptException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (NoSuchMethodException ignored)
+		{
+		}
 	}
 
 	@Override
 	public void onLoad()
 	{
-
+		try
+		{
+			scriptEngine.invokeFunction("onLoad");
+		}
+		catch (ScriptException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (NoSuchMethodException ignored)
+		{
+		}
 	}
 
 	@Override
 	public void onEnable()
 	{
+		try
+		{
+			scriptEngine.invokeFunction("onEnable");
+		}
+		catch (ScriptException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (NoSuchMethodException ignored)
+		{
+		}
+	}
 
+	public CommandBuilder<CommandSender> newCommand(String name)
+	{
+		return new CommandBuilder<>(new ResourceName(getName(), name));
+	}
+
+	public void registerCommand(org.aperlambda.kimiko.Command<CommandSender> command)
+	{
+		Shulker.getCommandManager().register(command);
+	}
+
+	public void requireAccess(String name, String className) throws ClassNotFoundException, ScriptException
+	{
+		JSUtils.loadClass(scriptEngine, name, Class.forName(className));
 	}
 
 	@Override
@@ -200,7 +250,12 @@ public class JSPlugin extends PluginBase
 		return null;
 	}
 
-	final void init(JSPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, ClassLoader classLoader)
+	protected NashornScriptEngine getScriptEngine()
+	{
+		return scriptEngine;
+	}
+
+	final void init(JSPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, NashornScriptEngine engine)
 	{
 		this.loader = loader;
 		this.file = file;
@@ -208,5 +263,8 @@ public class JSPlugin extends PluginBase
 		this.dataFolder = dataFolder;
 		this.configFile = new File(dataFolder, "config.yml");
 		this.logger = new PluginLogger(this);
+		this.scriptEngine = engine;
+		scriptEngine.put("plugin", this);
+		scriptEngine.put("logger", logger);
 	}
 }

@@ -4,6 +4,11 @@ version: ${version}
 # and some other features.
 # Default: false
 enable_debug: false
+# Enables JavaScript plugins. When enabled, it injects a new plugin loader to load js plugins (with extension .jsar).
+# JavaScript plugins are loaded as normal plugins.
+# Need a restart to make effect.
+# Default: false
+enable_js_support: false
 # The messages sections, please edit them to set your messages.
 commands:
   error:

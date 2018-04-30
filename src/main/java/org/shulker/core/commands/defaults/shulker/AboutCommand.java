@@ -10,31 +10,63 @@
 package org.shulker.core.commands.defaults.shulker;
 
 import org.aperlambda.kimiko.Command;
+import org.aperlambda.kimiko.CommandBuilder;
 import org.aperlambda.kimiko.CommandContext;
 import org.aperlambda.kimiko.CommandResult;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.shulker.core.Shulker;
 import org.shulker.core.commands.BukkitCommandExecutor;
 import org.shulker.core.commands.BukkitCommandResult;
 import org.shulker.core.commands.BukkitCommandTabCompleter;
+import org.shulker.spigot.ShulkerSpigotPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.md_5.bungee.api.ChatColor.DARK_PURPLE;
+import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
+
 public class AboutCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
+	private Command<CommandSender> command;
+
+	public AboutCommand()
+	{
+		command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "about"))
+				.usage("<command>")
+				.description("Displays information about Shulker.")
+				.permission("shulker.commands.about")
+				.aliases("info")
+				.executor(this)
+				.tabCompleter(this)
+				.build();
+	}
+
 	@Override
 	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
-		if(args.length != 0)
+		if (args.length != 0)
 			return CommandResult.ERROR_USAGE;
+
+		context.sendMessage(DARK_PURPLE + "====== " + LIGHT_PURPLE + "About" + DARK_PURPLE + " ======");
+		context.sendMessage(DARK_PURPLE + "Version: " + LIGHT_PURPLE + Shulker.getVersion());
+		context.sendMessage(DARK_PURPLE + "Authors: " + LIGHT_PURPLE + ((ShulkerSpigotPlugin) Shulker.getShulker()).getDescription().getAuthors());
+		context.sendMessage(DARK_PURPLE + "Java: " + LIGHT_PURPLE + System.getProperty("java.version"));
+		context.sendMessage(DARK_PURPLE + "Internal Server Version: " + LIGHT_PURPLE + ShulkerSpigotPlugin.getServerVersion());
 
 		return BukkitCommandResult.SUCCESS;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandContext<CommandSender> context,  @NotNull Command<CommandSender> command, String label, String[] args)
+	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
 	{
 		return new ArrayList<>();
+	}
+
+	public Command<CommandSender> getResultCommand()
+	{
+		return command;
 	}
 }

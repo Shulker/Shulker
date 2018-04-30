@@ -22,7 +22,8 @@ import static org.shulker.core.config.ConfigManager.getConfigManager;
 
 public class ShulkerConfiguration
 {
-	private static final String DEBUG_KEY = "enable_debug";
+	private static final String DEBUG_KEY                      = "enable_debug";
+	private static final String JAVASCRIPT_SUPPORT_KEY         = "enable_js_support";
 	private static final String COMMANDS_ERROR_USAGE_KEY       = "commands.error.usage";
 	private static final String COMMANDS_ERROR_USAGE_DEF       = "&4[Usage] &c/${command.usage}";
 	private static final String COMMANDS_ERROR_PERMISSION_KEY  = "commands.error.permission";
@@ -62,12 +63,14 @@ public class ShulkerConfiguration
 			getConfigManager().saveResource(ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.yml"), RES_CONFIG, "yml", true);
 
 			boolean oldEnableDebug = hasDebug();
-			var oldCommandsErrorUsage = config.at(COMMANDS_ERROR_USAGE_KEY, COMMANDS_ERROR_USAGE_DEF);
-			var oldCommandsErrorPermission = config.at(COMMANDS_ERROR_PERMISSION_KEY, COMMANDS_ERROR_PERMISSION_DEF);
-			var oldCommandsErrorRuntime = config.at(COMMANDS_ERROR_RUNTIME_KEY, COMMANDS_ERROR_RUNTIME_DEF);
-			var oldCommandsErrorOnlyPlayer = config.at(COMMANDS_ERROR_ONLY_PLAYER_KEY, COMMANDS_ERROR_ONLY_PLAYER_DEF);
+			boolean oldJavaScriptSupport = useJavascriptSupport();
+			var oldCommandsErrorUsage = getErrorUsageMessage();
+			var oldCommandsErrorPermission = getErrorPermissionMessage();
+			var oldCommandsErrorRuntime = getErrorRuntimeMessage();
+			var oldCommandsErrorOnlyPlayer = getErrorOnlyPlayerMessage();
 			config.load();
 			config.set(DEBUG_KEY, oldEnableDebug);
+			config.set(JAVASCRIPT_SUPPORT_KEY, oldJavaScriptSupport);
 			config.set(COMMANDS_ERROR_USAGE_KEY, oldCommandsErrorUsage);
 			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldCommandsErrorPermission);
 			config.set(COMMANDS_ERROR_RUNTIME_KEY, oldCommandsErrorRuntime);
@@ -76,10 +79,14 @@ public class ShulkerConfiguration
 		}
 	}
 
-	// @TODO Support Javascript plugins
+	/**
+	 * Checks whether Shulker use the JavaScript plugins support mode or not.
+	 *
+	 * @return True if Shulker supports JavaScript plugins, else false.
+	 */
 	public boolean useJavascriptSupport()
 	{
-		return false;
+		return config.at(JAVASCRIPT_SUPPORT_KEY, false, boolean.class);
 	}
 
 	public boolean hasDebug()

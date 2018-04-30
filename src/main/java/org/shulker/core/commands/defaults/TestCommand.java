@@ -38,7 +38,7 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 
 	public TestCommand()
 	{
-		command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "test"))
+		command = new CommandBuilder<CommandSender>(new ResourceName("Shulker", "test"))
 				.usage("<command>")
 				.description("OwO")
 				.permission("shulker.commands.test")
@@ -56,12 +56,14 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 		if (args.length != 0)
 			return CommandResult.ERROR_USAGE;
 
+		Shulker.logDebug(Shulker.getPrefix(), "{message:\"Hello world\",int:52,null:null}");
+
 		var player = (Player) context.getSender();
 		var shPlayer = Shulker.getMCManager().getPlayer(player);
 		var components = new ComponentBuilder("Hello, it's a ").color(GREEN).append("test").color(DARK_AQUA).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Hover event!\nPing: ").append(
 				"" +
 						shPlayer.getPing()).color(GOLD).create())).append(" of the method sendMessage(BaseComponent)!", ComponentBuilder.FormatRetention.NONE).color(GREEN).create();
-		var hello = new ComponentBuilder("Hello world!").color(GREEN).create();
+		var hello = new ComponentBuilder("Hello, world!").color(GREEN).create();
 		var componentsOwO = new ComponentBuilder("OwO\n").append("Ping: ").color(GREEN).append(
 				"" + shPlayer.getPing()).color(GOLD).create();
 		shPlayer.sendMessage(components);
@@ -71,7 +73,7 @@ public class TestCommand implements BukkitCommandExecutor, BukkitCommandTabCompl
 																								  new TextComponent("OwO")}));
 
 		shPlayer.sendTitle(hello, new BaseComponent[]{new TextComponent("OwO")}, 20, 70, 10);
-		//shPlayer.sendActionBar(hello);
+		shPlayer.sendActionBar(hello);
 
 		return CommandResult.SUCCESS;
 	}
