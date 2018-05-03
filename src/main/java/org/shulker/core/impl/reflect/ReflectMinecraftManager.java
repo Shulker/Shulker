@@ -11,25 +11,20 @@ package org.shulker.core.impl.reflect;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.MinecraftManager;
-import org.shulker.core.Shulker;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
-import org.shulker.core.impl.reflect.packets.ReflectPacketPlayOutChat;
-import org.shulker.core.impl.reflect.packets.ReflectPacketPlayerListHeaderFooter;
-import org.shulker.core.impl.reflect.packets.ReflectPacketTitle;
-import org.shulker.core.impl.reflect.wrappers.ReflectedChatComponentWrapper;
-import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
-import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
-import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
-import org.shulker.core.wrappers.ChatComponentWrapper;
-import org.shulker.core.wrappers.ChatMessageTypeWrapper;
-import org.shulker.core.wrappers.ChatVisibilityWrapper;
-import org.shulker.core.wrappers.TitleActionWrapper;
+import org.shulker.core.impl.reflect.packets.*;
+import org.shulker.core.impl.reflect.wrappers.ReflectChatComponentWrapper;
+import org.shulker.core.impl.reflect.wrappers.ReflectPlayerWrapper;
+import org.shulker.core.packets.mc.play.*;
+import org.shulker.core.wrappers.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class ReflectMinecraftManager implements MinecraftManager
@@ -107,33 +102,117 @@ public class ReflectMinecraftManager implements MinecraftManager
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle()
+	public ShulkerPacketTitle<?> newPacketTitle()
 	{
 		return new ReflectPacketTitle();
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action)
+	public ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action)
 	{
 		return new ReflectPacketTitle(action);
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue)
+	public ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue)
 	{
 		return new ReflectPacketTitle(action, chatValue);
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut)
+	public ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut)
 	{
 		return new ReflectPacketTitle(action, fadeIn, stay, fadeOut);
 	}
 
 	@Override
-	public ShulkerPacketTitle newPacketTitle(Object packet)
+	public ShulkerPacketTitle<?> newPacketTitle(Object packet)
 	{
 		return new ReflectPacketTitle(packet);
+	}
+
+	@Override
+	public ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow()
+	{
+		return new ReflectPacketOutOpenWindow();
+	}
+
+	@Override
+	public ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots)
+	{
+		return new ReflectPacketOutOpenWindow(windowId, windowType, title, slots);
+	}
+
+	@Override
+	public ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots, int entityId)
+	{
+		return new ReflectPacketOutOpenWindow(windowId, windowType, title, slots, entityId);
+	}
+
+	@Override
+	public ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(Object packet)
+	{
+		return new ReflectPacketOutOpenWindow(packet);
+	}
+
+	@Override
+	public ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems()
+	{
+		return new ReflectPacketOutWindowItems();
+	}
+
+	@Override
+	public ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, List<ItemStack> items)
+	{
+		return new ReflectPacketOutWindowItems(windowId, items);
+	}
+
+	@Override
+	public ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, ItemStack... items)
+	{
+		return new ReflectPacketOutWindowItems(windowId, items);
+	}
+
+	@Override
+	public ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(Object packet)
+	{
+		return new ReflectPacketOutWindowItems(packet);
+	}
+
+	@Override
+	public ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty()
+	{
+		return new ReflectPacketOutWindowProperty();
+	}
+
+	@Override
+	public ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(int windowId, short property, short value)
+	{
+		return new ReflectPacketOutWindowProperty(windowId, property, value);
+	}
+
+	@Override
+	public ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(Object packet)
+	{
+		return new ReflectPacketOutWindowProperty(packet);
+	}
+
+	@Override
+	public ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot()
+	{
+		return new ReflectPacketOutSetSlot();
+	}
+
+	@Override
+	public ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(int windowId, int slot, ItemStack item)
+	{
+		return new ReflectPacketOutSetSlot(windowId, slot, item);
+	}
+
+	@Override
+	public ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(Object packet)
+	{
+		return new ReflectPacketOutSetSlot(packet);
 	}
 
 	@Override
@@ -154,7 +233,7 @@ public class ReflectMinecraftManager implements MinecraftManager
 		@Override
 		public ChatComponentWrapper getChatComponentWrapper()
 		{
-			return ReflectedChatComponentWrapper.INSTANCE;
+			return ReflectChatComponentWrapper.INSTANCE;
 		}
 
 		@Override
@@ -173,6 +252,18 @@ public class ReflectMinecraftManager implements MinecraftManager
 		public TitleActionWrapper getTitleActionWrapper()
 		{
 			return null;
+		}
+
+		@Override
+		public ItemStackWrapper getItemStackWrapper()
+		{
+			return null;
+		}
+
+		@Override
+		public PlayerWrapper getPlayerWrapper()
+		{
+			return ReflectPlayerWrapper.INSTANCE;
 		}
 
 		@Override

@@ -17,7 +17,7 @@ import org.shulker.core.packets.ShulkerPacket;
 import java.util.Arrays;
 
 /**
- * ShulkerPacketPlayOutChat represents the packet which send a message to the player.
+ * Represents the packet which send a message to the player.
  *
  * @param <T> The server object type.
  */

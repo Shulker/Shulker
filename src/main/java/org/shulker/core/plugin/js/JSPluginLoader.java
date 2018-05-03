@@ -13,9 +13,13 @@ import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
+import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.Warning;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -26,17 +30,15 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import javax.script.ScriptException;
 import java.io.*;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class JSPluginLoader implements PluginLoader
 {
-	private final Pattern[] fileFilters = new Pattern[]{Pattern.compile("\\.jsar$")};
+	private final Pattern[] fileFilters = new Pattern[]{Pattern.compile("_jsplugin$")};
 	private       Server    server;
 
 	public JSPluginLoader(Server server)
@@ -79,13 +81,12 @@ public class JSPluginLoader implements PluginLoader
 
 			try
 			{
-				ZipFile jsar = new ZipFile(file);
-				ZipEntry mainEntry = jsar.getEntry(description.getMain());
-				BufferedReader br = new BufferedReader(new InputStreamReader(jsar.getInputStream(mainEntry)));
+				var mainFile = new File(file, description.getMain());
+				BufferedReader br = new BufferedReader(new FileReader(mainFile));
 				StringBuilder sb = new StringBuilder();
 				String line;
 
-				sb.append("load(\"nashorn:mozilla_compat.js\");\n");
+				sb.append("load(\"").append(Shulker.getPluginsDirectory().getAbsolutePath()).append("/shulker/shulker.js\");\n");
 				sb.append("importPackage(org.aperlambda.kimiko);\n");
 				sb.append("importPackage(org.shulker.core);\n");
 				sb.append("importPackage(org.shulker.core.commands);\n");
@@ -107,7 +108,8 @@ public class JSPluginLoader implements PluginLoader
 
 			JSPlugin plugin;
 			NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
-			NashornScriptEngine jsEngine = (NashornScriptEngine) factory.getScriptEngine();
+			// --language=es6 provides the support of ECMAScript 6
+			NashornScriptEngine jsEngine = (NashornScriptEngine) factory.getScriptEngine("--language=es6");
 			try
 			{
 				jsEngine.put("server", Bukkit.getServer());
@@ -118,8 +120,8 @@ public class JSPluginLoader implements PluginLoader
 				JSUtils.loadClass(jsEngine, "CommandResult", BukkitCommandResult.class);
 				JSUtils.loadClass(jsEngine, "Bukkit", Bukkit.class);
 				JSUtils.loadClass(jsEngine, "Listener", Listener.class);
-				JSUtils.loadClass(jsEngine, "Optional", Optional.class);
 				JSUtils.loadClass(jsEngine, "ChatColor", ChatColor.class);
+				JSUtils.loadClass(jsEngine, "ResourceName", ResourceName.class);
 
 				jsEngine.eval(script);
 			}
@@ -129,6 +131,7 @@ public class JSPluginLoader implements PluginLoader
 			}
 			plugin = new JSPlugin();
 			plugin.init(this, server, description, dataFolder, file, jsEngine);
+			plugin.getLogger().info("Loading " + description.getFullName());
 			plugin.onLoad();
 			return plugin;
 		}
@@ -139,18 +142,16 @@ public class JSPluginLoader implements PluginLoader
 	{
 		Validate.notNull(file, "File cannot be null");
 		InputStream descrStream = null;
-		ZipFile jsar;
 		PluginDescriptionFile pdf;
-		if (file.isFile())
+		if (file.isDirectory())
 		{
 			try
 			{
-				jsar = new ZipFile(file);
-				ZipEntry entry = jsar.getEntry("plugin.yml");
-				if (entry == null)
-					throw new InvalidDescriptionException(new FileNotFoundException("JS archive does not contain plugin.yml"));
+				var pluginYamlFile = new File(file, "plugin.yml");
+				if (!pluginYamlFile.exists())
+					throw new InvalidDescriptionException(new FileNotFoundException("JS plugin does not contain plugin.yml"));
 
-				descrStream = jsar.getInputStream(entry);
+				descrStream = new FileInputStream(pluginYamlFile);
 				pdf = new PluginDescriptionFile(descrStream);
 			}
 			catch (IOException | YAMLException e)
@@ -173,7 +174,7 @@ public class JSPluginLoader implements PluginLoader
 			}
 		}
 		else
-			throw new InvalidDescriptionException("Plugin file is a directory.");
+			throw new InvalidDescriptionException("Plugin is a file, expected a folder.");
 		return pdf;
 	}
 
@@ -186,7 +187,100 @@ public class JSPluginLoader implements PluginLoader
 	@Override
 	public Map<Class<? extends Event>, Set<RegisteredListener>> createRegisteredListeners(Listener listener, Plugin plugin)
 	{
-		return null;
+		Validate.notNull(plugin, "Plugin can not be null");
+		Validate.notNull(listener, "Listener can not be null");
+
+		boolean useTimings = server.getPluginManager().useTimings();
+		Map<Class<? extends Event>, Set<RegisteredListener>> ret = new HashMap<>();
+		Set<Method> methods;
+		try
+		{
+			Method[] publicMethods = listener.getClass().getMethods();
+			Method[] privateMethods = listener.getClass().getDeclaredMethods();
+			methods = new HashSet<>(publicMethods.length + privateMethods.length, 1.0f);
+			methods.addAll(Arrays.asList(publicMethods));
+			methods.addAll(Arrays.asList(privateMethods));
+		}
+		catch (NoClassDefFoundError e)
+		{
+			plugin.getLogger().severe(
+					"Plugin " + plugin.getDescription().getFullName() + " has failed to register events for " +
+							listener.getClass() + " because " + e.getMessage() + " does not exist.");
+			return ret;
+		}
+
+		for (final Method method : methods)
+		{
+			final EventHandler eh = method.getAnnotation(EventHandler.class);
+			if (eh == null) continue;
+			// Do not register bridge or synthetic methods to avoid event duplication
+			// Fixes SPIGOT-893
+			if (method.isBridge() || method.isSynthetic())
+				continue;
+
+			final Class<?> checkClass;
+			if (method.getParameterTypes().length != 1 ||
+					!Event.class.isAssignableFrom(checkClass = method.getParameterTypes()[0]))
+			{
+				plugin.getLogger().severe(plugin.getDescription().getFullName() +
+												  " attempted to register an invalid EventHandler method signature \"" +
+												  method.toGenericString() + "\" in " + listener.getClass());
+				continue;
+			}
+			final Class<? extends Event> eventClass = checkClass.asSubclass(Event.class);
+			method.setAccessible(true);
+			Set<RegisteredListener> eventSet = ret.computeIfAbsent(eventClass, k -> new HashSet<>());
+
+			for (Class<?> clazz = eventClass; Event.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass())
+			{
+				// This loop checks for extending deprecated events
+				if (clazz.getAnnotation(Deprecated.class) != null)
+				{
+					Warning warning = clazz.getAnnotation(Warning.class);
+					Warning.WarningState warningState = server.getWarningState();
+					if (!warningState.printFor(warning))
+					{
+						break;
+					}
+					plugin.getLogger().log(
+							Level.WARNING,
+							String.format(
+									"\"%s\" has registered a listener for %s on method \"%s\", but the event is Deprecated." +
+											" \"%s\"; please notify the authors %s.",
+									plugin.getDescription().getFullName(),
+									clazz.getName(),
+									method.toGenericString(),
+									(warning != null && warning.reason().length() != 0) ? warning.reason() :
+									"Server performance will be affected",
+									Arrays.toString(plugin.getDescription().getAuthors().toArray())),
+							warningState == Warning.WarningState.ON ? new AuthorNagException(null) : null);
+					break;
+				}
+			}
+
+			EventExecutor executor = (listener1, event) -> {
+				try
+				{
+					if (!eventClass.isAssignableFrom(event.getClass()))
+						return;
+					method.invoke(listener1, event);
+				}
+				catch (InvocationTargetException ex)
+				{
+					throw new EventException(ex.getCause());
+				}
+				catch (Throwable t)
+				{
+					throw new EventException(t);
+				}
+			};
+
+			if (useTimings)
+				eventSet.add(new TimedRegisteredListener(listener, executor, eh.priority(), plugin, eh.ignoreCancelled()));
+			else
+				eventSet.add(new RegisteredListener(listener, executor, eh.priority(), plugin, eh.ignoreCancelled()));
+		}
+		return ret;
 	}
 
 	@Override

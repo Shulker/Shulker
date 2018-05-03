@@ -22,7 +22,9 @@ import static org.shulker.core.config.ConfigManager.getConfigManager;
 
 public class ShulkerConfiguration
 {
-	private static final String DEBUG_KEY                      = "enable_debug";
+	private static final String DEBUG_KEY                      = "debug.base";
+	private static final String DEBUG_PACKETS_KEY              = "debug.packets";
+	private static final String DEBUG_CONNECTIONS_KEY          = "debug.connection";
 	private static final String JAVASCRIPT_SUPPORT_KEY         = "enable_js_support";
 	private static final String COMMANDS_ERROR_USAGE_KEY       = "commands.error.usage";
 	private static final String COMMANDS_ERROR_USAGE_DEF       = "&4[Usage] &c/${command.usage}";
@@ -63,6 +65,8 @@ public class ShulkerConfiguration
 			getConfigManager().saveResource(ResourcesManager.getDefaultResourcesManager().getResourceFromJar("config.yml"), RES_CONFIG, "yml", true);
 
 			boolean oldEnableDebug = hasDebug();
+			boolean oldDebugPackets = doesDebugPackets();
+			boolean oldDebugConnections = doesDebugConnections();
 			boolean oldJavaScriptSupport = useJavascriptSupport();
 			var oldCommandsErrorUsage = getErrorUsageMessage();
 			var oldCommandsErrorPermission = getErrorPermissionMessage();
@@ -70,6 +74,8 @@ public class ShulkerConfiguration
 			var oldCommandsErrorOnlyPlayer = getErrorOnlyPlayerMessage();
 			config.load();
 			config.set(DEBUG_KEY, oldEnableDebug);
+			config.set(DEBUG_PACKETS_KEY, oldDebugPackets);
+			config.set(DEBUG_CONNECTIONS_KEY, oldDebugConnections);
 			config.set(JAVASCRIPT_SUPPORT_KEY, oldJavaScriptSupport);
 			config.set(COMMANDS_ERROR_USAGE_KEY, oldCommandsErrorUsage);
 			config.set(COMMANDS_ERROR_PERMISSION_KEY, oldCommandsErrorPermission);
@@ -92,6 +98,16 @@ public class ShulkerConfiguration
 	public boolean hasDebug()
 	{
 		return config.at(DEBUG_KEY, false, boolean.class);
+	}
+
+	public boolean doesDebugPackets()
+	{
+		return config.at(DEBUG_PACKETS_KEY, false, boolean.class);
+	}
+
+	public boolean doesDebugConnections()
+	{
+		return config.at(DEBUG_CONNECTIONS_KEY, true, boolean.class);
 	}
 
 	/**

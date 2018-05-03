@@ -58,12 +58,12 @@ public interface ShulkerPlugin
 
 	void logInfo(@Nullable String prefix, @NotNull String message);
 
-	default void logDebug(@NotNull String message)
+	default void logDebug(@NotNull DebugType type, @NotNull String message)
 	{
-		logDebug(null, message);
+		logDebug(type, null, message);
 	}
 
-	void logDebug(@Nullable String prefix, @NotNull String message);
+	void logDebug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message);
 
 	default void logError(@NotNull String message)
 	{

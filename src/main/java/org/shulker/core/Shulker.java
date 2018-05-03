@@ -87,14 +87,14 @@ public class Shulker
 		SHULKER.logInfo(prefix, message);
 	}
 
-	public static void logDebug(@NotNull String message)
+	public static void logDebug(@NotNull DebugType type, @NotNull String message)
 	{
-		SHULKER.logDebug(message);
+		SHULKER.logDebug(type, message);
 	}
 
-	public static void logDebug(@Nullable String prefix, @NotNull String message)
+	public static void logDebug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message)
 	{
-		SHULKER.logDebug(prefix, message);
+		SHULKER.logDebug(type, prefix, message);
 	}
 
 	public static void logError(@NotNull String message)

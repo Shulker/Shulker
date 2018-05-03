@@ -12,18 +12,17 @@ package org.shulker.core;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.aperlambda.lambdacommon.utils.Nameable;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.shulker.core.entity.ShulkerPlayer;
-import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
-import org.shulker.core.packets.mc.play.ShulkerPacketPlayerListHeaderFooter;
-import org.shulker.core.packets.mc.play.ShulkerPacketTitle;
-import org.shulker.core.wrappers.ChatComponentWrapper;
-import org.shulker.core.wrappers.ChatMessageTypeWrapper;
-import org.shulker.core.wrappers.ChatVisibilityWrapper;
-import org.shulker.core.wrappers.TitleActionWrapper;
+import org.shulker.core.packets.mc.play.*;
+import org.shulker.core.wrappers.*;
 
+import java.util.List;
 import java.util.UUID;
+
+import static org.aperlambda.lambdacommon.utils.LambdaReflection.newInstance;
 
 public interface MinecraftManager extends Nameable
 {
@@ -52,15 +51,47 @@ public interface MinecraftManager extends Nameable
 
 	ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet);
 
-	ShulkerPacketTitle newPacketTitle();
+	ShulkerPacketTitle<?> newPacketTitle();
 
-	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action);
+	ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action);
 
-	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue);
+	ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue);
 
-	ShulkerPacketTitle newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
+	ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
 
-	ShulkerPacketTitle newPacketTitle(Object packet);
+	ShulkerPacketTitle<?> newPacketTitle(Object packet);
+
+	/*
+		Inventory
+	 */
+
+	ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow();
+
+	ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots);
+
+	ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots, int entityId);
+
+	ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(Object packet);
+
+	ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems();
+
+	ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, List<ItemStack> items);
+
+	ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, ItemStack... items);
+
+	ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(Object packet);
+
+	ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty();
+
+	ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(int windowId, short property, short value);
+
+	ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(Object packet);
+
+	ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot();
+
+	ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(int windowId, int slot, ItemStack item);
+
+	ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(Object packet);
 
 	WrapperManager getWrapperManager();
 
@@ -73,5 +104,9 @@ public interface MinecraftManager extends Nameable
 		ChatVisibilityWrapper getChatVisibilityWrapper();
 
 		TitleActionWrapper getTitleActionWrapper();
+
+		ItemStackWrapper getItemStackWrapper();
+
+		PlayerWrapper getPlayerWrapper();
 	}
 }

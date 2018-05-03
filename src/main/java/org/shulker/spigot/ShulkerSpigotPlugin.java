@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import net.md_5.bungee.api.ChatColor;
 import org.aperlambda.kimiko.CommandBuilder;
 import org.aperlambda.lambdacommon.resources.ResourceName;
+import org.aperlambda.lambdacommon.resources.ResourcesManager;
 import org.aperlambda.lambdacommon.utils.LambdaReflection;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -21,10 +22,7 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.shulker.core.MinecraftManager;
-import org.shulker.core.Shulker;
-import org.shulker.core.ShulkerLibrary;
-import org.shulker.core.ShulkerPlugin;
+import org.shulker.core.*;
 import org.shulker.core.commands.BukkitCommandManager;
 import org.shulker.core.commands.HelpSubCommand;
 import org.shulker.core.commands.defaults.LibrariesCommand;
@@ -36,6 +34,9 @@ import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.impl.v112R1.MinecraftManagerV112R1;
+import org.shulker.core.packets.handler.NMSPacketHandler;
+import org.shulker.core.packets.handler.PacketHandler;
+import org.shulker.core.plugin.js.JSEventsManager;
 import org.shulker.core.plugin.js.JSPluginLoader;
 
 import java.io.File;
@@ -66,6 +67,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 
 	private File pluginsDir = getDataFolder().getParentFile();
 	private File baseDir    = pluginsDir.getParentFile();
+	private File addonsDir  = new File(baseDir, "addons/");
 
 	private BukkitCommandManager commandManager;
 	private ShulkerConfiguration config  = new ShulkerConfiguration();
@@ -75,6 +77,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	 * Minecraft manager
 	 */
 	private MinecraftManager mcManager;
+	private PacketHandler    packetHandler;
 
 	private List<ShulkerLibrary> libraries = new ArrayList<>();
 
@@ -85,7 +88,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		Shulker.init(this);
 		config.load();
 
-		var file = new File(baseDir, "addons/libs");
+		var file = new File(addonsDir, "libs");
 		file.mkdirs();
 		File[] libs = file.listFiles();
 		if (libs != null)
@@ -132,19 +135,15 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 
 		if (config.useJavascriptSupport())
 		{
+			JSEventsManager.register();
+
+			ResourcesManager.getDefaultResourcesManager().saveResourceFromJar("shulker.js", new File(pluginsDir, "shulker/"), false);
+
 			getServer().getPluginManager().registerInterface(JSPluginLoader.class);
 			logInfo(getPrefix(), "Loading Javascript plugins...");
-			Arrays.stream(Objects.requireNonNull(pluginsDir.listFiles(), "An unexpected error occurred (Cannot lists plugins folder)!"))
-					.filter(f -> f.getName().endsWith(".jsar")).forEach(f -> {
-				try
-				{
-					getServer().getPluginManager().loadPlugin(f);
-				}
-				catch (InvalidPluginException | InvalidDescriptionException e)
-				{
-					e.printStackTrace();
-				}
-			});
+			if (!addonsDir.exists())
+				addonsDir.mkdirs();
+			getServer().getPluginManager().loadPlugins(addonsDir);
 		}
 	}
 
@@ -168,6 +167,10 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		logInfo(getPrefix(), ansi().a("Using ").fg(Color.CYAN).a(mcManager.getName()).fgBright(Color.WHITE).a(" with ").fg(Color.CYAN).a(mcManager.getWrapperManager().getName()).fgBright(Color.WHITE).a("...").reset().toString());
 		Bukkit.getPluginManager().registerEvents(new ShulkerListener(), this);
 		Bukkit.getOnlinePlayers().forEach(p -> mcManager.addPlayer(p));
+
+		packetHandler = new NMSPacketHandler();
+		packetHandler.enable();
+		Bukkit.getPluginManager().registerEvents(packetHandler, this);
 
 		Metrics metrics = new Metrics(this);
 		metrics.addCustomChart(new Metrics.SimplePie("internal_version", ShulkerSpigotPlugin::getServerVersion));
@@ -203,6 +206,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	public void onDisable()
 	{
 		super.onDisable();
+		packetHandler.disable();
 		libraries.clear();
 	}
 
@@ -228,9 +232,17 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	}
 
 	@Override
-	public void logDebug(@Nullable String prefix, @NotNull String message)
+	public void logDebug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message)
 	{
-		if (config.hasDebug())
+		boolean send = false;
+		if (type == DebugType.BASE && config.hasDebug())
+			send = true;
+		else if (type == DebugType.PACKETS && config.doesDebugPackets())
+			send = true;
+		else if (type == DebugType.CONNECTIONS && config.doesDebugConnections())
+			send = true;
+
+		if (send)
 		{
 			StringBuilder string = new StringBuilder();
 			for (int i = 0; i < message.length(); i++)

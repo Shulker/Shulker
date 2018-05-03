@@ -18,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.Shulker;
 import org.shulker.core.commands.BukkitCommandExecutor;
-import org.shulker.core.commands.BukkitCommandResult;
 import org.shulker.core.commands.BukkitCommandTabCompleter;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
@@ -56,7 +55,7 @@ public class AboutCommand implements BukkitCommandExecutor, BukkitCommandTabComp
 		context.sendMessage(DARK_PURPLE + "Java: " + LIGHT_PURPLE + System.getProperty("java.version"));
 		context.sendMessage(DARK_PURPLE + "Internal Server Version: " + LIGHT_PURPLE + ShulkerSpigotPlugin.getServerVersion());
 
-		return BukkitCommandResult.SUCCESS;
+		return CommandResult.SUCCESS;
 	}
 
 	@Override

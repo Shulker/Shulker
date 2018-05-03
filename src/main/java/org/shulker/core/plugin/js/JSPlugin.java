@@ -49,6 +49,8 @@ public class JSPlugin extends PluginBase
 	private File              configFile;
 	private FileConfiguration newConfig;
 
+	private JSEventsManager eventsManager;
+
 	private NashornScriptEngine scriptEngine;
 
 	@Override
@@ -263,8 +265,10 @@ public class JSPlugin extends PluginBase
 		this.dataFolder = dataFolder;
 		this.configFile = new File(dataFolder, "config.yml");
 		this.logger = new PluginLogger(this);
+		eventsManager = new JSEventsManager(this);
 		this.scriptEngine = engine;
 		scriptEngine.put("plugin", this);
 		scriptEngine.put("logger", logger);
+		scriptEngine.put("events", eventsManager);
 	}
 }

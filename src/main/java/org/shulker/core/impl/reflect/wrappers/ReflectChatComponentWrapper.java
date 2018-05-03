@@ -23,9 +23,9 @@ import java.util.Optional;
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.getMethod;
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.invokeMethod;
 
-public class ReflectedChatComponentWrapper extends ChatComponentWrapper
+public class ReflectChatComponentWrapper extends ChatComponentWrapper
 {
-	public static final ReflectedChatComponentWrapper INSTANCE = new ReflectedChatComponentWrapper();
+	public static final ReflectChatComponentWrapper INSTANCE = new ReflectChatComponentWrapper();
 
 	private static final Class<?>         WRAPPER_CLASS;
 	private static final Optional<Method> FROM_SHULKER_METHOD;
@@ -34,9 +34,9 @@ public class ReflectedChatComponentWrapper extends ChatComponentWrapper
 	static
 	{
 		WRAPPER_CLASS = ShulkerSpigotPlugin.getNmsClass("IChatBaseComponent");
-		Objects.requireNonNull(WRAPPER_CLASS, "Cannot initialize ReflectedChatComponentWrapper: NMS class cannot be found!");
+		Objects.requireNonNull(WRAPPER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS class cannot be found!");
 		final Class<?> SERIALIZER_CLASS = ShulkerSpigotPlugin.getNmsClass("IChatBaseComponent$ChatSerializer");
-		Objects.requireNonNull(SERIALIZER_CLASS, "Cannot initialize ReflectedChatComponentWrapper: NMS serializer class cannot be found!");
+		Objects.requireNonNull(SERIALIZER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS serializer class cannot be found!");
 		FROM_SHULKER_METHOD = getMethod(SERIALIZER_CLASS, "a", String.class);
 		TO_SHULKER_METHOD = getMethod(SERIALIZER_CLASS, "a", WRAPPER_CLASS);
 	}
@@ -46,25 +46,17 @@ public class ReflectedChatComponentWrapper extends ChatComponentWrapper
 	{
 		if (shulkerObject == null)
 			return null;
-		var start = System.currentTimeMillis();
-		var temp = FROM_SHULKER_METHOD.map(method -> invokeMethod(null, method, ComponentSerializer.toString(shulkerObject)))
+		return FROM_SHULKER_METHOD.map(method -> invokeMethod(null, method, ComponentSerializer.toString(shulkerObject)))
 				.orElse(null);
-		Shulker.logDebug("ChatComponentWrapper#fromShulker in " + (System.currentTimeMillis() - start) + "ms");
-		return temp;
 	}
 
 	@Override
 	public BaseComponent[] toShulker(Object object)
 	{
-		var start = System.currentTimeMillis();
 		if (!WRAPPER_CLASS.isInstance(object))
 			return null;
-		var temp = ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))
-													 .orElse("{}"));
-		Shulker.logDebug("ChatComponentWrapper#toShulker in " + (System.currentTimeMillis() - start) + "ms");
-		return temp;
-		//return ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))
-		//										 .getOrElse("{}"));
+		return ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))
+												 .orElse("{}"));
 	}
 
 	@Override
