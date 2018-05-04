@@ -234,13 +234,23 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	@Override
 	public void logDebug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message)
 	{
+		String debugPrefix = "[DEBUG]";
+		if (prefix != null)
+			debugPrefix += (prefix + " ");
 		boolean send = false;
 		if (type == DebugType.BASE && config.hasDebug())
 			send = true;
 		else if (type == DebugType.PACKETS && config.doesDebugPackets())
 			send = true;
 		else if (type == DebugType.CONNECTIONS && config.doesDebugConnections())
+		{
+			String p = "";
+			if (prefix != null)
+				p = prefix;
+			debugPrefix = p +
+					ansi().fg(Color.WHITE).a("[").fg(Color.GREEN).a("Connections").fg(Color.WHITE).a("] ").toString();
 			send = true;
+		}
 
 		if (send)
 		{
@@ -298,10 +308,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 				string.append(c);
 			}
 
-			String p = " ";
-			if (prefix != null)
-				p = prefix + " ";
-			System.out.println("[DEBUG]" + p + ansi().fg(Color.WHITE).a(string.toString()).reset().toString());
+			System.out.println(debugPrefix + ansi().fg(Color.WHITE).a(string.toString()).reset().toString());
 		}
 	}
 

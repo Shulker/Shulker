@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.channel.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
 import org.shulker.core.DebugType;
 import org.shulker.core.Shulker;
@@ -52,7 +51,7 @@ public class NMSPacketHandler extends PacketHandler
 		PLAYER_CONNECTION_FIELD = getFirstFieldOfType(getMCManager().getWrapperManager().getPlayerWrapper().getObjectClass(), PLAYER_CONNECTION_CLASS);
 		PLAYER_NETWORK_FIELD = getField(PLAYER_CONNECTION_CLASS, "networkManager", true);
 		SERVER_CONNECTION_FIELD = getFirstFieldOfType(MINECRAFT_SERVER_CLASS, SERVER_CONNECTION_CLASS);
-		SERVER_CONNECTION_LIST_FIELD = getFirstFieldOfType(SERVER_CONNECTION_CLASS, List.class);
+		SERVER_CONNECTION_LIST_FIELD = getLastFieldOfType(SERVER_CONNECTION_CLASS, List.class);
 
 		SERVER_GETSERVER_METHOD = getMethod(Bukkit.getServer().getClass(), "getServer");
 	}
@@ -181,28 +180,27 @@ public class NMSPacketHandler extends PacketHandler
 		public PacketPingListenerList(List<E> old)
 		{
 			delegate = old;
-			Shulker.logDebug(DebugType.CONNECTIONS, "NEW PACKETPINGLISTENERLIST");
 			processAll();
 		}
 
 		protected void processElement(E element)
 		{
-			Shulker.logDebug(DebugType.CONNECTIONS, "PROCESS ELEMENT " + element);
 			threadPool.execute(() -> {
-				var channel = getChannel(element);
-				if (channel != null)
-					channel.pipeline().addBefore("packet_handler",
-												 SHULKER_HANDLER + "_ping", new ShulkerPingChannelHandler());
+				Channel channel = null;
+				while (channel == null)
+					channel = getChannel(element);
+				channel.pipeline().addBefore("packet_handler",
+											 SHULKER_HANDLER + "_ping", new ShulkerPingChannelHandler());
 			});
 		}
 
 		protected void unprocessElement(E element)
 		{
-			Shulker.logDebug(DebugType.CONNECTIONS, "UNPROCESS ELEMENT " + element);
 			threadPool.execute(() -> {
-				var channel = getChannel(element);
-				if (channel != null)
-					channel.pipeline().remove(SHULKER_HANDLER + "_ping");
+				Channel channel = null;
+				while (channel == null)
+					channel = getChannel(element);
+				channel.pipeline().remove(SHULKER_HANDLER + "_ping");
 			});
 		}
 
@@ -224,7 +222,6 @@ public class NMSPacketHandler extends PacketHandler
 		@Override
 		public synchronized boolean add(E element)
 		{
-			Shulker.logDebug(DebugType.CONNECTIONS, "ADD " + element);
 			processElement(element);
 			return delegate.add(element);
 		}
@@ -407,13 +404,22 @@ public class NMSPacketHandler extends PacketHandler
 	public class ShulkerPingChannelHandler extends ChannelDuplexHandler
 	{
 		@Override
+		public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
+		{
+			if (!msg.getClass().getSimpleName().startsWith("PacketStatus"))
+			{
+				super.write(ctx, msg, promise);
+				return;
+			}
+			super.write(ctx, msg, promise);
+		}
+
+		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
 		{
-			Shulker.logDebug(DebugType.CONNECTIONS, msg.getClass().getSimpleName());
 			// Logs connections
 			if (msg.getClass().getSimpleName().equals("PacketHandshakingInSetProtocol"))
-				Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix() +
-						Ansi.ansi().fg(Ansi.Color.GREEN).a("[CONNECTIONS]").fg(Ansi.Color.WHITE) + "[" +
+				Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "[" +
 						ctx.channel().remoteAddress().toString() + "] " + getClass().getSimpleName() +
 						" is connected.");
 
@@ -425,18 +431,6 @@ public class NMSPacketHandler extends PacketHandler
 			}
 
 			super.channelRead(ctx, msg);
-		}
-
-		@Override
-		public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
-		{
-			Shulker.logDebug(DebugType.CONNECTIONS, "write with packet " + msg.getClass().getSimpleName());
-			if (!msg.getClass().getSimpleName().startsWith("PacketStatus"))
-			{
-				super.write(ctx, msg, promise);
-				return;
-			}
-			super.write(ctx, msg, promise);
 		}
 	}
 }
