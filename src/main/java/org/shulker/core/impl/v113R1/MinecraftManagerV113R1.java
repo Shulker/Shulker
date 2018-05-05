@@ -14,13 +14,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.ServerPing;
 import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
 import org.shulker.core.impl.reflect.packets.*;
 import org.shulker.core.impl.reflect.wrappers.ReflectChatComponentWrapper;
 import org.shulker.core.impl.reflect.wrappers.ReflectPlayerWrapper;
+import org.shulker.core.impl.reflect.wrappers.ReflectServerPingWrapper;
 import org.shulker.core.packets.mc.play.*;
+import org.shulker.core.packets.mc.status.ShulkerPacketStatusOutServerInfo;
 import org.shulker.core.wrappers.*;
 
 import java.util.HashMap;
@@ -216,6 +219,24 @@ public class MinecraftManagerV113R1 implements MinecraftManager
 	}
 
 	@Override
+	public ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo()
+	{
+		return new ReflectPacketStatusOutServerInfo();
+	}
+
+	@Override
+	public ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(ServerPing serverPing)
+	{
+		return new ReflectPacketStatusOutServerInfo(serverPing);
+	}
+
+	@Override
+	public ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(Object packet)
+	{
+		return new ReflectPacketStatusOutServerInfo(packet);
+	}
+
+	@Override
 	public WrapperManager getWrapperManager()
 	{
 		return WRAPPER_MANAGER;
@@ -263,6 +284,12 @@ public class MinecraftManagerV113R1 implements MinecraftManager
 		public PlayerWrapper getPlayerWrapper()
 		{
 			return ReflectPlayerWrapper.INSTANCE;
+		}
+
+		@Override
+		public ServerPingWrapper getServerPingWrapper()
+		{
+			return ReflectServerPingWrapper.INSTANCE;
 		}
 
 		@Override

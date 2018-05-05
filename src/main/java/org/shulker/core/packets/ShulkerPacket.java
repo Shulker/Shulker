@@ -13,10 +13,6 @@ public abstract class ShulkerPacket<T>
 {
 	protected T packet;
 
-	public ShulkerPacket()
-	{
-	}
-
 	public ShulkerPacket(T packet)
 	{
 		this.packet = packet;

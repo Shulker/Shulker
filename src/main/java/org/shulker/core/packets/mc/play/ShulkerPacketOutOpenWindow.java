@@ -24,10 +24,6 @@ import java.util.Arrays;
  */
 public abstract class ShulkerPacketOutOpenWindow<T> extends ShulkerPacket<T> implements Windowable
 {
-	public ShulkerPacketOutOpenWindow()
-	{
-	}
-
 	public ShulkerPacketOutOpenWindow(T packet)
 	{
 		super(packet);

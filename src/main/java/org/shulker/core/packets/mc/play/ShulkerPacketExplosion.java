@@ -14,6 +14,11 @@ import org.shulker.core.packets.ShulkerPacket;
 
 public abstract class ShulkerPacketExplosion<T> extends ShulkerPacket<T>
 {
+	public ShulkerPacketExplosion(T packet)
+	{
+		super(packet);
+	}
+
 	/**
 	 * Sets the location of the explosion.
 	 * @param location

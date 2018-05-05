@@ -23,16 +23,6 @@ import java.util.Arrays;
  */
 public abstract class ShulkerPacketPlayOutChat<T> extends ShulkerPacket<T>
 {
-	public ShulkerPacketPlayOutChat()
-	{
-		super();
-	}
-
-	public ShulkerPacketPlayOutChat(@NotNull BaseComponent... components)
-	{
-		this();
-	}
-
 	public ShulkerPacketPlayOutChat(T packet)
 	{
 		super(packet);

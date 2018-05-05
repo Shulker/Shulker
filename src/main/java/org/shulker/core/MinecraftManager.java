@@ -15,8 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.ServerPing;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.packets.mc.play.*;
+import org.shulker.core.packets.mc.status.ShulkerPacketStatusOutServerInfo;
 import org.shulker.core.wrappers.*;
 
 import java.util.List;
@@ -93,6 +95,16 @@ public interface MinecraftManager extends Nameable
 
 	ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(Object packet);
 
+	/*
+		PACKET - STATUS
+	 */
+
+	ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo();
+
+	ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(ServerPing serverPing);
+
+	ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(Object packet);
+
 	WrapperManager getWrapperManager();
 
 	static interface WrapperManager extends Nameable
@@ -108,5 +120,7 @@ public interface MinecraftManager extends Nameable
 		ItemStackWrapper getItemStackWrapper();
 
 		PlayerWrapper getPlayerWrapper();
+
+		ServerPingWrapper getServerPingWrapper();
 	}
 }

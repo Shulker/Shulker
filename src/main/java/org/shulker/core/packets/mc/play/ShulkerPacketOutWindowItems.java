@@ -26,11 +26,6 @@ import java.util.List;
  */
 public abstract class ShulkerPacketOutWindowItems<T> extends ShulkerPacket<T> implements Windowable
 {
-	public ShulkerPacketOutWindowItems()
-	{
-		super();
-	}
-
 	public ShulkerPacketOutWindowItems(T packet)
 	{
 		super(packet);

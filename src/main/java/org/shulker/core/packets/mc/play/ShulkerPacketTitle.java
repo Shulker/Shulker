@@ -18,7 +18,7 @@ import org.shulker.core.packets.ShulkerPacket;
 import java.util.Arrays;
 
 /**
- * ShulkerPacketTitle represents the packet which manages the titles.
+ * Represents the packet which manages the titles.
  * <p>
  * {@link TitleAction#HIDE} makes the title disappear, but if you run times again the same title will appear. {@link TitleAction#RESET} erases the text.
  * The title is visible on screen for Fade In + Stay + Fade Out ticks.
@@ -27,26 +27,6 @@ import java.util.Arrays;
  */
 public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 {
-	public ShulkerPacketTitle()
-	{
-		super();
-	}
-
-	public ShulkerPacketTitle(@NotNull TitleAction action)
-	{
-		this();
-	}
-
-	public ShulkerPacketTitle(@NotNull TitleAction action, @NotNull BaseComponent[] chatValue)
-	{
-		this();
-	}
-
-	public ShulkerPacketTitle(@NotNull TitleAction action, int fadeIn, int stay, int fadeOut)
-	{
-		this();
-	}
-
 	public ShulkerPacketTitle(T packet)
 	{
 		super(packet);
