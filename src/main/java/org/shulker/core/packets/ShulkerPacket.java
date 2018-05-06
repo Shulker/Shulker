@@ -9,6 +9,10 @@
 
 package org.shulker.core.packets;
 
+/**
+ * Represents a packet.
+ * @param <T> The server object type.
+ */
 public abstract class ShulkerPacket<T>
 {
 	protected T packet;
@@ -26,6 +30,16 @@ public abstract class ShulkerPacket<T>
 	public T getHandle()
 	{
 		return packet;
+	}
+
+	/**
+	 * Gets the packet class name.
+	 *
+	 * @return The name of the packet class.
+	 */
+	public String getHandleName()
+	{
+		return packet.getClass().getSimpleName();
 	}
 
 	/**

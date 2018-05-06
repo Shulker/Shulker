@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.shulker.core.DebugType;
@@ -27,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class PacketHandler implements Listener
 {
 	private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10);
+	protected volatile boolean run = false;
 
 	public abstract void addHandler(Player player);
 
@@ -38,6 +38,7 @@ public abstract class PacketHandler implements Listener
 
 	public void enable()
 	{
+		run = true;
 		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Enabling PacketHandler '" + getClass().getSimpleName() + "'...");
 		Bukkit.getOnlinePlayers().forEach(this::addHandler);
 		addServerHandler();
@@ -48,6 +49,7 @@ public abstract class PacketHandler implements Listener
 		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Disabling PacketHandler '" + getClass().getSimpleName() + "'...");
 		Bukkit.getOnlinePlayers().forEach(this::removeHandler);
 		removeServerHandler();
+		run = false;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

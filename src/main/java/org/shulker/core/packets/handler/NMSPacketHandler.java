@@ -13,9 +13,9 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.channel.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.shulker.core.DebugType;
 import org.shulker.core.Shulker;
+import org.shulker.core.events.PacketEvent;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
 import java.lang.reflect.Field;
@@ -26,6 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 import static org.shulker.core.Shulker.getMCManager;
+import static org.shulker.core.Shulker.getPrefix;
 
 public class NMSPacketHandler extends PacketHandler
 {
@@ -36,6 +37,7 @@ public class NMSPacketHandler extends PacketHandler
 	private static final Optional<Field> PLAYER_CONNECTION_FIELD;
 	private static final Optional<Field> PLAYER_NETWORK_FIELD;
 	private static final Optional<Field> SERVER_CONNECTION_FIELD;
+	private static final Optional<Field> SERVER_CONNECTION_CHANNEL_FUTURES_FIELD;
 	private static final Optional<Field> SERVER_CONNECTION_LIST_FIELD;
 
 	private static final Optional<Method> SERVER_GETSERVER_METHOD;
@@ -51,12 +53,57 @@ public class NMSPacketHandler extends PacketHandler
 		PLAYER_CONNECTION_FIELD = getFirstFieldOfType(getMCManager().getWrapperManager().getPlayerWrapper().getObjectClass(), PLAYER_CONNECTION_CLASS);
 		PLAYER_NETWORK_FIELD = getField(PLAYER_CONNECTION_CLASS, "networkManager", true);
 		SERVER_CONNECTION_FIELD = getFirstFieldOfType(MINECRAFT_SERVER_CLASS, SERVER_CONNECTION_CLASS);
+		SERVER_CONNECTION_CHANNEL_FUTURES_FIELD = getFirstFieldOfType(SERVER_CONNECTION_CLASS, List.class);
 		SERVER_CONNECTION_LIST_FIELD = getLastFieldOfType(SERVER_CONNECTION_CLASS, List.class);
 
 		SERVER_GETSERVER_METHOD = getMethod(Bukkit.getServer().getClass(), "getServer");
 	}
 
 	private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10, new ThreadFactoryBuilder().setNameFormat("Shulker NMSHandler #%d").build());
+
+	private List<?>                      networkManagers;
+	// Injected channel handlers
+	private List<Channel>                serverChannels       = new ArrayList<>();
+	private ChannelInboundHandlerAdapter serverChannelHandler = new ChannelInboundHandlerAdapter()
+	{
+		@Override
+		public void channelRead(ChannelHandlerContext ctx, Object msg)
+		{
+			Channel channel = (Channel) msg;
+			channel.pipeline().addFirst(beginInitProtocol);
+			ctx.fireChannelRead(msg);
+		}
+	};
+	private ChannelInitializer<Channel>  beginInitProtocol    = new ChannelInitializer<>()
+	{
+		@Override
+		protected void initChannel(Channel channel)
+		{
+			channel.pipeline().addLast(endInitProtocol);
+		}
+	};
+	private ChannelInitializer<Channel>  endInitProtocol      = new ChannelInitializer<>()
+	{
+		@Override
+		protected void initChannel(Channel channel)
+		{
+			try
+			{
+				synchronized (networkManagers)
+				{
+					if (run)
+						channel.eventLoop().submit(() -> channel.pipeline().addBefore("packet_handler",
+																					  SHULKER_HANDLER +
+																							  "_ping", new ShulkerPingChannelHandler()));
+				}
+			}
+			catch (Exception e)
+			{
+				Shulker.logError(getPrefix(), "Cannot inject incoming channel " + channel);
+				e.printStackTrace();
+			}
+		}
+	};
 
 	private static Channel getChannel(Object network)
 	{
@@ -133,23 +180,20 @@ public class NMSPacketHandler extends PacketHandler
 		Object minecraftServer = SERVER_GETSERVER_METHOD.map(method -> invokeMethod(server, method)).orElse(null);
 		Object serverConnection = SERVER_CONNECTION_FIELD.map(field -> getFieldValue(minecraftServer, field)).orElse(null);
 
-		var currentList = SERVER_CONNECTION_LIST_FIELD.map(field -> (List<?>) getFieldValue(serverConnection, field)).orElse(Collections.emptyList());
+		networkManagers = SERVER_CONNECTION_LIST_FIELD.map(field -> (List<?>) getFieldValue(serverConnection, field)).orElse(Collections.emptyList());
 
-		if (currentList instanceof PacketPingListenerList)
-			return;
+		List<?> futures = SERVER_CONNECTION_CHANNEL_FUTURES_FIELD.map(field -> (List<?>) getFieldValue(serverConnection, field)).orElse(Collections.emptyList());
 
-		/*Optional<Field> field1 = getField(currentList.getClass().getSuperclass(), "list", true);
-		if (field1.isPresent())
-		{
-			Object obj = getFieldValue(currentList, field1.get());
-			if (obj != null && obj.getClass().equals(PacketPingListenerList.class))
+		futures.forEach(future -> {
+			if (!ChannelFuture.class.isInstance(future))
 				return;
-		}*/
+			Channel channel = ((ChannelFuture) future).channel();
 
-		// New list to listen packets.
-		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Injecting server handler...");
-		List<?> newList = new PacketPingListenerList<>(currentList);
-		SERVER_CONNECTION_LIST_FIELD.ifPresent(field -> setValue(serverConnection, field, newList));
+			serverChannels.add(channel);
+			channel.pipeline().addFirst(serverChannelHandler);
+		});
+
+		// For the old code, please see git history.
 	}
 
 	@Override
@@ -160,223 +204,12 @@ public class NMSPacketHandler extends PacketHandler
 		Object minecraftServer = SERVER_GETSERVER_METHOD.map(method -> invokeMethod(server, method)).orElse(null);
 		Object serverConnection = SERVER_CONNECTION_FIELD.map(field -> getFieldValue(minecraftServer, field)).orElse(null);
 
-		var currentList = SERVER_CONNECTION_LIST_FIELD.map(field -> (List<?>) getFieldValue(serverConnection, field)).orElse(Collections.emptyList());
+		serverChannels.forEach(channel -> {
+			ChannelPipeline pipeline = channel.pipeline();
+			channel.eventLoop().execute(() -> pipeline.remove(serverChannelHandler));
+		});
 
-		if (!(currentList instanceof PacketPingListenerList))
-			return;
-
-		// Just put the old list.
-		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Removing server handler...");
-		((PacketPingListenerList<?>) currentList).unprocessAll();
-		List oldList = ((PacketPingListenerList<?>) currentList).getDelegate();
-		SERVER_CONNECTION_LIST_FIELD.ifPresent(field -> setValue(serverConnection, field, oldList));
-	}
-
-	public class PacketPingListenerList<E> implements List<E>
-	{
-		private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(15, new ThreadFactoryBuilder().setNameFormat("Shulker Ping Listener #%d").build());
-		private List<E>                  delegate;
-
-		public PacketPingListenerList(List<E> old)
-		{
-			delegate = old;
-			processAll();
-		}
-
-		protected void processElement(E element)
-		{
-			threadPool.execute(() -> {
-				Channel channel = null;
-				while (channel == null)
-					channel = getChannel(element);
-				channel.pipeline().addBefore("packet_handler",
-											 SHULKER_HANDLER + "_ping", new ShulkerPingChannelHandler());
-			});
-		}
-
-		protected void unprocessElement(E element)
-		{
-			threadPool.execute(() -> {
-				Channel channel = null;
-				while (channel == null)
-					channel = getChannel(element);
-				channel.pipeline().remove(SHULKER_HANDLER + "_ping");
-			});
-		}
-
-		protected void processAll()
-		{
-			delegate.forEach(this::processElement);
-		}
-
-		protected void unprocessAll()
-		{
-			delegate.forEach(this::unprocessElement);
-		}
-
-		public List<E> getDelegate()
-		{
-			return delegate;
-		}
-
-		@Override
-		public synchronized boolean add(E element)
-		{
-			processElement(element);
-			return delegate.add(element);
-		}
-
-		@Override
-		public synchronized boolean addAll(@NotNull Collection<? extends E> collection)
-		{
-			collection.forEach(this::processElement);
-			return delegate.addAll(collection);
-		}
-
-		@Override
-		public synchronized E set(int index, E element)
-		{
-			E old = delegate.set(index, element);
-
-			if (old != element)
-			{
-				unprocessElement(old);
-				processElement(element);
-			}
-			return old;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public synchronized boolean remove(Object o)
-		{
-			unprocessElement((E) o);
-			return delegate.remove(o);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public synchronized boolean removeAll(@NotNull Collection<?> c)
-		{
-			c.forEach(o -> unprocessElement((E) o));
-			return delegate.removeAll(c);
-		}
-
-		@Override
-		public synchronized void clear()
-		{
-			unprocessAll();
-			delegate.clear();
-		}
-
-		// Boiler plate
-		@Override
-		public synchronized int size()
-		{
-			return delegate.size();
-		}
-
-		@Override
-		public synchronized boolean isEmpty()
-		{
-			return delegate.isEmpty();
-		}
-
-		@Override
-		public boolean contains(Object o)
-		{
-			return delegate.contains(o);
-		}
-
-		@NotNull
-		@Override
-		public synchronized Iterator<E> iterator()
-		{
-			return delegate.iterator();
-		}
-
-		@NotNull
-		@Override
-		public synchronized Object[] toArray()
-		{
-			return delegate.toArray();
-		}
-
-		@NotNull
-		@Override
-		public synchronized <T> T[] toArray(@NotNull T[] a)
-		{
-			return delegate.toArray(a);
-		}
-
-		@Override
-		public synchronized boolean containsAll(@NotNull Collection<?> c)
-		{
-			return delegate.containsAll(c);
-		}
-
-		@Override
-		public synchronized boolean addAll(int index, @NotNull Collection<? extends E> c)
-		{
-			return delegate.addAll(index, c);
-		}
-
-		@Override
-		public synchronized boolean retainAll(@NotNull Collection<?> c)
-		{
-			return delegate.retainAll(c);
-		}
-
-		@Override
-		public synchronized E get(int index)
-		{
-			return delegate.get(index);
-		}
-
-		@Override
-		public synchronized void add(int index, E element)
-		{
-			delegate.add(index, element);
-		}
-
-		@Override
-		public synchronized E remove(int index)
-		{
-			return delegate.remove(index);
-		}
-
-		@Override
-		public synchronized int indexOf(Object o)
-		{
-			return delegate.indexOf(o);
-		}
-
-		@Override
-		public synchronized int lastIndexOf(Object o)
-		{
-			return delegate.lastIndexOf(o);
-		}
-
-		@NotNull
-		@Override
-		public synchronized ListIterator<E> listIterator()
-		{
-			return delegate.listIterator();
-		}
-
-		@NotNull
-		@Override
-		public synchronized ListIterator<E> listIterator(int index)
-		{
-			return delegate.listIterator(index);
-		}
-
-		@NotNull
-		@Override
-		public synchronized List<E> subList(int fromIndex, int toIndex)
-		{
-			return delegate.subList(fromIndex, toIndex);
-		}
+		// For the old code, please see the git history.
 	}
 
 	public class ShulkerChannelHandler extends ChannelDuplexHandler
@@ -391,13 +224,27 @@ public class NMSPacketHandler extends PacketHandler
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
 		{
-			super.channelRead(ctx, msg);
+			var ip = ctx.channel().remoteAddress();
+			var packet = Shulker.getMCManager().fromPacket(msg);
+			var packetEvent = new PacketEvent(ip, player, packet);
+
+			Shulker.getShulker().firePacketEvent(packetEvent, true);
+
+			if (!packetEvent.isCancelled())
+				super.channelRead(ctx, msg);
 		}
 
 		@Override
 		public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
 		{
-			super.write(ctx, msg, promise);
+			var ip = ctx.channel().remoteAddress();
+			var packet = Shulker.getMCManager().fromPacket(msg);
+			var packetEvent = new PacketEvent(ip, player, packet);
+
+			Shulker.getShulker().firePacketEvent(packetEvent, false);
+
+			if (!packetEvent.isCancelled())
+				super.write(ctx, msg, promise);
 		}
 	}
 
@@ -406,12 +253,21 @@ public class NMSPacketHandler extends PacketHandler
 		@Override
 		public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
 		{
+			System.out.println(msg.getClass().getSimpleName());
 			if (!msg.getClass().getSimpleName().startsWith("PacketStatus"))
 			{
 				super.write(ctx, msg, promise);
 				return;
 			}
-			super.write(ctx, msg, promise);
+
+			var ip = ctx.channel().remoteAddress();
+			var packet = Shulker.getMCManager().fromPacket(msg);
+			var packetEvent = new PacketEvent(ip, packet);
+
+			Shulker.getShulker().firePacketEvent(packetEvent, false);
+
+			if (!packetEvent.isCancelled())
+				super.write(ctx, msg, promise);
 		}
 
 		@Override
@@ -430,7 +286,14 @@ public class NMSPacketHandler extends PacketHandler
 				return;
 			}
 
-			super.channelRead(ctx, msg);
+			var ip = ctx.channel().remoteAddress();
+			var packet = Shulker.getMCManager().fromPacket(msg);
+			var packetEvent = new PacketEvent(ip, packet);
+
+			Shulker.getShulker().firePacketEvent(packetEvent, true);
+
+			if (!packetEvent.isCancelled())
+				super.channelRead(ctx, msg);
 		}
 	}
 }

@@ -10,6 +10,7 @@
 package org.shulker.core.impl.reflect;
 
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -26,14 +27,31 @@ import org.shulker.core.packets.mc.play.*;
 import org.shulker.core.packets.mc.status.ShulkerPacketStatusOutServerInfo;
 import org.shulker.core.wrappers.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
-public class ReflectMinecraftManager implements MinecraftManager
+public class ReflectMinecraftManager extends MinecraftManager
 {
-	private static final ReflectWrapperManager                wrapperManager = new ReflectWrapperManager();
-	private final        HashMap<UUID, ShulkerPlayer<Player>> players        = new HashMap<>();
+	private static final ReflectWrapperManager wrapperManager = new ReflectWrapperManager();
+
+	@Override
+	public void init()
+	{
+		Bukkit.getOnlinePlayers().forEach(this::addPlayer);
+
+		if (init)
+			throw new IllegalStateException("MinecraftManager is already initialized!");
+		// Status
+		decoders.put("PacketStatusOutServerInfo", this::newPacketStatusOutServerInfo);
+		// Play
+		decoders.put("PacketPlayOutChat", this::newPacketPlayOutChat);
+		decoders.put("PacketPlayOutPlayerListHeaderFooter", this::newPacketPlayOutPlayerListHeaderFooter);
+		decoders.put("PacketPlayOutOpenWindow", this::newPacketPlayOutOpenWindow);
+		decoders.put("PacketPlayOutSetSlot", this::newPacketPlayOutSetSlot);
+		decoders.put("PacketPlayOutTitle", this::newPacketTitle);
+		decoders.put("PacketPlayOutWindowData", this::newPacketPlayOutWindowProperty);
+		decoders.put("PacketPlayOutWindowItems", this::newPacketPlayOutWindowItems);
+		init = true;
+	}
 
 	@Override
 	public ShulkerPlayer<Player> getPlayer(@Nullable Player player)
@@ -50,22 +68,10 @@ public class ReflectMinecraftManager implements MinecraftManager
 	}
 
 	@Override
-	public ShulkerPlayer<Player> getPlayer(@NotNull UUID uuid)
-	{
-		return players.get(uuid);
-	}
-
-	@Override
 	public void addPlayer(@NotNull Player player)
 	{
 		if (!players.containsKey(player.getUniqueId()))
 			players.put(player.getUniqueId(), new ReflectShulkerPlayer(player));
-	}
-
-	@Override
-	public void removePlayer(@NotNull UUID player)
-	{
-		players.remove(player);
 	}
 
 	@Override

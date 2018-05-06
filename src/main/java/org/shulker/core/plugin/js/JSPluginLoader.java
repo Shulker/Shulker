@@ -204,7 +204,7 @@ public class JSPluginLoader implements PluginLoader
 		catch (NoClassDefFoundError e)
 		{
 			plugin.getLogger().severe(
-					"Plugin " + plugin.getDescription().getFullName() + " has failed to register events for " +
+					"Plugin " + plugin.getDescription().getFullName() + " has failed to registerPacketListener events for " +
 							listener.getClass() + " because " + e.getMessage() + " does not exist.");
 			return ret;
 		}
@@ -213,7 +213,7 @@ public class JSPluginLoader implements PluginLoader
 		{
 			final EventHandler eh = method.getAnnotation(EventHandler.class);
 			if (eh == null) continue;
-			// Do not register bridge or synthetic methods to avoid event duplication
+			// Do not registerPacketListener bridge or synthetic methods to avoid event duplication
 			// Fixes SPIGOT-893
 			if (method.isBridge() || method.isSynthetic())
 				continue;

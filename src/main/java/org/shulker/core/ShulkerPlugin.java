@@ -15,6 +15,8 @@ import org.shulker.core.commands.BukkitCommandManager;
 import org.shulker.core.config.ConfigManager;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
+import org.shulker.core.events.PacketEvent;
+import org.shulker.core.events.PacketListener;
 
 import java.io.File;
 import java.util.List;
@@ -134,6 +136,20 @@ public interface ShulkerPlugin
 	 * @return Shulker's Minecraft manager.
 	 */
 	MinecraftManager getMinecraftManager();
+
+	/**
+	 * Registers a packet listener.
+	 *
+	 * @param listener The packet listener.
+	 */
+	void registerPacketListener(@NotNull PacketListener listener);
+
+	/**
+	 * Fires the packet event.
+	 * @param event The event to fire.
+	 * @param fromClient True if the packet is sent by the client, else false.
+	 */
+	void firePacketEvent(@NotNull PacketEvent event, boolean fromClient);
 
 	/**
 	 * Lists the libraries loaded by Shulker.

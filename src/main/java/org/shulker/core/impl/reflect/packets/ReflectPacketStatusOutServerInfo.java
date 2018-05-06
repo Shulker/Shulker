@@ -9,10 +9,7 @@
 
 package org.shulker.core.impl.reflect.packets;
 
-import org.aperlambda.lambdacommon.utils.LambdaReflection;
 import org.mcelytra.core.ServerPing;
-import org.shulker.core.Shulker;
-import org.shulker.core.impl.reflect.wrappers.ReflectServerPingWrapper;
 import org.shulker.core.packets.mc.status.ShulkerPacketStatusOutServerInfo;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
@@ -26,12 +23,13 @@ import static org.shulker.core.Shulker.getMCManager;
 
 public class ReflectPacketStatusOutServerInfo extends ShulkerPacketStatusOutServerInfo<Object>
 {
+	private static final Class<?> PACKET_CLASS;
 	private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
 	private static final Optional<Field>                    SERVERPING_FIELD;
 
 	static
 	{
-		final Class<?> PACKET_CLASS = Objects.requireNonNull(ShulkerSpigotPlugin.getNmsClass("PacketStatusOutServerInfo"), "Cannot initialize ReflectPacketStatusOutServerInfo: NMS class cannot be found!");
+		PACKET_CLASS = Objects.requireNonNull(ShulkerSpigotPlugin.getNmsClass("PacketStatusOutServerInfo"), "Cannot initialize ReflectPacketStatusOutServerInfo: NMS class cannot be found!");
 		CONSTRUCTOR = getConstructor(PACKET_CLASS);
 		SERVERPING_FIELD = getFirstFieldOfType(PACKET_CLASS, getMCManager().getWrapperManager().getServerPingWrapper().getObjectClass());
 	}

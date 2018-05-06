@@ -47,6 +47,6 @@ public abstract class ShulkerPacketStatusOutServerInfo<T> extends ShulkerPacket<
 	@Override
 	public String toString()
 	{
-		return "ShulkerPacketTitle{server_ping:" + ServerPing.Serializer.toString(getServerPing()) + "}";
+		return "ShulkerPacketStatusOutServerInfo{server_ping:" + ServerPing.Serializer.toString(getServerPing()) + "}";
 	}
 }

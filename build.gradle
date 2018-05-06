@@ -36,7 +36,11 @@ configurations {
 
 dependencies {
     compile 'org.aperlambda:kimiko:1.0.7'
-    compile 'org.mcelytra:elytra-core:1.0.0-SNAPSHOT'
+    compile(group: 'org.mcelytra', name: 'elytra-core', version: '1.0.0-SNAPSHOT', changing: true) {
+        exclude group: 'com.mojang'
+        exclude group: 'org.aperlambda'
+        exclude group: 'net.md-5'
+    }
     provided 'net.md-5:bungeecord-chat:1.12-SNAPSHOT'
     provided 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
 }
@@ -50,6 +54,10 @@ processResources {
 
         expand 'version': project.version.toString().replace("#", ""), 'authors': authors.toString()
     }
+}
+
+compileJava {
+    compileJava.options.compilerArgs.add("-proc:none")
 }
 
 jar {

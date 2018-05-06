@@ -15,6 +15,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.shulker.core.Shulker;
+import org.shulker.core.events.PacketEvent;
+import org.shulker.core.events.PacketListener;
 import org.shulker.core.plugin.EventsManager;
 
 import java.io.IOException;
@@ -41,6 +44,42 @@ public class JSEventsManager implements EventsManager
 	public <T extends Event> void on(Class<T> event, Consumer<T> executor, EventPriority priority)
 	{
 		Bukkit.getPluginManager().registerEvent(event, new Listener() {}, priority, ((listener, event1) -> executor.accept((T) event1)), plugin);
+	}
+
+	public void onPacketReceive(Consumer<PacketEvent> executor)
+	{
+		Shulker.registerPacketListener(new PacketListener()
+		{
+			@Override
+			public void onPacketReceive(PacketEvent event)
+			{
+				executor.accept(event);
+			}
+
+			@Override
+			public void onPacketSend(PacketEvent event)
+			{
+
+			}
+		});
+	}
+
+	public void onPacketSend(Consumer<PacketEvent> executor)
+	{
+		Shulker.registerPacketListener(new PacketListener()
+		{
+			@Override
+			public void onPacketReceive(PacketEvent event)
+			{
+
+			}
+
+			@Override
+			public void onPacketSend(PacketEvent event)
+			{
+				executor.accept(event);
+			}
+		});
 	}
 
 	@Override

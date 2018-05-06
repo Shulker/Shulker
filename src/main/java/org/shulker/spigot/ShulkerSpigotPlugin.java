@@ -32,6 +32,8 @@ import org.shulker.core.commands.defaults.shulker.AboutCommand;
 import org.shulker.core.commands.defaults.shulker.ReloadCommand;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
+import org.shulker.core.events.PacketEvent;
+import org.shulker.core.events.PacketListener;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.impl.v112R1.MinecraftManagerV112R1;
 import org.shulker.core.packets.handler.NMSPacketHandler;
@@ -78,6 +80,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	 */
 	private MinecraftManager mcManager;
 	private PacketHandler    packetHandler;
+	private List<PacketListener> packetListeners = new ArrayList<>();
 
 	private List<ShulkerLibrary> libraries = new ArrayList<>();
 
@@ -164,9 +167,9 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 				logInfo(getPrefix(), ansi().fg(Color.YELLOW).a("WARNING: ").fgBright(Color.MAGENTA).a("Shulker ").fg(Color.YELLOW).a("uses ReflectMinecraftManager due to unsupported Minecraft version. Please contact the developer.").reset().toString());
 				break;
 		}
+		mcManager.init();
 		logInfo(getPrefix(), ansi().a("Using ").fg(Color.CYAN).a(mcManager.getName()).fgBright(Color.WHITE).a(" with ").fg(Color.CYAN).a(mcManager.getWrapperManager().getName()).fgBright(Color.WHITE).a("...").reset().toString());
 		Bukkit.getPluginManager().registerEvents(new ShulkerListener(), this);
-		Bukkit.getOnlinePlayers().forEach(p -> mcManager.addPlayer(p));
 
 		packetHandler = new NMSPacketHandler();
 		packetHandler.enable();
@@ -208,6 +211,11 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		super.onDisable();
 		packetHandler.disable();
 		libraries.clear();
+	}
+
+	public List<PacketListener> getPacketListeners()
+	{
+		return packetListeners;
 	}
 
 	@Override
@@ -356,6 +364,23 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 	public MinecraftManager getMinecraftManager()
 	{
 		return mcManager;
+	}
+
+	@Override
+	public void registerPacketListener(@NotNull PacketListener listener)
+	{
+		if (packetListeners.contains(listener))
+			return;
+		packetListeners.add(listener);
+	}
+
+	@Override
+	public void firePacketEvent(@NotNull PacketEvent event, boolean fromClient)
+	{
+		if (fromClient)
+			packetListeners.forEach(listener -> listener.onPacketReceive(event));
+		else
+			packetListeners.forEach(listener -> listener.onPacketSend(event));
 	}
 
 	@Override

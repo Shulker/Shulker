@@ -17,6 +17,7 @@ import org.shulker.core.commands.BukkitCommandManager;
 import org.shulker.core.config.ConfigManager;
 import org.shulker.core.config.ShulkerConfiguration;
 import org.shulker.core.config.ShulkerSymbols;
+import org.shulker.core.events.PacketListener;
 
 import java.io.File;
 
@@ -181,5 +182,15 @@ public class Shulker
 	public static MinecraftManager getMCManager()
 	{
 		return SHULKER.getMinecraftManager();
+	}
+
+	/**
+	 * Registers a packet listener.
+	 *
+	 * @param listener The packet listener.
+	 */
+	public static void registerPacketListener(@NotNull PacketListener listener)
+	{
+		SHULKER.registerPacketListener(listener);
 	}
 }
