@@ -17,7 +17,7 @@ import org.shulker.core.Shulker;
 import java.io.File;
 import java.io.IOException;
 
-public class YamlConfig extends FileConfig
+public class YamlConfig extends FileConfig<YamlConfiguration>
 {
 	private YamlConfiguration config = new YamlConfiguration();
 

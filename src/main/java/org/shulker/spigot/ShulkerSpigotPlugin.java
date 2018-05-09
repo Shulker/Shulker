@@ -124,10 +124,12 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 								ansi().fg(Color.YELLOW).a(lib.getName().replace(".jar", "")).fg(Color.WHITE).toString() +
 								"'...");
 
-						LambdaReflection.invokeMethod(classLoader, addUrl.get(), url);
+						addUrl.get().setAccessible(true);
+						addUrl.get().invoke(classLoader, url);
 					}
-					catch (MalformedURLException e)
+					catch (Exception e)
 					{
+						e.printStackTrace();
 						library = new ShulkerLibrary(lib.getName().replace(".jar", ""), lib, ShulkerLibrary.LibraryLoadState.FAILED);
 					}
 					libraries.add(library);

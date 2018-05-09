@@ -35,7 +35,7 @@ configurations {
 }
 
 dependencies {
-    compile 'org.aperlambda:kimiko:1.0.7'
+    compile 'org.aperlambda:kimiko:1.0.8'
     compile(group: 'org.mcelytra', name: 'elytra-core', version: '1.0.0-SNAPSHOT', changing: true) {
         exclude group: 'com.mojang'
         exclude group: 'org.aperlambda'

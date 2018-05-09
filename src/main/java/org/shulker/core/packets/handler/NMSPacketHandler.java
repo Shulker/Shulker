@@ -199,11 +199,6 @@ public class NMSPacketHandler extends PacketHandler
 	@Override
 	public void removeServerHandler()
 	{
-		final var server = Bukkit.getServer();
-
-		Object minecraftServer = SERVER_GETSERVER_METHOD.map(method -> invokeMethod(server, method)).orElse(null);
-		Object serverConnection = SERVER_CONNECTION_FIELD.map(field -> getFieldValue(minecraftServer, field)).orElse(null);
-
 		serverChannels.forEach(channel -> {
 			ChannelPipeline pipeline = channel.pipeline();
 			channel.eventLoop().execute(() -> pipeline.remove(serverChannelHandler));
@@ -253,7 +248,6 @@ public class NMSPacketHandler extends PacketHandler
 		@Override
 		public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
 		{
-			System.out.println(msg.getClass().getSimpleName());
 			if (!msg.getClass().getSimpleName().startsWith("PacketStatus"))
 			{
 				super.write(ctx, msg, promise);

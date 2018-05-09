@@ -9,7 +9,7 @@
 
 package org.shulker.core.config;
 
-import org.aperlambda.lambdacommon.config.JsonConfig;
+import org.aperlambda.lambdacommon.config.json.JsonConfig;
 import org.aperlambda.lambdacommon.resources.ResourcesManager;
 import org.shulker.core.Shulker;
 

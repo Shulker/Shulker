@@ -10,7 +10,7 @@
 package org.shulker.core.config;
 
 import org.aperlambda.lambdacommon.config.Config;
-import org.aperlambda.lambdacommon.config.JsonConfig;
+import org.aperlambda.lambdacommon.config.json.JsonConfig;
 import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
