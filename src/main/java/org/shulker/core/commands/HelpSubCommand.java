@@ -135,8 +135,8 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 				return CommandResult.ERROR_RUNTIME;
 			context.sendMessage(mainColor + "====== " + secondaryColor + sc.get().getName() + mainColor + " ======");
 			context.sendMessage(mainColor + "Usage: " + commandColor.orElse(secondaryColor) +
-										sc.get().getUsage().replace("<command>", sc.get().getName()));
-			context.sendMessage(mainColor + "Description: " + GRAY + sc.get().getDescription());
+										sc.get().getUsage(context.getSender()).replace("<command>", sc.get().getName()));
+			context.sendMessage(mainColor + "Description: " + GRAY + sc.get().getDescription(context.getSender()));
 			context.sendMessage(mainColor + "Aliases: " + commandColor.orElse(secondaryColor) +
 										String.join(",", sc.get().getAliases()));
 			context.sendMessage(mainColor + "Permission required: " + secondaryColor +
@@ -154,14 +154,14 @@ public class HelpSubCommand implements BukkitCommandExecutor, BukkitCommandTabCo
 			var hoverMessage = new ComponentBuilder("Click on the command to insert it in the chat.").color(GRAY).create();
 			parent.getSubCommands().forEach(subCommand -> player.sendMessage(new ComponentBuilder(
 					"├─ " +
-							subCommand.getUsage().replace("<command>", subCommand.getName()))
+							subCommand.getUsage(context.getSender()).replace("<command>", subCommand.getName()))
 																					 .color(commandColor.orElse(secondaryColor))
 																					 .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
 																										   baseCmd +
 																												   subCommand.getName()))
 																					 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage))
 																					 .append(" - " +
-																									 subCommand.getDescription(), ComponentBuilder.FormatRetention.NONE)
+																									 subCommand.getDescription(context.getSender()), ComponentBuilder.FormatRetention.NONE)
 																					 .color(GRAY)
 																					 .create()));
 		}
