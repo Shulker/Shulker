@@ -12,6 +12,7 @@ package org.shulker.core.plugin.js;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.Validate;
 import org.aperlambda.lambdacommon.resources.ResourceName;
 import org.bukkit.Bukkit;
@@ -117,11 +118,12 @@ public class JSPluginLoader implements PluginLoader
 				jsEngine.put("dataFolder", dataFolder);
 				jsEngine.put("__SHULKER__", Shulker.getShulker());
 
-				JSUtils.loadClass(jsEngine, "CommandResult", BukkitCommandResult.class);
-				JSUtils.loadClass(jsEngine, "Bukkit", Bukkit.class);
+				JSUtils.loadClassStatic(jsEngine, "CommandResult", BukkitCommandResult.class);
+				JSUtils.loadClassStatic(jsEngine, "Bukkit", Bukkit.class);
 				JSUtils.loadClass(jsEngine, "Listener", Listener.class);
-				JSUtils.loadClass(jsEngine, "ChatColor", ChatColor.class);
+				JSUtils.loadClassStatic(jsEngine, "ChatColor", ChatColor.class);
 				JSUtils.loadClass(jsEngine, "ResourceName", ResourceName.class);
+				JSUtils.loadClassStatic(jsEngine, "ChatComponentBuilder", ComponentBuilder.class);
 
 				jsEngine.eval(script);
 			}

@@ -18,9 +18,14 @@ import javax.script.ScriptException;
  */
 public class JSUtils
 {
-	public static void loadClass(NashornScriptEngine currentEngine, String name, Class<?> clazz) throws ScriptException
+	public static void loadClass(NashornScriptEngine currentEngine, String name, Class<?> clazz)
 	{
 		currentEngine.put(name, clazz);
+	}
+
+	public static void loadClassStatic(NashornScriptEngine currentEngine, String name, Class<?> clazz) throws ScriptException
+	{
+		loadClass(currentEngine, name, clazz);
 		currentEngine.put(name, currentEngine.eval(name + ".static"));
 	}
 }
