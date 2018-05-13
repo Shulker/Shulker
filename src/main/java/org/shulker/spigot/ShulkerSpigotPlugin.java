@@ -142,7 +142,7 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
 		{
 			JSEventsManager.register();
 
-			ResourcesManager.getDefaultResourcesManager().saveResourceFromJar("shulker.js", new File(pluginsDir, "shulker/"), false);
+			ResourcesManager.getDefaultResourcesManager().saveResourceFromJar("shulker.js", new File(pluginsDir, "shulker/"), true);
 
 			getServer().getPluginManager().registerInterface(JSPluginLoader.class);
 			logInfo(getPrefix(), "Loading Javascript plugins...");

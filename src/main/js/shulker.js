@@ -25,12 +25,14 @@ function registerCommand(plugin, object)
                       .usage(object.usageGetter)
                       .description(object.description)
                       .description(object.descriptionGetter)
-                      .permission(object.permission)
-                      .aliases(object.aliases)
-                      .executor(object.executor)
-                      .tabCompleter(object.tabCompleter)
-                      .build();
-  plugin.registerCommand(command)
+                      .executor(object.executor);
+  if (!(object.permission === undefined))
+    command.permission(object.permission);
+  if (!(object.aliases === undefined))
+    command.aliases(object.aliases);
+  if (!(object.tabCompleter === undefined))
+    command.tabCompleter(object.tabCompleter);
+  plugin.registerCommand(command.build())
 }
 
 function newResource(domain, name)
