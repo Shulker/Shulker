@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -39,236 +39,214 @@ import java.util.logging.Logger;
 
 public class JSPlugin extends PluginBase
 {
-	private boolean               isEnabled = false;
-	private JSPluginLoader        loader    = null;
-	private PluginDescriptionFile description;
-	private File                  file;
-	private File                  dataFolder;
-	private PluginLogger          logger;
+    private boolean               is_enabled = false;
+    private JSPluginLoader        loader     = null;
+    private PluginDescriptionFile description;
+    private File                  file;
+    private File                  data_folder;
+    private PluginLogger          logger;
 
-	private File              configFile;
-	private FileConfiguration newConfig;
+    private File              config_file;
+    private FileConfiguration new_config;
 
-	private JSEventsManager eventsManager;
+    private JSEventsManager events_manager;
 
-	private NashornScriptEngine scriptEngine;
+    private NashornScriptEngine script_engine;
 
-	@Override
-	public final File getDataFolder()
-	{
-		return dataFolder;
-	}
+    @Override
+    public final File getDataFolder()
+    {
+        return data_folder;
+    }
 
-	@Override
-	public PluginDescriptionFile getDescription()
-	{
-		return description;
-	}
+    @Override
+    public PluginDescriptionFile getDescription()
+    {
+        return description;
+    }
 
-	@Override
-	public FileConfiguration getConfig()
-	{
-		if (newConfig == null)
-			reloadConfig();
+    @Override
+    public FileConfiguration getConfig()
+    {
+        if (new_config == null)
+            reloadConfig();
 
-		return newConfig;
-	}
+        return new_config;
+    }
 
-	@Override
-	public InputStream getResource(String s)
-	{
-		try
-		{
-			return ResourcesManager.getDefaultResourcesManager().getResource(new File(file, s).toURI().toURL());
-		}
-		catch (MalformedURLException e)
-		{
-			return null;
-		}
-	}
+    @Override
+    public InputStream getResource(String s)
+    {
+        try {
+            return ResourcesManager.get_default_resources_manager().get_resource(new File(file, s).toURI().toURL());
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 
-	@Override
-	public final void saveConfig()
-	{
-		try
-		{
-			getConfig().save(configFile);
-		}
-		catch (IOException var2)
-		{
-			logger.log(Level.SEVERE, "Could not save config to " + configFile, var2);
-		}
-	}
+    @Override
+    public final void saveConfig()
+    {
+        try {
+            getConfig().save(config_file);
+        } catch (IOException var2) {
+            logger.log(Level.SEVERE, "Could not save config to " + config_file, var2);
+        }
+    }
 
-	@Override
-	public void saveDefaultConfig()
-	{
-		if (!configFile.exists())
-			saveResource("config.yml", false);
-	}
+    @Override
+    public void saveDefaultConfig()
+    {
+        if (!config_file.exists())
+            saveResource("config.yml", false);
+    }
 
-	@Override
-	public void saveResource(String s, boolean replace)
-	{
-		Shulker.getConfigManager().saveResource(getResource(s), getName(), s, replace);
-	}
+    @Override
+    public void saveResource(String s, boolean replace)
+    {
+        Shulker.get_configs().save_resource(getResource(s), getName(), s, replace);
+    }
 
-	@Override
-	public final void reloadConfig()
-	{
-		newConfig = YamlConfiguration.loadConfiguration(configFile);
-		InputStream defConfigStream = this.getResource("config.yml");
-		if (defConfigStream != null)
-			newConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
-	}
+    @Override
+    public final void reloadConfig()
+    {
+        new_config = YamlConfiguration.loadConfiguration(config_file);
+        InputStream defConfigStream = this.getResource("config.yml");
+        if (defConfigStream != null)
+            new_config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
+    }
 
-	@Override
-	public final PluginLoader getPluginLoader()
-	{
-		return loader;
-	}
+    @Override
+    public final PluginLoader getPluginLoader()
+    {
+        return loader;
+    }
 
-	@Override
-	public final Server getServer()
-	{
-		return Bukkit.getServer();
-	}
+    @Override
+    public final Server getServer()
+    {
+        return Bukkit.getServer();
+    }
 
-	@Override
-	public final boolean isEnabled()
-	{
-		return isEnabled;
-	}
+    @Override
+    public final boolean isEnabled()
+    {
+        return is_enabled;
+    }
 
-	protected final void setEnabled(boolean enabled)
-	{
-		if (isEnabled != enabled)
-		{
-			isEnabled = enabled;
-			if (isEnabled)
-				onEnable();
-			else
-				onDisable();
+    protected final void set_enabled(boolean enabled)
+    {
+        if (is_enabled != enabled) {
+            is_enabled = enabled;
+            if (is_enabled)
+                onEnable();
+            else
+                onDisable();
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void onDisable()
-	{
-		try
-		{
-			scriptEngine.invokeFunction("onDisable");
-		}
-		catch (ScriptException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch (NoSuchMethodException ignored)
-		{
-		}
-	}
+    @Override
+    public void onDisable()
+    {
+        try {
+            script_engine.invokeFunction("on_disable");
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException ignored) {
+        }
+    }
 
-	@Override
-	public void onLoad()
-	{
-		try
-		{
-			scriptEngine.invokeFunction("onLoad");
-		}
-		catch (ScriptException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch (NoSuchMethodException ignored)
-		{
-		}
-	}
+    @Override
+    public void onLoad()
+    {
+        try {
+            script_engine.invokeFunction("on_load");
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException ignored) {
+        }
+    }
 
-	@Override
-	public void onEnable()
-	{
-		try
-		{
-			scriptEngine.invokeFunction("onEnable");
-		}
-		catch (ScriptException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch (NoSuchMethodException ignored)
-		{
-		}
-	}
+    @Override
+    public void onEnable()
+    {
+        try {
+            script_engine.invokeFunction("on_enable");
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException ignored) {
+        }
+    }
 
-	public CommandBuilder<CommandSender> newCommand(String name)
-	{
-		return new CommandBuilder<>(new ResourceName(getName(), name));
-	}
+    public CommandBuilder<CommandSender> new_command(String name)
+    {
+        return new CommandBuilder<>(new ResourceName(getName(), name));
+    }
 
-	public void registerCommand(org.aperlambda.kimiko.Command<CommandSender> command)
-	{
-		Shulker.getCommandManager().register(command);
-	}
+    public void register_command(org.aperlambda.kimiko.Command<CommandSender> command)
+    {
+        Shulker.get_commands().register(command);
+    }
 
-	public void requireAccess(String name, String className) throws ClassNotFoundException, ScriptException
-	{
-		JSUtils.loadClass(scriptEngine, name, Class.forName(className));
-	}
+    public void require_access(String name, String className) throws ClassNotFoundException, ScriptException
+    {
+        JSUtils.load_class(script_engine, name, Class.forName(className));
+    }
 
-	@Override
-	public boolean isNaggable()
-	{
-		return false;
-	}
+    @Override
+    public boolean isNaggable()
+    {
+        return false;
+    }
 
-	@Override
-	public void setNaggable(boolean b)
-	{
+    @Override
+    public void setNaggable(boolean b)
+    {
 
-	}
+    }
 
-	@Override
-	public ChunkGenerator getDefaultWorldGenerator(String s, String s1)
-	{
-		return null;
-	}
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String s, String s1)
+    {
+        return null;
+    }
 
-	@Override
-	public final Logger getLogger()
-	{
-		return logger;
-	}
+    @Override
+    public final Logger getLogger()
+    {
+        return logger;
+    }
 
-	@Override
-	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings)
-	{
-		return false;
-	}
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings)
+    {
+        return false;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
-	{
-		return null;
-	}
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+    {
+        return null;
+    }
 
-	protected NashornScriptEngine getScriptEngine()
-	{
-		return scriptEngine;
-	}
+    protected NashornScriptEngine get_script_engine()
+    {
+        return script_engine;
+    }
 
-	final void init(JSPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, NashornScriptEngine engine)
-	{
-		this.loader = loader;
-		this.file = file;
-		this.description = description;
-		this.dataFolder = dataFolder;
-		this.configFile = new File(dataFolder, "config.yml");
-		this.logger = new PluginLogger(this);
-		eventsManager = new JSEventsManager(this);
-		this.scriptEngine = engine;
-		scriptEngine.put("plugin", this);
-		scriptEngine.put("logger", logger);
-		scriptEngine.put("events", eventsManager);
-	}
+    final void init(JSPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file, NashornScriptEngine engine)
+    {
+        this.loader = loader;
+        this.file = file;
+        this.description = description;
+        this.data_folder = dataFolder;
+        this.config_file = new File(dataFolder, "config.yml");
+        this.logger = new PluginLogger(this);
+        events_manager = new JSEventsManager(this);
+        this.script_engine = engine;
+        script_engine.put("plugin", this);
+        script_engine.put("logger", logger);
+        script_engine.put("events", events_manager);
+    }
 }

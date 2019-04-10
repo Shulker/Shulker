@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -18,53 +18,53 @@ import org.shulker.core.entity.ShulkerPlayer;
 
 public class ReflectShulkerPlayer implements ShulkerPlayer<Player>
 {
-	@NotNull
-	private Player player;
+    @NotNull
+    private Player player;
 
-	private Object mcPlayer;
+    private Object mc_player;
 
-	public ReflectShulkerPlayer(@NotNull Player player)
-	{
-		this.player = player;
-	}
+    public ReflectShulkerPlayer(@NotNull Player player)
+    {
+        this.player = player;
+    }
 
-	@Override
-	public void sendMessage(ChatMessageType type, BaseComponent... message)
-	{
-		var chatVisibility = getChatVisibility();
-		if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
-			return;
-		player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.valueOf(type.name()), message);
-	}
+    @Override
+    public void send_message(ChatMessageType type, BaseComponent... message)
+    {
+        var chat_visibility = get_chat_visibility();
+        if ((chat_visibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chat_visibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
+            return;
+        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.valueOf(type.name()), message);
+    }
 
-	@Override
-	public void sendRawPacket(Object rawPacket)
-	{
+    @Override
+    public void send_raw_packet(Object raw_packet)
+    {
 
-	}
+    }
 
-	@Override
-	public int getPing()
-	{
-		return -1;
-	}
+    @Override
+    public int get_ping()
+    {
+        return -1;
+    }
 
-	@Override
-	public String getLocale()
-	{
-		return player.getLocale();
-	}
+    @Override
+    public String get_locale()
+    {
+        return player.getLocale();
+    }
 
-	@Override
-	public ChatVisibility getChatVisibility()
-	{
-		return ChatVisibility.FULL;
-	}
+    @Override
+    public ChatVisibility get_chat_visibility()
+    {
+        return ChatVisibility.FULL;
+    }
 
-	@NotNull
-	@Override
-	public Player getPlayerHandle()
-	{
-		return player;
-	}
+    @NotNull
+    @Override
+    public Player get_player_handle()
+    {
+        return player;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -12,9 +12,9 @@ package org.shulker.core;
 /**
  * Represents the types of debug of Shulker.
  */
-public enum  DebugType
+public enum DebugType
 {
-	BASE,
-	PACKETS,
-	CONNECTIONS
+    BASE,
+    PACKETS,
+    CONNECTIONS
 }

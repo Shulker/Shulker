@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -13,29 +13,29 @@ load("nashorn:mozilla_compat.js");
 // Import base packages
 importPackage(java.lang, java.util, java.util.stream);
 
-function registerCommand(plugin, object)
+function register_command(plugin, object)
 {
-  if (object.usageGetter === undefined)
-    object.usageGetter = (sender) => object.usage;
-  if (object.descriptionGetter === undefined)
-    object.descriptionGetter = (sender) => object.description;
+  if (object.usage_getter === undefined)
+    object.usage_getter = (sender) => object.usage;
+  if (object.description_getter === undefined)
+    object.description_getter = (sender) => object.description;
 
-  let command = plugin.newCommand(object.name)
+  let command = plugin.new_command(object.name)
                       .usage(object.usage)
-                      .usage(object.usageGetter)
+                      .usage(object.usage_getter)
                       .description(object.description)
-                      .description(object.descriptionGetter)
+                      .description(object.description_getter)
                       .executor(object.executor);
   if (!(object.permission === undefined))
     command.permission(object.permission);
   if (!(object.aliases === undefined))
     command.aliases(object.aliases);
-  if (!(object.tabCompleter === undefined))
-    command.tabCompleter(object.tabCompleter);
-  plugin.registerCommand(command.build())
+  if (!(object.tab_completer === undefined))
+    command.tab_completer(object.tab_completer);
+  plugin.register_command(command.build())
 }
 
-function newResource(domain, name)
+function new_resource(domain, name)
 {
   return new ResourceName(domain, name);
 }
@@ -45,8 +45,8 @@ function log(msg)
   __SHULKER__.logInfo(msg)
 }
 
-function loadDependency(name)
+function load_dependency(name)
 {
-  let pluginsFile = __SHULKER__.getPluginsDirectory();
-  load(new java.io.File(pluginsFile, name).getAbsolutePath())
+  let plugins_dir = __SHULKER__.get_plugins_dir();
+  load(new java.io.File(plugins_dir, name).getAbsolutePath())
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -22,54 +22,54 @@ import org.shulker.core.entity.ShulkerPlayer;
 
 public class ShulkerPlayerV112R1 implements ShulkerPlayer<Player>
 {
-	@NotNull
-	private Player       player;
-	@NotNull
-	private EntityPlayer mcPlayer;
+    @NotNull
+    private Player       player;
+    @NotNull
+    private EntityPlayer mc_player;
 
-	public ShulkerPlayerV112R1(@NotNull Player player)
-	{
-		this.player = player;
-		mcPlayer = ((CraftPlayer) player).getHandle();
-	}
+    public ShulkerPlayerV112R1(@NotNull Player player)
+    {
+        this.player = player;
+        mc_player = ((CraftPlayer) player).getHandle();
+    }
 
-	@Override
-	public void sendMessage(ChatMessageType type, BaseComponent... message)
-	{
-		var chatVisibility = getChatVisibility();
-		if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
-			return;
-		player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.valueOf(type.name()), message);
-	}
+    @Override
+    public void send_message(ChatMessageType type, BaseComponent... message)
+    {
+        var chatVisibility = get_chat_visibility();
+        if ((chatVisibility == ChatVisibility.HIDDEN && type != ChatMessageType.ACTION_BAR) || (chatVisibility == ChatVisibility.SYSTEM && type == ChatMessageType.CHAT))
+            return;
+        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.valueOf(type.name()), message);
+    }
 
-	@Override
-	public void sendRawPacket(Object rawPacket)
-	{
-		if (rawPacket instanceof Packet)
-			mcPlayer.playerConnection.networkManager.sendPacket((Packet<?>) rawPacket);
-	}
+    @Override
+    public void send_raw_packet(Object raw_packet)
+    {
+        if (raw_packet instanceof Packet)
+            mc_player.playerConnection.networkManager.sendPacket((Packet<?>) raw_packet);
+    }
 
-	@Override
-	public int getPing()
-	{
-		return mcPlayer.ping;
-	}
+    @Override
+    public int get_ping()
+    {
+        return mc_player.ping;
+    }
 
-	@Override
-	public String getLocale()
-	{
-		return player.getLocale();
-	}
+    @Override
+    public String get_locale()
+    {
+        return player.getLocale();
+    }
 
-	@Override
-	public ChatVisibility getChatVisibility()
-	{
-		return Shulker.getMCManager().getWrapperManager().getChatVisibilityWrapper().toShulker(mcPlayer.getChatFlags());
-	}
+    @Override
+    public ChatVisibility get_chat_visibility()
+    {
+        return Shulker.get_mc().get_wrapper_manager().get_chat_visibility_wrapper().to_shulker(mc_player.getChatFlags());
+    }
 
-	@Override
-	public @NotNull Player getPlayerHandle()
-	{
-		return player;
-	}
+    @Override
+    public @NotNull Player get_player_handle()
+    {
+        return player;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -18,55 +18,52 @@ import java.util.List;
 import java.util.Map;
 
 import static org.shulker.core.ShulkerConstants.RES_SYMBOLS;
-import static org.shulker.core.config.ConfigManager.getConfigManager;
+import static org.shulker.core.config.ConfigManager.get;
 
 public class ShulkerSymbols
 {
-	private JsonConfig              config;
-	private HashMap<String, String> symbols = new HashMap<>();
+    private JsonConfig              config;
+    private HashMap<String, String> symbols = new HashMap<>();
 
-	/**
-	 * Loads or reloads the configuration file.
-	 */
-	@SuppressWarnings("unchecked")
-	public void load()
-	{
-		if (config == null)
-			config = getConfigManager().newJsonConfig(RES_SYMBOLS, ResourcesManager.getDefaultResourcesManager().getResourceFromJar("symbols.json"));
+    /**
+     * Loads or reloads the configuration file.
+     */
+    @SuppressWarnings("unchecked")
+    public void load()
+    {
+        if (this.config == null)
+            this.config = get().new_json_config(RES_SYMBOLS, ResourcesManager.get_default_resources_manager().get_resource_from_jar("symbols.json"));
 
-		Shulker.logInfo(Shulker.getPrefix(), "Loading symbols...");
-		config.load();
-		symbols = config.get("symbols", new HashMap<>(), HashMap.class);
-	}
+        Shulker.log_info(Shulker.get_prefix(), "Loading symbols...");
+        this.config.load();
+        this.symbols = this.config.get("symbols", new HashMap<>(), HashMap.class);
+    }
 
-	/**
-	 * Gets all the symbols stored in the configuration.
-	 *
-	 * @return An HashMap.
-	 */
-	@SuppressWarnings("unchecked")
-	public HashMap<String, String> getSymbols()
-	{
-		return symbols;
-	}
+    /**
+     * Gets all the symbols stored in the configuration.
+     *
+     * @return An HashMap.
+     */
+    @SuppressWarnings("unchecked")
+    public HashMap<String, String> get_symbols()
+    {
+        return this.symbols;
+    }
 
-	public String replaceWithSymbols(String input)
-	{
-		return replaceWithSymbols(input, null);
-	}
+    public String replace_with_symbols(String input)
+    {
+        return this.replace_with_symbols(input, null);
+    }
 
-	public String replaceWithSymbols(String input, List<String> ignored)
-	{
-		for (Map.Entry<String, String> entry : symbols.entrySet())
-		{
-			if (ignored != null)
-			{
-				if (!ignored.contains(entry.getKey()))
-					input = input.replace(entry.getKey(), entry.getValue());
-			}
-			else
-				input = input.replace(entry.getKey(), entry.getValue());
-		}
-		return input;
-	}
+    public String replace_with_symbols(String input, List<String> ignored)
+    {
+        for (Map.Entry<String, String> entry : this.symbols.entrySet()) {
+            if (ignored != null) {
+                if (!ignored.contains(entry.getKey()))
+                    input = input.replace(entry.getKey(), entry.getValue());
+            } else
+                input = input.replace(entry.getKey(), entry.getValue());
+        }
+        return input;
+    }
 }

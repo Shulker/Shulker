@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -16,27 +16,27 @@ import org.shulker.core.wrappers.ChatComponentWrapper;
 
 public class ChatComponentWrapperV112R1 extends ChatComponentWrapper
 {
-	public static final ChatComponentWrapperV112R1 INSTANCE = new ChatComponentWrapperV112R1();
+    public static final ChatComponentWrapperV112R1 INSTANCE = new ChatComponentWrapperV112R1();
 
-	@Override
-	public Object fromShulker(BaseComponent... shulkerObject)
-	{
-		if (shulkerObject == null)
-			return null;
-		return IChatBaseComponent.ChatSerializer.a(ComponentSerializer.toString(shulkerObject));
-	}
+    @Override
+    public Object from_shulker(BaseComponent... shulker_object)
+    {
+        if (shulker_object == null)
+            return null;
+        return IChatBaseComponent.ChatSerializer.a(ComponentSerializer.toString(shulker_object));
+    }
 
-	@Override
-	public BaseComponent[] toShulker(Object object)
-	{
-		if (!(object instanceof IChatBaseComponent))
-			return null;
-		return ComponentSerializer.parse(IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) object));
-	}
+    @Override
+    public BaseComponent[] to_shulker(Object object)
+    {
+        if (!(object instanceof IChatBaseComponent))
+            return null;
+        return ComponentSerializer.parse(IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) object));
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return IChatBaseComponent.class;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return IChatBaseComponent.class;
+    }
 }

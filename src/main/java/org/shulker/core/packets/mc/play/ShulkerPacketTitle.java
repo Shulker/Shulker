@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -27,158 +27,158 @@ import java.util.Arrays;
  */
 public abstract class ShulkerPacketTitle<T> extends ShulkerPacket<T>
 {
-	public ShulkerPacketTitle(T packet)
-	{
-		super(packet);
-	}
+    public ShulkerPacketTitle(T packet)
+    {
+        super(packet);
+    }
 
-	/**
-	 * Gets the action to execute of the title.
-	 *
-	 * @return The action to performe.
-	 */
-	public abstract TitleAction getAction();
+    /**
+     * Gets the action to execute of the title.
+     *
+     * @return The action to performe.
+     */
+    public abstract TitleAction get_action();
 
-	/**
-	 * Sets the action to execute of the title.
-	 *
-	 * @param action The action to perform.
-	 */
-	public abstract void setAction(TitleAction action);
+    /**
+     * Sets the action to execute of the title.
+     *
+     * @param action The action to perform.
+     */
+    public abstract void set_action(TitleAction action);
 
-	/**
-	 * Gets the ChatComponent value.
-	 * It's defined for some actions:
-	 * <ul>
-	 * <li>{@link TitleAction#TITLE TITLE}</li>
-	 * <li>{@link TitleAction#SUBTITLE SUBTITLE}</li>
-	 * <li>{@link TitleAction#ACTION_BAR ACTION_BAR}</li>
-	 * </ul>
-	 *
-	 * @return The ChatComponent value.
-	 */
-	public abstract @Nullable BaseComponent[] getChatComponentValue();
+    /**
+     * Gets the ChatComponent value.
+     * It's defined for some actions:
+     * <ul>
+     * <li>{@link TitleAction#TITLE TITLE}</li>
+     * <li>{@link TitleAction#SUBTITLE SUBTITLE}</li>
+     * <li>{@link TitleAction#ACTION_BAR ACTION_BAR}</li>
+     * </ul>
+     *
+     * @return The ChatComponent value.
+     */
+    public abstract @Nullable BaseComponent[] get_chat_component_value();
 
-	/**
-	 * Sets the ChatComponent value.
-	 * The value can be null, only define it for the actions: {@code TITLE}, {@code SUBTITLE}, {@code ACTION_BAR}.
-	 *
-	 * @param components The ChatComponent value, mays be null.
-	 */
-	public abstract void setChatComponentValue(@Nullable BaseComponent... components);
+    /**
+     * Sets the ChatComponent value.
+     * The value can be null, only define it for the actions: {@code TITLE}, {@code SUBTITLE}, {@code ACTION_BAR}.
+     *
+     * @param components The ChatComponent value, mays be null.
+     */
+    public abstract void set_chat_component_value(@Nullable BaseComponent... components);
 
-	/**
-	 * Gets the fade in of the title.
-	 * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
-	 *
-	 * @return Ticks to spend fading in.
-	 */
-	public abstract int getFadeIn();
+    /**
+     * Gets the fade in of the title.
+     * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
+     *
+     * @return Ticks to spend fading in.
+     */
+    public abstract int get_fade_in();
 
-	/**
-	 * Sets the fade in of the title.
-	 * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
-	 *
-	 * @param fadeIn Ticks to spend fading in.
-	 */
-	public abstract void setFadeIn(int fadeIn);
+    /**
+     * Sets the fade in of the title.
+     * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
+     *
+     * @param fade_in Ticks to spend fading in.
+     */
+    public abstract void set_fade_in(int fade_in);
 
-	/**
-	 * Gets the stay time of the title.
-	 * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
-	 *
-	 * @return Ticks to keep the title displayed.
-	 */
-	public abstract int getStay();
+    /**
+     * Gets the stay time of the title.
+     * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
+     *
+     * @return Ticks to keep the title displayed.
+     */
+    public abstract int get_stay();
 
-	/**
-	 * Sets the stay time of the title.
-	 * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
-	 *
-	 * @param stay Ticks to keep the title displayed.
-	 */
-	public abstract void setStay(int stay);
+    /**
+     * Sets the stay time of the title.
+     * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
+     *
+     * @param stay Ticks to keep the title displayed.
+     */
+    public abstract void set_stay(int stay);
 
-	/**
-	 * Gets the fade out of the title.
-	 * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
-	 *
-	 * @return Ticks to spend fading out.
-	 */
-	public abstract int getFadeOut();
+    /**
+     * Gets the fade out of the title.
+     * <p>Defined if the action is {@link TitleAction#TIMES TIMES}</p>
+     *
+     * @return Ticks to spend fading out.
+     */
+    public abstract int get_fade_out();
 
-	/**
-	 * Sets the fade out of the title.
-	 * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
-	 *
-	 * @param fadeOut Ticks to spend fading out, not when to start fading out.
-	 */
-	public abstract void setFadeOut(int fadeOut);
+    /**
+     * Sets the fade out of the title.
+     * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
+     *
+     * @param fade_out Ticks to spend fading out, not when to start fading out.
+     */
+    public abstract void set_fade_out(int fade_out);
 
-	/**
-	 * Sets the times and display of the title.
-	 * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
-	 *
-	 * @param fadeIn  Ticks to spend fading in.
-	 * @param stay    Ticks to keep the title displayed.
-	 * @param fadeOut Ticks to spend fading out, not when to start fading out.
-	 * @see ShulkerPacketTitle#setFadeIn(int)
-	 * @see ShulkerPacketTitle#setStay(int)
-	 * @see ShulkerPacketTitle#setFadeOut(int)
-	 */
-	public void setTimes(int fadeIn, int stay, int fadeOut)
-	{
-		setFadeIn(fadeIn);
-		setStay(stay);
-		setFadeOut(fadeOut);
-	}
+    /**
+     * Sets the times and display of the title.
+     * <p>Use it with {@link TitleAction#TIMES TIMES action}</p>
+     *
+     * @param fade_in  Ticks to spend fading in.
+     * @param stay     Ticks to keep the title displayed.
+     * @param fade_out Ticks to spend fading out, not when to start fading out.
+     * @see ShulkerPacketTitle#set_fade_in(int)
+     * @see ShulkerPacketTitle#set_stay(int)
+     * @see ShulkerPacketTitle#set_fade_out(int)
+     */
+    public void set_times(int fade_in, int stay, int fade_out)
+    {
+        set_fade_in(fade_in);
+        set_stay(stay);
+        set_fade_out(fade_out);
+    }
 
-	@Override
-	public void reset()
-	{
-		setAction(null);
-		setTimes(0, 0, 0);
-		setChatComponentValue((BaseComponent[]) null);
-	}
+    @Override
+    public void reset()
+    {
+        set_action(null);
+        set_times(0, 0, 0);
+        set_chat_component_value((BaseComponent[]) null);
+    }
 
-	@Override
-	public String toString()
-	{
-		return "ShulkerPacketTitle{action:" + getAction().getName() + ",chat:" +
-				Arrays.toString(getChatComponentValue()) + ",fadeIn:" + getFadeIn() + ",stay:" + getStay() +
-				",fadeOut:" + getFadeOut() + "}";
-	}
+    @Override
+    public String toString()
+    {
+        return "ShulkerPacketTitle{action:" + get_action().get_name() + ",chat:" +
+                Arrays.toString(get_chat_component_value()) + ",fadeIn:" + get_fade_in() + ",stay:" + get_stay() +
+                ",fadeOut:" + get_fade_out() + "}";
+    }
 
-	/**
-	 * Represents the available actions to manage titles.
-	 */
-	public static enum TitleAction implements Nameable
-	{
-		TITLE("Set title", "TITLE"),
-		SUBTITLE("Set subtitle", "SUBTITLE"),
-		ACTION_BAR("Set action bar", "ACTION_BAR"),
-		TIMES("Set times and display", "TIMES"),
-		HIDE("Hide", "CLEAR"),
-		RESET("Reset", "RESET");
+    /**
+     * Represents the available actions to manage titles.
+     */
+    public static enum TitleAction implements Nameable
+    {
+        TITLE("Set title", "TITLE"),
+        SUBTITLE("Set subtitle", "SUBTITLE"),
+        ACTION_BAR("Set action bar", "ACTION_BAR"),
+        TIMES("Set times and display", "TIMES"),
+        HIDE("Hide", "CLEAR"),
+        RESET("Reset", "RESET");
 
-		private String name;
-		private String nms;
+        private String name;
+        private String nms;
 
-		TitleAction(String name, String nms)
-		{
-			this.name = name;
-			this.nms = nms;
-		}
+        TitleAction(String name, String nms)
+        {
+            this.name = name;
+            this.nms = nms;
+        }
 
-		@Override
-		public @NotNull String getName()
-		{
-			return name;
-		}
+        @Override
+        public @NotNull String get_name()
+        {
+            return name;
+        }
 
-		public String getNmsEquivalent()
-		{
-			return nms;
-		}
-	}
+        public String getNmsEquivalent()
+        {
+            return nms;
+        }
+    }
 }

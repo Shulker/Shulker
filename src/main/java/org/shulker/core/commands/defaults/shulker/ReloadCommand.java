@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -26,25 +26,25 @@ import static net.md_5.bungee.api.ChatColor.GREEN;
 
 public class ReloadCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
-	@Override
-	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		if (args.length != 0)
-			return CommandResult.ERROR_USAGE;
+    @Override
+    public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        if (args.length != 0)
+            return CommandResult.ERROR_USAGE;
 
-		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading...");
-		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "configuration" + GREEN + "...");
-		Shulker.getConfiguration().load();
-		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reloading " + GOLD + "symbols" + GREEN + "...");
-		Shulker.getSymbolsManager().load();
-		context.sendMessage(Shulker.getPrefixIG() + GREEN + " Reload done!");
+        context.send_message(Shulker.get_prefix_ig() + GREEN + " Reloading...");
+        context.send_message(Shulker.get_prefix_ig() + GREEN + " Reloading " + GOLD + "configuration" + GREEN + "...");
+        Shulker.get_configuration().load();
+        context.send_message(Shulker.get_prefix_ig() + GREEN + " Reloading " + GOLD + "symbols" + GREEN + "...");
+        Shulker.get_symbols_manager().load();
+        context.send_message(Shulker.get_prefix_ig() + GREEN + " Reload done!");
 
-		return CommandResult.SUCCESS;
-	}
+        return CommandResult.SUCCESS;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		return new ArrayList<>();
-	}
+    @Override
+    public List<String> on_tab_complete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        return new ArrayList<>();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -19,18 +19,18 @@ import static net.md_5.bungee.api.ChatColor.*;
 
 public class ShulkerConstants
 {
-	public static final String SHULKER_DOMAIN = "shulker";
-	public static final String SHULKER_PREFIX = "[Shulker]";
-	public static final String SHULKER_IG_PREFIX = GRAY + "[" + LIGHT_PURPLE + "Shulker" + GRAY + "]" + RESET;
+    public static final String SHULKER_DOMAIN    = "shulker";
+    public static final String SHULKER_PREFIX    = "[Shulker]";
+    public static final String SHULKER_IG_PREFIX = GRAY + "[" + LIGHT_PURPLE + "Shulker" + GRAY + "]" + RESET;
 
-	public static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
-	public static final NashornScriptEngine JS_ENGINE             = (NashornScriptEngine) SCRIPT_ENGINE_MANAGER.getEngineByName("nashorn");
+    public static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
+    public static final NashornScriptEngine JS_ENGINE             = (NashornScriptEngine) SCRIPT_ENGINE_MANAGER.getEngineByName("nashorn");
 
-	/*
-		Resources
-	 */
-	public static final File BASE_DIR = new File(".").getAbsoluteFile();
+    /*
+        Resources
+     */
+    public static final File BASE_DIR = new File(".").getAbsoluteFile();
 
-	public static final ResourceName RES_CONFIG = new ResourceName(SHULKER_DOMAIN, "config");
-	public static final ResourceName RES_SYMBOLS = new ResourceName(SHULKER_DOMAIN, "symbols");
+    public static final ResourceName RES_CONFIG  = new ResourceName(SHULKER_DOMAIN, "config");
+    public static final ResourceName RES_SYMBOLS = new ResourceName(SHULKER_DOMAIN, "symbols");
 }

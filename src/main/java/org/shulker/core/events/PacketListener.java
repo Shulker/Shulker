@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -14,17 +14,17 @@ package org.shulker.core.events;
  */
 public interface PacketListener
 {
-	/**
-	 * Fired when a packet is received by the server.
-	 *
-	 * @param event The event.
-	 */
-	void onPacketReceive(PacketEvent event);
+    /**
+     * Fired when a packet is received by the server.
+     *
+     * @param event The event.
+     */
+    void on_packet_receive(PacketEvent event);
 
-	/**
-	 * Fired when a packet is sent by the server.
-	 *
-	 * @param event The event.
-	 */
-	void onPacketSend(PacketEvent event);
+    /**
+     * Fired when a packet is sent by the server.
+     *
+     * @param event The event.
+     */
+    void on_packet_send(PacketEvent event);
 }

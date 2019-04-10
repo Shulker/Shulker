@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -29,43 +29,43 @@ import static net.md_5.bungee.api.ChatColor.LIGHT_PURPLE;
 
 public class AboutCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
-	private Command<CommandSender> command;
+    private Command<CommandSender> command;
 
-	public AboutCommand()
-	{
-		command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "about"))
-				.usage("<command>")
-				.description("Displays information about Shulker.")
-				.permission("shulker.commands.about")
-				.aliases("info")
-				.executor(this)
-				.tabCompleter(this)
-				.build();
-	}
+    public AboutCommand()
+    {
+        command = new CommandBuilder<CommandSender>(new ResourceName("shulker", "about"))
+                .usage("<command>")
+                .description("Displays information about Shulker.")
+                .permission("shulker.commands.about")
+                .aliases("info")
+                .executor(this)
+                .tab_completer(this)
+                .build();
+    }
 
-	@Override
-	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		if (args.length != 0)
-			return CommandResult.ERROR_USAGE;
+    @Override
+    public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        if (args.length != 0)
+            return CommandResult.ERROR_USAGE;
 
-		context.sendMessage(DARK_PURPLE + "====== " + LIGHT_PURPLE + "About" + DARK_PURPLE + " ======");
-		context.sendMessage(DARK_PURPLE + "Version: " + LIGHT_PURPLE + Shulker.getVersion());
-		context.sendMessage(DARK_PURPLE + "Authors: " + LIGHT_PURPLE + ((ShulkerSpigotPlugin) Shulker.getShulker()).getDescription().getAuthors());
-		context.sendMessage(DARK_PURPLE + "Java: " + LIGHT_PURPLE + System.getProperty("java.version"));
-		context.sendMessage(DARK_PURPLE + "Internal Server Version: " + LIGHT_PURPLE + ShulkerSpigotPlugin.getServerVersion());
+        context.send_message(DARK_PURPLE + "====== " + LIGHT_PURPLE + "About" + DARK_PURPLE + " ======");
+        context.send_message(DARK_PURPLE + "Version: " + LIGHT_PURPLE + Shulker.get_version());
+        context.send_message(DARK_PURPLE + "Authors: " + LIGHT_PURPLE + ((ShulkerSpigotPlugin) Shulker.get()).getDescription().getAuthors());
+        context.send_message(DARK_PURPLE + "Java: " + LIGHT_PURPLE + System.getProperty("java.version"));
+        context.send_message(DARK_PURPLE + "Internal Server Version: " + LIGHT_PURPLE + ShulkerSpigotPlugin.get_server_version());
 
-		return CommandResult.SUCCESS;
-	}
+        return CommandResult.SUCCESS;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		return new ArrayList<>();
-	}
+    @Override
+    public List<String> on_tab_complete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        return new ArrayList<>();
+    }
 
-	public Command<CommandSender> getResultCommand()
-	{
-		return command;
-	}
+    public Command<CommandSender> get_result_command()
+    {
+        return command;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -30,136 +30,136 @@ import java.util.function.Function;
 
 public abstract class MinecraftManager implements Nameable
 {
-	protected final HashMap<UUID, ShulkerPlayer<Player>>                players  = new HashMap<>();
-	protected final HashMap<String, Function<Object, ShulkerPacket<?>>> decoders = new HashMap<>();
-	protected       boolean                                             init     = false;
+    protected final HashMap<UUID, ShulkerPlayer<Player>>                players  = new HashMap<>();
+    protected final HashMap<String, Function<Object, ShulkerPacket<?>>> decoders = new HashMap<>();
+    protected       boolean                                             init     = false;
 
-	/**
-	 * Initializes the MinecraftManager.
-	 */
-	public abstract void init();
+    /**
+     * Initializes the MinecraftManager.
+     */
+    public abstract void init();
 
-	public ShulkerPlayer<Player> getPlayer(@Nullable Player player)
-	{
-		if (player == null)
-			return null;
-		return getPlayer(player.getUniqueId());
-	}
+    public ShulkerPlayer<Player> get_player(@Nullable Player player)
+    {
+        if (player == null)
+            return null;
+        return get_player(player.getUniqueId());
+    }
 
-	public ShulkerPlayer<Player> getPlayer(@NotNull UUID uuid)
-	{
-		return players.get(uuid);
-	}
+    public ShulkerPlayer<Player> get_player(@NotNull UUID uuid)
+    {
+        return players.get(uuid);
+    }
 
-	public abstract void addPlayer(@NotNull Player player);
+    public abstract void add_player(@NotNull Player player);
 
-	public void removePlayer(@NotNull UUID player)
-	{
-		players.remove(player);
-	}
+    public void remove_player(@NotNull UUID player)
+    {
+        players.remove(player);
+    }
 
-	/**
-	 * Gets the packet from the server packet object.
-	 *
-	 * @param packet The server packet object.
-	 * @return The Shulker packet.
-	 */
-	public ShulkerPacket<?> fromPacket(Object packet)
-	{
-		var decoder = decoders.get(packet.getClass().getSimpleName());
-		if (decoder == null)
-			decoder = DefaultShulkerPacket::new;
-		return decoder.apply(packet);
-	}
+    /**
+     * Gets the packet from the server packet object.
+     *
+     * @param packet The server packet object.
+     * @return The Shulker packet.
+     */
+    public ShulkerPacket<?> from_packet(Object packet)
+    {
+        var decoder = decoders.get(packet.getClass().getSimpleName());
+        if (decoder == null)
+            decoder = DefaultShulkerPacket::new;
+        return decoder.apply(packet);
+    }
 
-	public abstract ShulkerPacketPlayOutChat<?> newPacketPlayOutChat();
+    public abstract ShulkerPacketPlayOutChat<?> new_packet_play_out_chat();
 
-	public abstract ShulkerPacketPlayOutChat<?> newPacketPlayOutChat(BaseComponent... components);
+    public abstract ShulkerPacketPlayOutChat<?> new_packet_play_out_chat(BaseComponent... components);
 
-	public abstract ShulkerPacketPlayOutChat<?> newPacketPlayOutChat(Object packet);
+    public abstract ShulkerPacketPlayOutChat<?> new_packet_play_out_chat(Object packet);
 
-	public abstract ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter();
+    public abstract ShulkerPacketPlayerListHeaderFooter<?> new_packet_play_out_playerlist_header_footer();
 
-	public abstract ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer);
+    public abstract ShulkerPacketPlayerListHeaderFooter<?> new_packet_play_out_playerlist_header_footer(BaseComponent[] header, BaseComponent[] footer);
 
-	public abstract ShulkerPacketPlayerListHeaderFooter<?> newPacketPlayOutPlayerListHeaderFooter(Object packet);
+    public abstract ShulkerPacketPlayerListHeaderFooter<?> new_packet_play_out_playerlist_header_footer(Object packet);
 
-	public abstract ShulkerPacketTitle<?> newPacketTitle();
+    public abstract ShulkerPacketTitle<?> new_packet_title();
 
-	public abstract ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action);
+    public abstract ShulkerPacketTitle<?> new_packet_title(@NotNull ShulkerPacketTitle.TitleAction action);
 
-	public abstract ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue);
+    public abstract ShulkerPacketTitle<?> new_packet_title(@NotNull ShulkerPacketTitle.TitleAction action, @NotNull BaseComponent... chatValue);
 
-	public abstract ShulkerPacketTitle<?> newPacketTitle(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
+    public abstract ShulkerPacketTitle<?> new_packet_title(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
 
-	public abstract ShulkerPacketTitle<?> newPacketTitle(Object packet);
+    public abstract ShulkerPacketTitle<?> new_packet_title(Object packet);
 
 	/*
 		Inventory
 	 */
 
-	public abstract ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow();
+    public abstract ShulkerPacketOutOpenWindow<?> new_packet_play_out_open_window();
 
-	public abstract ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots);
+    public abstract ShulkerPacketOutOpenWindow<?> new_packet_play_out_open_window(int windowId, String windowType, BaseComponent[] title, int slots);
 
-	public abstract ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(int windowId, String windowType, BaseComponent[] title, int slots, int entityId);
+    public abstract ShulkerPacketOutOpenWindow<?> new_packet_play_out_open_window(int windowId, String windowType, BaseComponent[] title, int slots, int entityId);
 
-	public abstract ShulkerPacketOutOpenWindow<?> newPacketPlayOutOpenWindow(Object packet);
+    public abstract ShulkerPacketOutOpenWindow<?> new_packet_play_out_open_window(Object packet);
 
-	public abstract ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems();
+    public abstract ShulkerPacketOutWindowItems<?> new_packet_play_out_window_items();
 
-	public abstract ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, List<ItemStack> items);
+    public abstract ShulkerPacketOutWindowItems<?> new_packet_play_out_window_items(int windowId, List<ItemStack> items);
 
-	public abstract ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(int windowId, ItemStack... items);
+    public abstract ShulkerPacketOutWindowItems<?> new_packet_play_out_window_items(int windowId, ItemStack... items);
 
-	public abstract ShulkerPacketOutWindowItems<?> newPacketPlayOutWindowItems(Object packet);
+    public abstract ShulkerPacketOutWindowItems<?> new_packet_play_out_window_items(Object packet);
 
-	public abstract ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty();
+    public abstract ShulkerPacketOutWindowProperty<?> new_packet_play_out_window_property();
 
-	public abstract ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(int windowId, short property, short value);
+    public abstract ShulkerPacketOutWindowProperty<?> new_packet_play_out_window_property(int windowId, short property, short value);
 
-	public abstract ShulkerPacketOutWindowProperty<?> newPacketPlayOutWindowProperty(Object packet);
+    public abstract ShulkerPacketOutWindowProperty<?> new_packet_play_out_window_property(Object packet);
 
-	public abstract ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot();
+    public abstract ShulkerPacketOutSetSlot<?> new_packet_play_out_set_slot();
 
-	public abstract ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(int windowId, int slot, ItemStack item);
+    public abstract ShulkerPacketOutSetSlot<?> new_packet_play_out_set_slot(int windowId, int slot, ItemStack item);
 
-	public abstract ShulkerPacketOutSetSlot<?> newPacketPlayOutSetSlot(Object packet);
+    public abstract ShulkerPacketOutSetSlot<?> new_packet_play_out_set_slot(Object packet);
 
 	/*
 		PACKET - STATUS
 	 */
 
-	public abstract ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo();
+    public abstract ShulkerPacketStatusOutServerInfo<?> new_packet_status_out_server_info();
 
-	public abstract ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(ServerPing serverPing);
+    public abstract ShulkerPacketStatusOutServerInfo<?> new_packet_status_out_server_info(ServerPing serverPing);
 
-	public abstract ShulkerPacketStatusOutServerInfo<?> newPacketStatusOutServerInfo(Object packet);
+    public abstract ShulkerPacketStatusOutServerInfo<?> new_packet_status_out_server_info(Object packet);
 
-	/**
-	 * Gets the Wrapper Manager.
-	 *
-	 * @return The wrapper manager.
-	 */
-	public abstract WrapperManager getWrapperManager();
+    /**
+     * Gets the Wrapper Manager.
+     *
+     * @return The wrapper manager.
+     */
+    public abstract WrapperManager get_wrapper_manager();
 
-	/**
-	 * Represents the manager of wrappers.
-	 */
-	public static interface WrapperManager extends Nameable
-	{
-		ChatComponentWrapper getChatComponentWrapper();
+    /**
+     * Represents the manager of wrappers.
+     */
+    public static interface WrapperManager extends Nameable
+    {
+        ChatComponentWrapper get_chat_componenet_wrapper();
 
-		ChatMessageTypeWrapper getChatMessageTypeWrapper();
+        ChatMessageTypeWrapper get_chat_message_type_wrapper();
 
-		ChatVisibilityWrapper getChatVisibilityWrapper();
+        ChatVisibilityWrapper get_chat_visibility_wrapper();
 
-		TitleActionWrapper getTitleActionWrapper();
+        TitleActionWrapper get_title_action_wrapper();
 
-		ItemStackWrapper getItemStackWrapper();
+        ItemStackWrapper get_item_stack_wrapper();
 
-		PlayerWrapper getPlayerWrapper();
+        PlayerWrapper get_player_wrapper();
 
-		ServerPingWrapper getServerPingWrapper();
-	}
+        ServerPingWrapper get_server_ping_wrapper();
+    }
 }

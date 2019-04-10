@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -20,36 +20,36 @@ import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
  */
 public class DefaultShulkerPacket extends ShulkerPacket<Object>
 {
-	public DefaultShulkerPacket(Object packet)
-	{
-		super(packet);
-	}
+    public DefaultShulkerPacket(Object packet)
+    {
+        super(packet);
+    }
 
-	/**
-	 * Gets the value from a field of the packet.
-	 *
-	 * @param fieldName The field name.
-	 * @return The optional value of the packet.
-	 */
-	public Optional<Object> getValue(String fieldName)
-	{
-		return getField(packet.getClass(), fieldName, true).map(field -> getFieldValue(packet, field));
-	}
+    /**
+     * Gets the value from a field of the packet.
+     *
+     * @param fieldName The field name.
+     * @return The optional value of the packet.
+     */
+    public Optional<Object> get_value(String fieldName)
+    {
+        return get_field(packet.getClass(), fieldName, true).map(field -> get_field_value(packet, field));
+    }
 
-	/**
-	 * Sets the value of the specified packet field.
-	 *
-	 * @param fieldName The name of the field.
-	 * @param object    The object to put.
-	 */
-	public void setValue(String fieldName, Object object)
-	{
-		getField(packet.getClass(), fieldName, true).ifPresent(field -> LambdaReflection.setValue(packet, field, object));
-	}
+    /**
+     * Sets the value of the specified packet field.
+     *
+     * @param fieldName The name of the field.
+     * @param object    The object to put.
+     */
+    public void set_value(String fieldName, Object object)
+    {
+        get_field(packet.getClass(), fieldName, true).ifPresent(field -> LambdaReflection.set_value(packet, field, object));
+    }
 
-	@Override
-	public void reset()
-	{
-		throw new UnsupportedOperationException("Cannot reset a packet with the default packet handler.");
-	}
+    @Override
+    public void reset()
+    {
+        throw new UnsupportedOperationException("Cannot reset a packet with the default packet handler.");
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -12,7 +12,6 @@ package org.shulker.core.impl.reflect.wrappers;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import org.shulker.core.Shulker;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
@@ -20,48 +19,46 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.aperlambda.lambdacommon.utils.LambdaReflection.getMethod;
-import static org.aperlambda.lambdacommon.utils.LambdaReflection.invokeMethod;
+import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 
 public class ReflectChatComponentWrapper extends ChatComponentWrapper
 {
-	public static final ReflectChatComponentWrapper INSTANCE = new ReflectChatComponentWrapper();
+    public static final ReflectChatComponentWrapper INSTANCE = new ReflectChatComponentWrapper();
 
-	private static final Class<?>         WRAPPER_CLASS;
-	private static final Optional<Method> FROM_SHULKER_METHOD;
-	private static final Optional<Method> TO_SHULKER_METHOD;
+    private static final Class<?>         WRAPPER_CLASS;
+    private static final Optional<Method> FROM_SHULKER_METHOD;
+    private static final Optional<Method> TO_SHULKER_METHOD;
 
-	static
-	{
-		WRAPPER_CLASS = ShulkerSpigotPlugin.getNmsClass("IChatBaseComponent");
-		Objects.requireNonNull(WRAPPER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS class cannot be found!");
-		final Class<?> SERIALIZER_CLASS = ShulkerSpigotPlugin.getNmsClass("IChatBaseComponent$ChatSerializer");
-		Objects.requireNonNull(SERIALIZER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS serializer class cannot be found!");
-		FROM_SHULKER_METHOD = getMethod(SERIALIZER_CLASS, "a", String.class);
-		TO_SHULKER_METHOD = getMethod(SERIALIZER_CLASS, "a", WRAPPER_CLASS);
-	}
+    static {
+        WRAPPER_CLASS = ShulkerSpigotPlugin.get_nms_class("IChatBaseComponent");
+        Objects.requireNonNull(WRAPPER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS class cannot be found!");
+        final Class<?> SERIALIZER_CLASS = ShulkerSpigotPlugin.get_nms_class("IChatBaseComponent$ChatSerializer");
+        Objects.requireNonNull(SERIALIZER_CLASS, "Cannot initialize ReflectChatComponentWrapper: NMS serializer class cannot be found!");
+        FROM_SHULKER_METHOD = get_method(SERIALIZER_CLASS, "a", String.class);
+        TO_SHULKER_METHOD = get_method(SERIALIZER_CLASS, "a", WRAPPER_CLASS);
+    }
 
-	@Override
-	public Object fromShulker(BaseComponent... shulkerObject)
-	{
-		if (shulkerObject == null)
-			return null;
-		return FROM_SHULKER_METHOD.map(method -> invokeMethod(null, method, ComponentSerializer.toString(shulkerObject)))
-				.orElse(null);
-	}
+    @Override
+    public Object from_shulker(BaseComponent... shulker_object)
+    {
+        if (shulker_object == null)
+            return null;
+        return FROM_SHULKER_METHOD.map(method -> invoke_method(null, method, ComponentSerializer.toString(shulker_object)))
+                .orElse(null);
+    }
 
-	@Override
-	public BaseComponent[] toShulker(Object object)
-	{
-		if (!WRAPPER_CLASS.isInstance(object))
-			return null;
-		return ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invokeMethod(null, method, object))
-												 .orElse("{}"));
-	}
+    @Override
+    public BaseComponent[] to_shulker(Object object)
+    {
+        if (!WRAPPER_CLASS.isInstance(object))
+            return null;
+        return ComponentSerializer.parse(TO_SHULKER_METHOD.map(method -> (String) invoke_method(null, method, object))
+                .orElse("{}"));
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return IChatBaseComponent.class;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return IChatBaseComponent.class;
+    }
 }

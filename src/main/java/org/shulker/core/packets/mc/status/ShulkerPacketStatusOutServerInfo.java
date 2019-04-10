@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -19,34 +19,34 @@ import org.shulker.core.packets.ShulkerPacket;
  */
 public abstract class ShulkerPacketStatusOutServerInfo<T> extends ShulkerPacket<T>
 {
-	public ShulkerPacketStatusOutServerInfo(T packet)
-	{
-		super(packet);
-	}
+    public ShulkerPacketStatusOutServerInfo(T packet)
+    {
+        super(packet);
+    }
 
-	/**
-	 * Gets the ping result.
-	 *
-	 * @return The server ping result.
-	 */
-	public abstract ServerPing getServerPing();
+    /**
+     * Gets the ping result.
+     *
+     * @return The server ping result.
+     */
+    public abstract ServerPing get_server_ping();
 
-	/**
-	 * Sets the ping result.
-	 *
-	 * @param serverPing The server ping result.
-	 */
-	public abstract void setServerPing(ServerPing serverPing);
+    /**
+     * Sets the ping result.
+     *
+     * @param serverPing The server ping result.
+     */
+    public abstract void set_server_ping(ServerPing serverPing);
 
-	@Override
-	public void reset()
-	{
-		setServerPing(null);
-	}
+    @Override
+    public void reset()
+    {
+        set_server_ping(null);
+    }
 
-	@Override
-	public String toString()
-	{
-		return "ShulkerPacketStatusOutServerInfo{server_ping:" + ServerPing.Serializer.toString(getServerPing()) + "}";
-	}
+    @Override
+    public String toString()
+    {
+        return "ShulkerPacketStatusOutServerInfo{server_ping:" + ServerPing.Serializer.to_string(get_server_ping()) + "}";
+    }
 }

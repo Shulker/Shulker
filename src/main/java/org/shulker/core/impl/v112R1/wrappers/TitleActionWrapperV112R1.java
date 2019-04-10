@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -15,60 +15,58 @@ import org.shulker.core.wrappers.TitleActionWrapper;
 
 public class TitleActionWrapperV112R1 extends TitleActionWrapper
 {
-	public static final TitleActionWrapperV112R1 INSTANCE = new TitleActionWrapperV112R1();
+    public static final TitleActionWrapperV112R1 INSTANCE = new TitleActionWrapperV112R1();
 
-	@Override
-	public Object fromShulker(ShulkerPacketTitle.TitleAction shulkerObject)
-	{
-		if (shulkerObject == null)
-			return null;
-		switch (shulkerObject)
-		{
+    @Override
+    public Object from_shulker(ShulkerPacketTitle.TitleAction shulker_object)
+    {
+        if (shulker_object == null)
+            return null;
+        switch (shulker_object) {
 
-			case TITLE:
-				return PacketPlayOutTitle.EnumTitleAction.TITLE;
-			case SUBTITLE:
-				return PacketPlayOutTitle.EnumTitleAction.SUBTITLE;
-			case ACTION_BAR:
-				return PacketPlayOutTitle.EnumTitleAction.ACTIONBAR;
-			case TIMES:
-				return PacketPlayOutTitle.EnumTitleAction.TIMES;
-			case HIDE:
-				return PacketPlayOutTitle.EnumTitleAction.CLEAR;
-			case RESET:
-				return PacketPlayOutTitle.EnumTitleAction.RESET;
-			default:
-				return null;
-		}
-	}
+            case TITLE:
+                return PacketPlayOutTitle.EnumTitleAction.TITLE;
+            case SUBTITLE:
+                return PacketPlayOutTitle.EnumTitleAction.SUBTITLE;
+            case ACTION_BAR:
+                return PacketPlayOutTitle.EnumTitleAction.ACTIONBAR;
+            case TIMES:
+                return PacketPlayOutTitle.EnumTitleAction.TIMES;
+            case HIDE:
+                return PacketPlayOutTitle.EnumTitleAction.CLEAR;
+            case RESET:
+                return PacketPlayOutTitle.EnumTitleAction.RESET;
+            default:
+                return null;
+        }
+    }
 
-	@Override
-	public ShulkerPacketTitle.TitleAction toShulker(Object object)
-	{
-		if (!(object instanceof PacketPlayOutTitle.EnumTitleAction))
-			return null;
-		switch ((PacketPlayOutTitle.EnumTitleAction) object)
-		{
-			case TITLE:
-				return ShulkerPacketTitle.TitleAction.TITLE;
-			case SUBTITLE:
-				return ShulkerPacketTitle.TitleAction.SUBTITLE;
-			case ACTIONBAR:
-				return ShulkerPacketTitle.TitleAction.ACTION_BAR;
-			case TIMES:
-				return ShulkerPacketTitle.TitleAction.TIMES;
-			case CLEAR:
-				return ShulkerPacketTitle.TitleAction.HIDE;
-			case RESET:
-				return ShulkerPacketTitle.TitleAction.RESET;
-			default:
-				return null;
-		}
-	}
+    @Override
+    public ShulkerPacketTitle.TitleAction to_shulker(Object object)
+    {
+        if (!(object instanceof PacketPlayOutTitle.EnumTitleAction))
+            return null;
+        switch ((PacketPlayOutTitle.EnumTitleAction) object) {
+            case TITLE:
+                return ShulkerPacketTitle.TitleAction.TITLE;
+            case SUBTITLE:
+                return ShulkerPacketTitle.TitleAction.SUBTITLE;
+            case ACTIONBAR:
+                return ShulkerPacketTitle.TitleAction.ACTION_BAR;
+            case TIMES:
+                return ShulkerPacketTitle.TitleAction.TIMES;
+            case CLEAR:
+                return ShulkerPacketTitle.TitleAction.HIDE;
+            case RESET:
+                return ShulkerPacketTitle.TitleAction.RESET;
+            default:
+                return null;
+        }
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return PacketPlayOutTitle.EnumTitleAction.class;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return PacketPlayOutTitle.EnumTitleAction.class;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -23,22 +23,22 @@ import java.util.List;
 
 public class ShulkerCommand implements BukkitCommandExecutor, BukkitCommandTabCompleter
 {
-	public @NotNull CommandResult execute(CommandContext<CommandSender> context, Command<CommandSender> command)
-	{
-		return command.getSubCommand("help").map(sc -> sc.execute(context, "help", new String[0])).orElse(BukkitCommandResult.ERROR_RUNTIME);
-	}
+    public @NotNull CommandResult execute(CommandContext<CommandSender> context, Command<CommandSender> command)
+    {
+        return command.get_sub_command("help").map(sc -> sc.execute(context, "help", new String[0])).orElse(BukkitCommandResult.ERROR_RUNTIME);
+    }
 
-	@Override
-	public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		if (args.length == 0)
-			return execute(context, command);
-		return CommandResult.ERROR_USAGE;
-	}
+    @Override
+    public @NotNull CommandResult execute(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        if (args.length == 0)
+            return execute(context, command);
+        return CommandResult.ERROR_USAGE;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
-	{
-		return new ArrayList<>();
-	}
+    @Override
+    public List<String> on_tab_complete(CommandContext<CommandSender> context, @NotNull Command<CommandSender> command, String label, String[] args)
+    {
+        return new ArrayList<>();
+    }
 }

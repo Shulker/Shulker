@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -22,78 +22,77 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
-import static org.shulker.core.Shulker.getMCManager;
+import static org.shulker.core.Shulker.get_mc;
 
 public class ReflectPacketPlayOutChat extends ShulkerPacketPlayOutChat<Object>
 {
-	private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
-	private static final Optional<Field>                    MESSAGE_FIELD;
-	private static final Optional<Field>                    COMPONENTS_FIELD;
-	private static final Optional<Field>                    POSITION_FIELD;
+    private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
+    private static final Optional<Field>                    MESSAGE_FIELD;
+    private static final Optional<Field>                    COMPONENTS_FIELD;
+    private static final Optional<Field>                    POSITION_FIELD;
 
-	static
-	{
-		final Class<?> PACKET_CLASS = ShulkerSpigotPlugin.getNmsClass("PacketPlayOutChat");
-		Objects.requireNonNull(PACKET_CLASS, "Cannot initialize ReflectPacketPlayOutChat: NMS class cannot be found!");
-		CONSTRUCTOR = getConstructor(PACKET_CLASS);
-		MESSAGE_FIELD = getFirstFieldOfType(PACKET_CLASS, getMCManager().getWrapperManager().getChatComponentWrapper().getObjectClass());
-		COMPONENTS_FIELD = getFirstFieldOfType(PACKET_CLASS, BaseComponent[].class);
-		POSITION_FIELD = getFirstFieldOfType(PACKET_CLASS, getMCManager().getWrapperManager().getChatMessageTypeWrapper().getObjectClass());
-	}
+    static {
+        final Class<?> PACKET_CLASS = ShulkerSpigotPlugin.get_nms_class("PacketPlayOutChat");
+        Objects.requireNonNull(PACKET_CLASS, "Cannot initialize ReflectPacketPlayOutChat: NMS class cannot be found!");
+        CONSTRUCTOR = get_constructor(PACKET_CLASS);
+        MESSAGE_FIELD = get_first_field_of_type(PACKET_CLASS, get_mc().get_wrapper_manager().get_chat_componenet_wrapper().get_object_class());
+        COMPONENTS_FIELD = get_first_field_of_type(PACKET_CLASS, BaseComponent[].class);
+        POSITION_FIELD = get_first_field_of_type(PACKET_CLASS, get_mc().get_wrapper_manager().get_chat_message_type_wrapper().get_object_class());
+    }
 
-	public ReflectPacketPlayOutChat()
-	{
-		this(newInstance(CONSTRUCTOR.get()));
-		setMessage();
-		setPosition(ChatMessageType.SYSTEM);
-	}
+    public ReflectPacketPlayOutChat()
+    {
+        this(new_instance(CONSTRUCTOR.get()));
+        set_message();
+        set_position(ChatMessageType.SYSTEM);
+    }
 
-	public ReflectPacketPlayOutChat(@NotNull BaseComponent... components)
-	{
-		this();
-		setMessage(components);
-	}
+    public ReflectPacketPlayOutChat(@NotNull BaseComponent... components)
+    {
+        this();
+        set_message(components);
+    }
 
-	public ReflectPacketPlayOutChat(Object packet)
-	{
-		super(packet);
-	}
+    public ReflectPacketPlayOutChat(Object packet)
+    {
+        super(packet);
+    }
 
-	@Override
-	public BaseComponent[] getMessage()
-	{
-		return MESSAGE_FIELD.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field)))
-				.orElse(COMPONENTS_FIELD.map(field -> getFieldValue(packet, field, new BaseComponent[0])).orElse(new BaseComponent[0]));
-	}
+    @Override
+    public BaseComponent[] get_message()
+    {
+        return MESSAGE_FIELD.map(field -> get_mc().get_wrapper_manager().get_chat_componenet_wrapper().to_shulker(get_field_value(packet, field)))
+                .orElse(COMPONENTS_FIELD.map(field -> get_field_value(packet, field, new BaseComponent[0])).orElse(new BaseComponent[0]));
+    }
 
-	@Override
-	public void setMessage(BaseComponent... components)
-	{
-		MESSAGE_FIELD.ifPresentOrElse(field -> setValue(packet, field, getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)),
-									  () -> COMPONENTS_FIELD.ifPresent(field -> setValue(packet, field, components)));
-	}
+    @Override
+    public void set_message(BaseComponent... components)
+    {
+        MESSAGE_FIELD.ifPresentOrElse(field -> set_value(packet, field, get_mc().get_wrapper_manager().get_chat_componenet_wrapper().from_shulker(components)),
+                () -> COMPONENTS_FIELD.ifPresent(field -> set_value(packet, field, components)));
+    }
 
-	@Override
-	public String getMessageRaw()
-	{
-		return ComponentSerializer.toString(getMessage());
-	}
+    @Override
+    public String get_message_raw()
+    {
+        return ComponentSerializer.toString(get_message());
+    }
 
-	@Override
-	public void setMessageRaw(String raw)
-	{
-		setMessage(ComponentSerializer.parse(raw));
-	}
+    @Override
+    public void set_message_raw(String raw)
+    {
+        set_message(ComponentSerializer.parse(raw));
+    }
 
-	@Override
-	public ChatMessageType getPosition()
-	{
-		return getMCManager().getWrapperManager().getChatMessageTypeWrapper().toShulker(POSITION_FIELD.map(field -> getFieldValue(packet, field)).get());
-	}
+    @Override
+    public ChatMessageType get_position()
+    {
+        return get_mc().get_wrapper_manager().get_chat_message_type_wrapper().to_shulker(POSITION_FIELD.map(field -> get_field_value(packet, field)).get());
+    }
 
-	@Override
-	public void setPosition(ChatMessageType position)
-	{
-		POSITION_FIELD.ifPresent(field -> setValue(packet, field, getMCManager().getWrapperManager().getChatMessageTypeWrapper().fromShulker(position)));
-	}
+    @Override
+    public void set_position(ChatMessageType position)
+    {
+        POSITION_FIELD.ifPresent(field -> set_value(packet, field, get_mc().get_wrapper_manager().get_chat_message_type_wrapper().from_shulker(position)));
+    }
 }

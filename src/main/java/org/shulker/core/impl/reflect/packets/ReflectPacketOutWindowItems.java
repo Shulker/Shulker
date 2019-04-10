@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -22,75 +22,74 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
-import static org.shulker.core.Shulker.getMCManager;
+import static org.shulker.core.Shulker.get_mc;
 
 public class ReflectPacketOutWindowItems extends ShulkerPacketOutWindowItems<Object>
 {
-	private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
-	private static final Optional<Field>                    WINDOW_ID_FIELD;
-	private static final Optional<Field>                    WINDOW_ITEMS_FIELD;
+    private static final Optional<? extends Constructor<?>> CONSTRUCTOR;
+    private static final Optional<Field>                    WINDOW_ID_FIELD;
+    private static final Optional<Field>                    WINDOW_ITEMS_FIELD;
 
-	static
-	{
-		final Class<?> PACKET_CLASS = ShulkerSpigotPlugin.getNmsClass("PacketPlayOutWindowItems");
-		Objects.requireNonNull(PACKET_CLASS, "Cannot initialize ReflectPacketOutWindowItems: NMS class cannot be found!");
-		CONSTRUCTOR = getConstructor(PACKET_CLASS);
-		WINDOW_ID_FIELD = getFirstFieldOfType(PACKET_CLASS, int.class);
-		WINDOW_ITEMS_FIELD = getFirstFieldOfType(PACKET_CLASS, List.class);
-	}
+    static {
+        final Class<?> PACKET_CLASS = ShulkerSpigotPlugin.get_nms_class("PacketPlayOutWindowItems");
+        Objects.requireNonNull(PACKET_CLASS, "Cannot initialize ReflectPacketOutWindowItems: NMS class cannot be found!");
+        CONSTRUCTOR = get_constructor(PACKET_CLASS);
+        WINDOW_ID_FIELD = get_first_field_of_type(PACKET_CLASS, int.class);
+        WINDOW_ITEMS_FIELD = get_first_field_of_type(PACKET_CLASS, List.class);
+    }
 
-	public ReflectPacketOutWindowItems()
-	{
-		super(CONSTRUCTOR.map(constructor -> newInstance(constructor)).orElseThrow(() -> new RuntimeException("Cannot initialize ReflectPacketOutWindowItems: constructor cannot be found!")));
-	}
+    public ReflectPacketOutWindowItems()
+    {
+        super(CONSTRUCTOR.map(constructor -> new_instance(constructor)).orElseThrow(() -> new RuntimeException("Cannot initialize ReflectPacketOutWindowItems: constructor cannot be found!")));
+    }
 
-	public ReflectPacketOutWindowItems(int windowId, List<ItemStack> items)
-	{
-		this();
-		setWindowId(windowId);
-		setItems(items);
-	}
+    public ReflectPacketOutWindowItems(int windowId, List<ItemStack> items)
+    {
+        this();
+        set_window_id(windowId);
+        set_items(items);
+    }
 
-	public ReflectPacketOutWindowItems(int windowId, ItemStack... items)
-	{
-		this();
-		setWindowId(windowId);
-		setItems(items);
-	}
+    public ReflectPacketOutWindowItems(int windowId, ItemStack... items)
+    {
+        this();
+        set_window_id(windowId);
+        set_items(items);
+    }
 
-	public ReflectPacketOutWindowItems(Object packet)
-	{
-		super(packet);
-	}
+    public ReflectPacketOutWindowItems(Object packet)
+    {
+        super(packet);
+    }
 
-	@Override
-	public int getWindowId()
-	{
-		return WINDOW_ID_FIELD.map(field -> getFieldValue(packet, field, 0)).orElse(0);
-	}
+    @Override
+    public int get_window_id()
+    {
+        return WINDOW_ID_FIELD.map(field -> get_field_value(packet, field, 0)).orElse(0);
+    }
 
-	@Override
-	public void setWindowId(int id)
-	{
-		WINDOW_ID_FIELD.ifPresentOrElse(field -> setValue(packet, field, id),
-										() -> {
-											throw new RuntimeException("Cannot set window id (Field not found).");
-										});
-	}
+    @Override
+    public void set_window_id(int id)
+    {
+        WINDOW_ID_FIELD.ifPresentOrElse(field -> set_value(packet, field, id),
+                () -> {
+                    throw new RuntimeException("Cannot set window id (Field not found).");
+                });
+    }
 
-	@Override
-	public List<ItemStack> getItems()
-	{
-		return WINDOW_ITEMS_FIELD.map(field -> getFieldValue(packet, field, Collections.emptyList())).orElse(Collections.emptyList())
-				.stream().map(object -> getMCManager().getWrapperManager().getItemStackWrapper().toShulker(object)).collect(Collectors.toList());
-	}
+    @Override
+    public List<ItemStack> get_items()
+    {
+        return WINDOW_ITEMS_FIELD.map(field -> get_field_value(packet, field, Collections.emptyList())).orElse(Collections.emptyList())
+                .stream().map(object -> get_mc().get_wrapper_manager().get_item_stack_wrapper().to_shulker(object)).collect(Collectors.toList());
+    }
 
-	@Override
-	public void setItems(List<ItemStack> items)
-	{
-		WINDOW_ITEMS_FIELD.ifPresentOrElse(field -> setValue(packet, field, items.stream().map(item -> getMCManager().getWrapperManager().getItemStackWrapper().fromShulker(item)).collect(Collectors.toList())),
-										   () -> {
-											   throw new RuntimeException("Cannot set window items (Field not found).");
-										   });
-	}
+    @Override
+    public void set_items(List<ItemStack> items)
+    {
+        WINDOW_ITEMS_FIELD.ifPresentOrElse(field -> set_value(packet, field, items.stream().map(item -> get_mc().get_wrapper_manager().get_item_stack_wrapper().from_shulker(item)).collect(Collectors.toList())),
+                () -> {
+                    throw new RuntimeException("Cannot set window items (Field not found).");
+                });
+    }
 }

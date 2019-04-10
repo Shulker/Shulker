@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -17,15 +17,15 @@ import org.shulker.core.Shulker;
 
 public class ShulkerListener implements Listener
 {
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e)
-	{
-		Shulker.getMCManager().addPlayer(e.getPlayer());
-	}
+    @EventHandler
+    public void on_player_join(PlayerJoinEvent e)
+    {
+        Shulker.get_mc().add_player(e.getPlayer());
+    }
 
-	@EventHandler
-	public void onPlayerLeave(PlayerQuitEvent e)
-	{
-		Shulker.getMCManager().removePlayer(e.getPlayer().getUniqueId());
-	}
+    @EventHandler
+    public void on_player_leave(PlayerQuitEvent e)
+    {
+        Shulker.get_mc().remove_player(e.getPlayer().getUniqueId());
+    }
 }

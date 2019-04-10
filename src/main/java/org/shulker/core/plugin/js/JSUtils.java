@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -18,14 +18,14 @@ import javax.script.ScriptException;
  */
 public class JSUtils
 {
-	public static void loadClass(NashornScriptEngine currentEngine, String name, Class<?> clazz)
-	{
-		currentEngine.put(name, clazz);
-	}
+    public static void load_class(NashornScriptEngine currentEngine, String name, Class<?> clazz)
+    {
+        currentEngine.put(name, clazz);
+    }
 
-	public static void loadClassStatic(NashornScriptEngine currentEngine, String name, Class<?> clazz) throws ScriptException
-	{
-		loadClass(currentEngine, name, clazz);
-		currentEngine.put(name, currentEngine.eval(name + ".static"));
-	}
+    public static void load_class_static(NashornScriptEngine currentEngine, String name, Class<?> clazz) throws ScriptException
+    {
+        load_class(currentEngine, name, clazz);
+        currentEngine.put(name, currentEngine.eval(name + ".static"));
+    }
 }

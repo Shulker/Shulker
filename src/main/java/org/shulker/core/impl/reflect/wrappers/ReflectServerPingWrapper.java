@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -18,41 +18,39 @@ import org.shulker.spigot.ShulkerSpigotPlugin;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import static org.aperlambda.lambdacommon.utils.LambdaReflection.getFieldValue;
-import static org.aperlambda.lambdacommon.utils.LambdaReflection.getFirstFieldOfType;
+import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
 
 public class ReflectServerPingWrapper extends ServerPingWrapper
 {
-	public static final ReflectServerPingWrapper INSTANCE = new ReflectServerPingWrapper();
+    public static final ReflectServerPingWrapper INSTANCE = new ReflectServerPingWrapper();
 
-	private static final Class<?> WRAPPER_CLASS = Objects.requireNonNull(ShulkerSpigotPlugin.getNmsClass("ServerPing"), "Cannot initialize ServerPingWrapper without the targeted class.");
-	private static final Gson     MC_GSON;
+    private static final Class<?> WRAPPER_CLASS = Objects.requireNonNull(ShulkerSpigotPlugin.get_nms_class("ServerPing"), "Cannot initialize ServerPingWrapper without the targeted class.");
+    private static final Gson     MC_GSON;
 
-	static
-	{
-		final Field FIELD_SERVERPING_GSON = getFirstFieldOfType(Objects.requireNonNull(ShulkerSpigotPlugin.getNmsClass("PacketStatusOutServerInfo")), Gson.class).orElseThrow();
-		MC_GSON = Objects.requireNonNull(getFieldValue(null, FIELD_SERVERPING_GSON, (Gson) null), "Cannot wrap ServerPing without NMS' Gson");
-	}
+    static {
+        final Field FIELD_SERVERPING_GSON = get_first_field_of_type(Objects.requireNonNull(ShulkerSpigotPlugin.get_nms_class("PacketStatusOutServerInfo")), Gson.class).orElseThrow();
+        MC_GSON = Objects.requireNonNull(get_field_value(null, FIELD_SERVERPING_GSON, (Gson) null), "Cannot wrap ServerPing without NMS' Gson");
+    }
 
-	@Override
-	public Object fromShulker(ServerPing shulkerObject)
-	{
-		if (shulkerObject == null)
-			return null;
-		return MC_GSON.fromJson(LambdaConstants.JSON_PARSER.parse(ServerPing.Serializer.toString(shulkerObject)), WRAPPER_CLASS);
-	}
+    @Override
+    public Object from_shulker(ServerPing shulker_object)
+    {
+        if (shulker_object == null)
+            return null;
+        return MC_GSON.fromJson(LambdaConstants.JSON_PARSER.parse(ServerPing.Serializer.to_string(shulker_object)), WRAPPER_CLASS);
+    }
 
-	@Override
-	public ServerPing toShulker(Object object)
-	{
-		if (object == null)
-			return null;
-		return ServerPing.Serializer.parse(MC_GSON.toJson(object));
-	}
+    @Override
+    public ServerPing to_shulker(Object object)
+    {
+        if (object == null)
+            return null;
+        return ServerPing.Serializer.parse(MC_GSON.toJson(object));
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return WRAPPER_CLASS;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return WRAPPER_CLASS;
+    }
 }

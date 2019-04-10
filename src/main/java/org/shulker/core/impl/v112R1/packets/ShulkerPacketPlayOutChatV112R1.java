@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -22,65 +22,65 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import static org.aperlambda.lambdacommon.utils.LambdaReflection.*;
-import static org.shulker.core.Shulker.getMCManager;
+import static org.shulker.core.Shulker.get_mc;
 
 public class ShulkerPacketPlayOutChatV112R1 extends ShulkerPacketPlayOutChat<PacketPlayOutChat>
 {
-	private static final Optional<Field> mcComponentField = getField(PacketPlayOutChat.class, "a", true);
-	private static final Optional<Field> positionField    = getLastFieldOfType(PacketPlayOutChat.class, net.minecraft.server.v1_12_R1.ChatMessageType.class);
+    private static final Optional<Field> mc_component_field = get_field(PacketPlayOutChat.class, "a", true);
+    private static final Optional<Field> position_field     = get_last_field_of_type(PacketPlayOutChat.class, net.minecraft.server.v1_12_R1.ChatMessageType.class);
 
-	public ShulkerPacketPlayOutChatV112R1()
-	{
-		this(new PacketPlayOutChat());
-		mcComponentField.ifPresentOrElse(field -> setValue(packet, field, new ChatComponentText("")), () -> packet.components = new BaseComponent[0]);
-		positionField.ifPresent(field -> setValue(packet, field, net.minecraft.server.v1_12_R1.ChatMessageType.SYSTEM));
-	}
+    public ShulkerPacketPlayOutChatV112R1()
+    {
+        this(new PacketPlayOutChat());
+        mc_component_field.ifPresentOrElse(field -> set_value(packet, field, new ChatComponentText("")), () -> packet.components = new BaseComponent[0]);
+        position_field.ifPresent(field -> set_value(packet, field, net.minecraft.server.v1_12_R1.ChatMessageType.SYSTEM));
+    }
 
-	public ShulkerPacketPlayOutChatV112R1(@NotNull BaseComponent... components)
-	{
-		this(new PacketPlayOutChat((IChatBaseComponent) getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)));
-	}
+    public ShulkerPacketPlayOutChatV112R1(@NotNull BaseComponent... components)
+    {
+        this(new PacketPlayOutChat((IChatBaseComponent) get_mc().get_wrapper_manager().get_chat_componenet_wrapper().from_shulker(components)));
+    }
 
-	public ShulkerPacketPlayOutChatV112R1(PacketPlayOutChat packet)
-	{
-		super(packet);
-	}
+    public ShulkerPacketPlayOutChatV112R1(PacketPlayOutChat packet)
+    {
+        super(packet);
+    }
 
-	@Override
-	public BaseComponent[] getMessage()
-	{
-		return mcComponentField.map(field -> getMCManager().getWrapperManager().getChatComponentWrapper().toShulker(getFieldValue(packet, field))).orElse(packet.components);
-	}
+    @Override
+    public BaseComponent[] get_message()
+    {
+        return mc_component_field.map(field -> get_mc().get_wrapper_manager().get_chat_componenet_wrapper().to_shulker(get_field_value(packet, field))).orElse(packet.components);
+    }
 
-	@Override
-	public void setMessage(BaseComponent... components)
-	{
-		mcComponentField.ifPresentOrElse(field -> setValue(packet, field, getMCManager().getWrapperManager().getChatComponentWrapper().fromShulker(components)),
-										 () -> packet.components = components);
-	}
+    @Override
+    public void set_message(BaseComponent... components)
+    {
+        mc_component_field.ifPresentOrElse(field -> set_value(packet, field, get_mc().get_wrapper_manager().get_chat_componenet_wrapper().from_shulker(components)),
+                () -> packet.components = components);
+    }
 
-	@Override
-	public String getMessageRaw()
-	{
-		return mcComponentField.map(field -> IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) getFieldValue(packet, field))).orElse(ComponentSerializer.toString(packet.components));
-	}
+    @Override
+    public String get_message_raw()
+    {
+        return mc_component_field.map(field -> IChatBaseComponent.ChatSerializer.a((IChatBaseComponent) get_field_value(packet, field))).orElse(ComponentSerializer.toString(packet.components));
+    }
 
-	@Override
-	public void setMessageRaw(String raw)
-	{
-		mcComponentField.ifPresentOrElse(field -> setValue(packet, field, IChatBaseComponent.ChatSerializer.a(raw)),
-										 () -> packet.components = ComponentSerializer.parse(raw));
-	}
+    @Override
+    public void set_message_raw(String raw)
+    {
+        mc_component_field.ifPresentOrElse(field -> set_value(packet, field, IChatBaseComponent.ChatSerializer.a(raw)),
+                () -> packet.components = ComponentSerializer.parse(raw));
+    }
 
-	@Override
-	public ChatMessageType getPosition()
-	{
-		return getMCManager().getWrapperManager().getChatMessageTypeWrapper().toShulker(getFieldValue(packet, positionField.get()));
-	}
+    @Override
+    public ChatMessageType get_position()
+    {
+        return get_mc().get_wrapper_manager().get_chat_message_type_wrapper().to_shulker(get_field_value(packet, position_field.get()));
+    }
 
-	@Override
-	public void setPosition(ChatMessageType position)
-	{
-		setValue(packet, positionField.get(), getMCManager().getWrapperManager().getChatMessageTypeWrapper().fromShulker(position));
-	}
+    @Override
+    public void set_position(ChatMessageType position)
+    {
+        set_value(packet, position_field.get(), get_mc().get_wrapper_manager().get_chat_message_type_wrapper().from_shulker(position));
+    }
 }

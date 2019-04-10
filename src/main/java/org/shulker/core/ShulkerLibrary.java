@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -20,56 +20,56 @@ import static net.md_5.bungee.api.ChatColor.RED;
 
 public class ShulkerLibrary implements Nameable
 {
-	private String           name;
-	private File             file;
-	private LibraryLoadState loadState;
+    private String           name;
+    private File             file;
+    private LibraryLoadState load_state;
 
-	public ShulkerLibrary(String name, File file, LibraryLoadState loadState)
-	{
-		this.name = name;
-		this.file = file;
-		this.loadState = loadState;
-	}
+    public ShulkerLibrary(String name, File file, LibraryLoadState load_state)
+    {
+        this.name = name;
+        this.file = file;
+        this.load_state = load_state;
+    }
 
-	@Override
-	public @NotNull String getName()
-	{
-		return name;
-	}
+    @Override
+    public @NotNull String get_name()
+    {
+        return this.name;
+    }
 
-	public File getFile()
-	{
-		return file;
-	}
+    public File get_file()
+    {
+        return this.file;
+    }
 
-	public LibraryLoadState getLoadState()
-	{
-		return loadState;
-	}
+    public LibraryLoadState get_load_state()
+    {
+        return this.load_state;
+    }
 
-	public static enum LibraryLoadState
-	{
-		SUCCESS("Success", GREEN),
-		FAILED("Failed", RED);
+    public static enum LibraryLoadState
+    {
+        SUCCESS("Success", GREEN),
+        FAILED("Failed", RED);
 
-		private String toString;
-		private ChatColor prefixColor;
+        private String    to_string;
+        private ChatColor prefix_color;
 
-		LibraryLoadState(String str, ChatColor prefixColor)
-		{
-			toString = str;
-			this.prefixColor = prefixColor;
-		}
+        LibraryLoadState(String str, ChatColor prefix_color)
+        {
+            to_string = str;
+            this.prefix_color = prefix_color;
+        }
 
-		@Override
-		public String toString()
-		{
-			return toString;
-		}
+        @Override
+        public String toString()
+        {
+            return to_string;
+        }
 
-		public ChatColor getPrefixColor()
-		{
-			return prefixColor;
-		}
-	}
+        public ChatColor get_prefix_color()
+        {
+            return prefix_color;
+        }
+    }
 }

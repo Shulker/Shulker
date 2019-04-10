@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -15,25 +15,25 @@ import org.shulker.core.wrappers.ItemStackWrapper;
 
 public class ItemStackWrapperV112R1 extends ItemStackWrapper
 {
-	public static final ItemStackWrapperV112R1 INSTANCE = new ItemStackWrapperV112R1();
+    public static final ItemStackWrapperV112R1 INSTANCE = new ItemStackWrapperV112R1();
 
-	@Override
-	public Object fromShulker(ItemStack shulkerObject)
-	{
-		return CraftItemStack.asNMSCopy(shulkerObject);
-	}
+    @Override
+    public Object from_shulker(ItemStack shulker_object)
+    {
+        return CraftItemStack.asNMSCopy(shulker_object);
+    }
 
-	@Override
-	public ItemStack toShulker(Object object)
-	{
-		if (object == null)
-			return null;
-		return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) object);
-	}
+    @Override
+    public ItemStack to_shulker(Object object)
+    {
+        if (object == null)
+            return null;
+        return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) object);
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return net.minecraft.server.v1_12_R1.ItemStack.class;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return net.minecraft.server.v1_12_R1.ItemStack.class;
+    }
 }

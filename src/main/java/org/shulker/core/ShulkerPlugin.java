@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -26,135 +26,145 @@ import static org.shulker.core.ShulkerConstants.SHULKER_PREFIX;
 
 public interface ShulkerPlugin
 {
-	/**
-	 * Gets Shulker's version.
-	 *
-	 * @return The version of Shulker.
-	 */
-	String getVersion();
+    /**
+     * Gets Shulker's version.
+     *
+     * @return The version of Shulker.
+     */
+    String get_version();
 
-	/**
-	 * Gets the prefix of Shulker.
-	 *
-	 * @return Prefix of Shulker.
-	 */
-	default String getPrefix()
-	{
-		return SHULKER_PREFIX;
-	}
+    /**
+     * Gets the prefix of Shulker.
+     *
+     * @return Prefix of Shulker.
+     */
+    default String get_prefix()
+    {
+        return SHULKER_PREFIX;
+    }
 
-	/**
-	 * Gets the prefix of Shulker displayed in-game.
-	 *
-	 * @return The prefix of Shulker.
-	 */
-	default String getIGPrefix()
-	{
-		return SHULKER_IG_PREFIX;
-	}
+    /**
+     * Gets the prefix of Shulker displayed in-game.
+     *
+     * @return The prefix of Shulker.
+     */
+    default String get_ig_prefix()
+    {
+        return SHULKER_IG_PREFIX;
+    }
 
-	default void logInfo(@NotNull String message)
-	{
-		logInfo(null, message);
-	}
+    default void log_info(@NotNull String message)
+    {
+        log_info(null, message);
+    }
 
-	void logInfo(@Nullable String prefix, @NotNull String message);
+    void log_info(@Nullable String prefix, @NotNull String message);
 
-	default void logDebug(@NotNull DebugType type, @NotNull String message)
-	{
-		logDebug(type, null, message);
-	}
+    default void log_debug(@NotNull DebugType type, @NotNull String message)
+    {
+        log_debug(type, null, message);
+    }
 
-	void logDebug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message);
+    void log_debug(@NotNull DebugType type, @Nullable String prefix, @NotNull String message);
 
-	default void logError(@NotNull String message)
-	{
-		logError(null, message);
-	}
+    default void log_error(@NotNull String message)
+    {
+        log_error(null, message);
+    }
 
-	void logError(@Nullable String prefix, @NotNull String message);
+    void log_error(@Nullable String prefix, @NotNull String message);
 
-	/**
-	 * Gets the base directory of the server.
-	 *
-	 * @return The base directory.
-	 */
-	File getBaseDirectory();
+    /**
+     * Returns whether Shulker has debug mode enabled.
+     *
+     * @return True if Shulker has debug mode enabled, else false.
+     */
+    default boolean has_debug() {
+        return this.get_configuration().has_debug();
+    }
 
-	/**
-	 * Gets the configuration directory.
-	 *
-	 * @return The configuration directory.
-	 */
-	default File getConfigurationDirectory()
-	{
-		return new File(getBaseDirectory(), "configs/");
-	}
+    /**
+     * Gets the base directory of the server.
+     *
+     * @return The base directory.
+     */
+    File get_base_dir();
 
-	/**
-	 * Gets the plugins directory of the server.
-	 *
-	 * @return Plugins directory.
-	 */
-	File getPluginsDirectory();
+    /**
+     * Gets the configuration directory.
+     *
+     * @return The configuration directory.
+     */
+    default File get_config_dir()
+    {
+        return new File(get_base_dir(), "configs/");
+    }
 
-	/**
-	 * Gets the configuration manager.
-	 *
-	 * @return The configuration manager.
-	 */
-	default @NotNull ConfigManager getConfigManager()
-	{
-		return ConfigManager.getConfigManager();
-	}
+    /**
+     * Gets the plugins directory of the server.
+     *
+     * @return Plugins directory.
+     */
+    File get_plugins_dir();
 
-	/**
-	 * Gets the Shulker's command manager.
-	 *
-	 * @return The command manager.
-	 */
-	@NotNull BukkitCommandManager getCommandManager();
+    /**
+     * Gets the configuration manager.
+     *
+     * @return The configuration manager.
+     */
+    default @NotNull ConfigManager get_configs()
+    {
+        return ConfigManager.get();
+    }
 
-	/**
-	 * Gets the symbols manager.
-	 *
-	 * @return Symbols manager.
-	 */
-	ShulkerSymbols getSymbolsManager();
+    /**
+     * Gets the Shulker's command manager.
+     *
+     * @return The command manager.
+     */
+    @NotNull BukkitCommandManager get_commands();
 
-	/**
-	 * Gets the configuration of Shulker.
-	 *
-	 * @return Shulker's configuration.
-	 */
-	ShulkerConfiguration getConfiguration();
+    /**
+     * Gets the symbols manager.
+     *
+     * @return Symbols manager.
+     */
+    ShulkerSymbols get_symbols_manager();
 
-	/**
-	 * Gets the Minecraft manager of Shulker.
-	 * Greets access to some Minecraft features like NMS, etc...
-	 *
-	 * @return Shulker's Minecraft manager.
-	 */
-	MinecraftManager getMinecraftManager();
+    /**
+     * Gets the configuration of Shulker.
+     *
+     * @return Shulker's configuration.
+     */
+    ShulkerConfiguration get_configuration();
 
-	/**
-	 * Registers a packet listener.
-	 *
-	 * @param listener The packet listener.
-	 */
-	void registerPacketListener(@NotNull PacketListener listener);
+    /**
+     * Gets the Minecraft manager of Shulker.
+     * Greets access to some Minecraft features like NMS, etc...
+     *
+     * @return Shulker's Minecraft manager.
+     */
+    MinecraftManager get_mc();
 
-	/**
-	 * Fires the packet event.
-	 * @param event The event to fire.
-	 * @param fromClient True if the packet is sent by the client, else false.
-	 */
-	void firePacketEvent(@NotNull PacketEvent event, boolean fromClient);
+    /**
+     * Registers a packet listener.
+     *
+     * @param listener The packet listener.
+     */
+    void register_packet_listener(@NotNull PacketListener listener);
 
-	/**
-	 * Lists the libraries loaded by Shulker.
-	 *
-	 * @return The libraries loaded by Shulker.
-	 */
-	List<ShulkerLibrary> getLibraries();
+    /**
+     * Fires the packet event.
+     *
+     * @param event       The event to fire.
+     * @param from_client True if the packet is sent by the client, else false.
+     */
+    void fire_packet_event(@NotNull PacketEvent event, boolean from_client);
+
+    /**
+     * Lists the libraries loaded by Shulker.
+     *
+     * @return The libraries loaded by Shulker.
+     */
+    List<ShulkerLibrary> get_libraries();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -17,25 +17,25 @@ import java.util.function.Consumer;
 
 public interface EventsManager
 {
-	<T extends Event> void on(Class<T> eventClass, Consumer<T> executor, EventPriority priority);
+    <T extends Event> void on(Class<T> eventClass, Consumer<T> executor, EventPriority priority);
 
-	default <T extends Event> void on(Class<T> eventClass, Consumer<T> executor)
-	{
-		on(eventClass, executor, EventPriority.NORMAL);
-	}
+    default <T extends Event> void on(Class<T> eventClass, Consumer<T> executor)
+    {
+        on(eventClass, executor, EventPriority.NORMAL);
+    }
 
-	default <T extends Event> void on(String eventName, Consumer<T> executor)
-	{
-		on(eventName, executor, EventPriority.NORMAL);
-	}
+    default <T extends Event> void on(String eventName, Consumer<T> executor)
+    {
+        on(eventName, executor, EventPriority.NORMAL);
+    }
 
-	@SuppressWarnings("unchecked")
-	default <T extends Event> void on(String eventName, Consumer<T> executor, EventPriority priority)
-	{
-		on((Class<T>) getEvent(eventName), executor, priority);
-	}
+    @SuppressWarnings("unchecked")
+    default <T extends Event> void on(String eventName, Consumer<T> executor, EventPriority priority)
+    {
+        on((Class<T>) get_event(eventName), executor, priority);
+    }
 
-	void call(@NotNull Event event);
+    void call(@NotNull Event event);
 
-	Class<? extends Event> getEvent(String name);
+    Class<? extends Event> get_event(String name);
 }

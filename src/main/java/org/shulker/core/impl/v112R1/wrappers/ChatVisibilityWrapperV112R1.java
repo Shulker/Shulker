@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -15,45 +15,43 @@ import org.shulker.core.wrappers.ChatVisibilityWrapper;
 
 public class ChatVisibilityWrapperV112R1 extends ChatVisibilityWrapper
 {
-	public static final ChatVisibilityWrapperV112R1 INSTANCE = new ChatVisibilityWrapperV112R1();
+    public static final ChatVisibilityWrapperV112R1 INSTANCE = new ChatVisibilityWrapperV112R1();
 
-	@Override
-	public Object fromShulker(ChatVisibility shulkerObject)
-	{
-		if (shulkerObject == null)
-			return null;
-		switch (shulkerObject)
-		{
-			case FULL:
-				return EntityHuman.EnumChatVisibility.FULL;
-			case SYSTEM:
-				return EntityHuman.EnumChatVisibility.SYSTEM;
-			case HIDDEN:
-				return EntityHuman.EnumChatVisibility.HIDDEN;
-		}
-		return null;
-	}
+    @Override
+    public Object from_shulker(ChatVisibility shulker_object)
+    {
+        if (shulker_object == null)
+            return null;
+        switch (shulker_object) {
+            case FULL:
+                return EntityHuman.EnumChatVisibility.FULL;
+            case SYSTEM:
+                return EntityHuman.EnumChatVisibility.SYSTEM;
+            case HIDDEN:
+                return EntityHuman.EnumChatVisibility.HIDDEN;
+        }
+        return null;
+    }
 
-	@Override
-	public ChatVisibility toShulker(Object object)
-	{
-		if (!(object instanceof EntityHuman.EnumChatVisibility))
-			return null;
-		switch ((EntityHuman.EnumChatVisibility) object)
-		{
-			case FULL:
-				return ChatVisibility.FULL;
-			case SYSTEM:
-				return ChatVisibility.SYSTEM;
-			case HIDDEN:
-				return ChatVisibility.HIDDEN;
-		}
-		return null;
-	}
+    @Override
+    public ChatVisibility to_shulker(Object object)
+    {
+        if (!(object instanceof EntityHuman.EnumChatVisibility))
+            return null;
+        switch ((EntityHuman.EnumChatVisibility) object) {
+            case FULL:
+                return ChatVisibility.FULL;
+            case SYSTEM:
+                return ChatVisibility.SYSTEM;
+            case HIDDEN:
+                return ChatVisibility.HIDDEN;
+        }
+        return null;
+    }
 
-	@Override
-	public Class<?> getObjectClass()
-	{
-		return EntityHuman.EnumChatVisibility.class;
-	}
+    @Override
+    public Class<?> get_object_class()
+    {
+        return EntityHuman.EnumChatVisibility.class;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -21,7 +21,7 @@ compileJava.options.encoding = 'UTF-8'
 
 repositories {
     maven { url = 'https://aperlambda.github.io/maven' }
-    maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://mcelytra.github.io/maven/' }
     maven { url = 'https://libraries.minecraft.net/' }
     mavenCentral()
@@ -34,8 +34,16 @@ configurations {
     compile.extendsFrom provided
 }
 
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 1, 'hours'
+    resolutionStrategy.cacheChangingModulesFor 1, 'hours'
+}
+
 dependencies {
-    compile 'org.aperlambda:kimiko:1.0.8'
+    compile 'org.aperlambda:lambdajcommon:1.6.2'
+    compile(group: 'org.aperlambda', name: 'kimiko', version: '1.1.0') {
+        exclude group: 'org.aperlambda'
+    }
     compile(group: 'org.mcelytra', name: 'elytra-core', version: '1.0.0-SNAPSHOT', changing: true) {
         exclude group: 'com.mojang'
         exclude group: 'org.aperlambda'

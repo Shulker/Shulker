@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import static org.aperlambda.lambdacommon.resources.ResourcesManager.getDefaultResourcesManager;
+import static org.aperlambda.lambdacommon.resources.ResourcesManager.get_default_resources_manager;
 
 /**
  * Represents the manager of the configurations.
@@ -32,121 +32,118 @@ import static org.aperlambda.lambdacommon.resources.ResourcesManager.getDefaultR
  */
 public class ConfigManager
 {
-	private static final ConfigManager                 CONFIG_MANAGER = new ConfigManager();
-	private final        HashMap<ResourceName, Config> configs        = new HashMap<>();
+    private static final ConfigManager                 CONFIG_MANAGER = new ConfigManager();
+    private final        HashMap<ResourceName, Config> configs        = new HashMap<>();
 
-	private ConfigManager()
-	{}
+    private ConfigManager()
+    {
+    }
 
-	public static ConfigManager getConfigManager()
-	{
-		return CONFIG_MANAGER;
-	}
+    public static ConfigManager get()
+    {
+        return CONFIG_MANAGER;
+    }
 
-	public @NotNull JsonConfig newJsonConfig(@NotNull ResourceName name)
-	{
-		return newJsonConfig(name, null);
-	}
+    public @NotNull JsonConfig new_json_config(@NotNull ResourceName name)
+    {
+        return new_json_config(name, null);
+    }
 
-	/**
-	 * Adds a new Json Configuration.
-	 *
-	 * @param name Resource name of the configuration.
-	 * @param def  InputStream of the default configuration, can be null.
-	 * @return The new Json Configuration.
-	 */
-	public @NotNull JsonConfig newJsonConfig(@NotNull ResourceName name, @Nullable InputStream def)
-	{
-		if (hasConfig(name))
-		{
-			var existingConfig = getConfiguration(name);
-			if (existingConfig instanceof JsonConfig)
-				return (JsonConfig) existingConfig;
-			else
-				throw new IllegalArgumentException("A configuration with the name '" + name.toString() +
-														   "' already exists in another type than JsonConfig!");
-		}
+    /**
+     * Adds a new Json Configuration.
+     *
+     * @param name Resource name of the configuration.
+     * @param def  InputStream of the default configuration, can be null.
+     * @return The new Json Configuration.
+     */
+    public @NotNull JsonConfig new_json_config(@NotNull ResourceName name, @Nullable InputStream def)
+    {
+        if (has_config(name)) {
+            var existing_config = get_configuration(name);
+            if (existing_config instanceof JsonConfig)
+                return (JsonConfig) existing_config;
+            else
+                throw new IllegalArgumentException("A configuration with the name '" + name.toString() + "' already exists in another type than JsonConfig!");
+        }
 
-		var file = new File(Shulker.getConfigurationDirectory(), name.getDomain() + "/" + name.getName() + ".json");
+        var file = new File(Shulker.get_configuration_dir(), name.get_domain() + "/" + name.get_name() + ".json");
 
-		if (def != null)
-			saveResource(def, name, "json", false);
+        if (def != null)
+            save_resource(def, name, "json", false);
 
-		var config = new JsonConfig(file);
-		configs.put(name, config);
-		return config;
-	}
+        var config = new JsonConfig(file);
+        configs.put(name, config);
+        return config;
+    }
 
-	public @NotNull YamlConfig newYamlConfig(@NotNull ResourceName name)
-	{
-		return newYamlConfig(name, null);
-	}
+    public @NotNull YamlConfig new_yaml_config(@NotNull ResourceName name)
+    {
+        return new_yaml_config(name, null);
+    }
 
-	/**
-	 * Adds a new Yaml Configuration.
-	 *
-	 * @param name Resource name of the configuration.
-	 * @param def  InputStream of the default configuration, can be null.
-	 * @return The new Json Configuration.
-	 */
-	public @NotNull YamlConfig newYamlConfig(@NotNull ResourceName name, @Nullable InputStream def)
-	{
-		if (hasConfig(name))
-		{
-			var existingConfig = getConfiguration(name);
-			if (existingConfig instanceof YamlConfig)
-				return (YamlConfig) existingConfig;
-			else
-				throw new IllegalArgumentException("A configuration with the name '" + name.toString() +
-														   "' already exists in another type than YamlConfig!");
-		}
+    /**
+     * Adds a new Yaml Configuration.
+     *
+     * @param name Resource name of the configuration.
+     * @param def  InputStream of the default configuration, can be null.
+     * @return The new Json Configuration.
+     */
+    public @NotNull YamlConfig new_yaml_config(@NotNull ResourceName name, @Nullable InputStream def)
+    {
+        if (has_config(name)) {
+            var existing_config = get_configuration(name);
+            if (existing_config instanceof YamlConfig)
+                return (YamlConfig) existing_config;
+            else
+                throw new IllegalArgumentException("A configuration with the name '" + name.toString() + "' already exists in another type than YamlConfig!");
+        }
 
-		var file = new File(Shulker.getConfigurationDirectory(), name.getDomain() + "/" + name.getName() + ".yml");
+        var file = new File(Shulker.get_configuration_dir(), name.get_domain() + "/" + name.get_name() + ".yml");
 
-		if (def != null)
-			saveResource(def, name, "yml", false);
+        if (def != null)
+            save_resource(def, name, "yml", false);
 
-		var config = new YamlConfig(file);
-		configs.put(name, config);
-		return config;
-	}
+        var config = new YamlConfig(file);
+        configs.put(name, config);
+        return config;
+    }
 
-	/**
-	 * Checks whether the configuration exists or not.
-	 *
-	 * @param name The resource name of the configuration.
-	 * @return True if the configuration exists else false.
-	 */
-	public boolean hasConfig(@NotNull ResourceName name)
-	{
-		return configs.containsKey(name);
-	}
+    /**
+     * Checks whether the configuration exists or not.
+     *
+     * @param name The resource name of the configuration.
+     * @return True if the configuration exists else false.
+     */
+    public boolean has_config(@NotNull ResourceName name)
+    {
+        return configs.containsKey(name);
+    }
 
-	/**
-	 * Removes the configuration.
-	 *
-	 * @param name The resource name of the configuration.
-	 * @return True if the configuration was removed else false.
-	 */
-	public boolean removeConfig(@NotNull ResourceName name)
-	{
-		if (!hasConfig(name))
-			return false;
-		return configs.remove(name) != null;
-	}
+    /**
+     * Removes the configuration.
+     *
+     * @param name The resource name of the configuration.
+     * @return True if the configuration was removed else false.
+     */
+    public boolean remove_config(@NotNull ResourceName name)
+    {
+        if (!has_config(name))
+            return false;
+        return configs.remove(name) != null;
+    }
 
-	public @Nullable Config getConfiguration(@NotNull ResourceName name)
-	{
-		return configs.get(name);
-	}
+    public @Nullable Config get_configuration(@NotNull ResourceName name)
+    {
+        return configs.get(name);
+    }
 
-	public boolean saveResource(InputStream resource, ResourceName name, String ext, boolean replace)
-	{
-		return saveResource(resource, name.getDomain(), name.getName() + "." + ext, replace);
-	}
+    public boolean save_resource(InputStream resource, ResourceName name, String ext, boolean replace)
+    {
+        return save_resource(resource, name.get_domain(), name.get_name() + "." + ext, replace);
+    }
 
-	public boolean saveResource(InputStream resource, String domain, String name, boolean replace)
-	{
-		return getDefaultResourcesManager().saveResource(resource, name, new File(Shulker.getConfigurationDirectory(), domain), replace);
-	}
+    public boolean save_resource(InputStream resource, String domain, String name, boolean replace)
+    {
+        return get_default_resources_manager().save_resource(resource, name, new File(Shulker.get_configuration_dir(), domain), replace);
+    }
 }

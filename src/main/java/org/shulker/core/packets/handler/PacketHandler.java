@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 LambdAurora <aurora42lambda@gmail.com>
+ * Copyright © 2019 LambdAurora <aurora42lambda@gmail.com>
  *
  * This file is part of shulker.
  *
@@ -25,44 +25,44 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class PacketHandler implements Listener
 {
-	private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10);
-	protected volatile boolean run = false;
+    private            ScheduledExecutorService thread_pool = Executors.newScheduledThreadPool(10);
+    protected volatile boolean                  run         = false;
 
-	public abstract void addHandler(Player player);
+    public abstract void add_handler(Player player);
 
-	public abstract void removeHandler(Player player);
+    public abstract void remove_handler(Player player);
 
-	public abstract void addServerHandler();
+    public abstract void add_server_handler();
 
-	public abstract void removeServerHandler();
+    public abstract void remove_server_handler();
 
-	public void enable()
-	{
-		run = true;
-		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Enabling PacketHandler '" + getClass().getSimpleName() + "'...");
-		Bukkit.getOnlinePlayers().forEach(this::addHandler);
-		addServerHandler();
-	}
+    public void enable()
+    {
+        run = true;
+        Shulker.log_debug(DebugType.CONNECTIONS, Shulker.get_prefix(), "Enabling PacketHandler '" + getClass().getSimpleName() + "'...");
+        Bukkit.getOnlinePlayers().forEach(this::add_handler);
+        add_server_handler();
+    }
 
-	public void disable()
-	{
-		Shulker.logDebug(DebugType.CONNECTIONS, Shulker.getPrefix(), "Disabling PacketHandler '" + getClass().getSimpleName() + "'...");
-		Bukkit.getOnlinePlayers().forEach(this::removeHandler);
-		removeServerHandler();
-		run = false;
-	}
+    public void disable()
+    {
+        Shulker.log_debug(DebugType.CONNECTIONS, Shulker.get_prefix(), "Disabling PacketHandler '" + getClass().getSimpleName() + "'...");
+        Bukkit.getOnlinePlayers().forEach(this::remove_handler);
+        remove_server_handler();
+        run = false;
+    }
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerJoin(final PlayerLoginEvent e)
-	{
-		final var player = e.getPlayer();
-		if ((!player.isBanned()) && (e.getResult() == PlayerLoginEvent.Result.ALLOWED))
-			threadPool.schedule(() -> addHandler(player), 100, TimeUnit.MILLISECONDS);
-	}
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void on_player_join(final PlayerLoginEvent e)
+    {
+        final var player = e.getPlayer();
+        if ((!player.isBanned()) && (e.getResult() == PlayerLoginEvent.Result.ALLOWED))
+            thread_pool.schedule(() -> add_handler(player), 100, TimeUnit.MILLISECONDS);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerLeave(final PlayerQuitEvent e)
-	{
-		threadPool.execute(() -> removeHandler(e.getPlayer()));
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void on_player_leave(final PlayerQuitEvent e)
+    {
+        thread_pool.execute(() -> remove_handler(e.getPlayer()));
+    }
 }

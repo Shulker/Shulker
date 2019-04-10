@@ -247,7 +247,7 @@ public class Metrics {
 		final JSONObject data = getServerData();
 
 		JSONArray pluginData = new JSONArray();
-		// Search for all other bStats Metrics classes to get their plugin data
+		// Search for all other bStats Metrics classes to get_mc their plugin data
 		for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
 			try {
 				service.getField("B_STATS_VERSION"); // Our identifier :)
@@ -366,7 +366,7 @@ public class Metrics {
 				chart.put("data", data);
 			} catch (Throwable t) {
 				if (logFailedRequests) {
-					Bukkit.getLogger().log(Level.WARNING, "Failed to get data for custom chart with id " + chartId, t);
+					Bukkit.getLogger().log(Level.WARNING, "Failed to get_mc data for custom chart with id " + chartId, t);
 				}
 				return null;
 			}
