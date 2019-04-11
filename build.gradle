@@ -104,6 +104,6 @@ publishing {
         }
     }
     repositories {
-        maven { url = 'file:///home/lambdaurora/maven' }
+        maven { url "$buildDir/repo" }
     }
 }
