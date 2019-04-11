@@ -12,7 +12,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group = 'org.shulker'
-version = '1.0.0'
+version = '1.0.0-SNAPSHOT'
 def authors = '[LambdAurora]'
 
 sourceCompatibility = 10
