@@ -23,7 +23,6 @@ public class TitleActionWrapperV112R1 extends TitleActionWrapper
         if (shulker_object == null)
             return null;
         switch (shulker_object) {
-
             case TITLE:
                 return PacketPlayOutTitle.EnumTitleAction.TITLE;
             case SUBTITLE:

@@ -33,6 +33,7 @@ import org.shulker.core.events.PacketEvent;
 import org.shulker.core.events.PacketListener;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.impl.v112R1.MinecraftManagerV112R1;
+import org.shulker.core.impl.v113R2.MinecraftManagerV113R2;
 import org.shulker.core.packets.handler.NMSPacketHandler;
 import org.shulker.core.packets.handler.PacketHandler;
 import org.shulker.core.plugin.js.JSEventsManager;
@@ -147,6 +148,9 @@ public class ShulkerSpigotPlugin extends JavaPlugin implements ShulkerPlugin
         switch (get_server_version()) {
             case "v1_12_R1":
                 mc_manager = new MinecraftManagerV112R1();
+                break;
+            case "v1_13_R2":
+                mc_manager = new MinecraftManagerV113R2();
                 break;
             default:
                 mc_manager = new ReflectMinecraftManager();

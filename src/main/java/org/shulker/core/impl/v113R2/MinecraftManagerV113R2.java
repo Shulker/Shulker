@@ -7,20 +7,27 @@
  * see the LICENSE file.
  */
 
-package org.shulker.core.impl.v113R1;
+package org.shulker.core.impl.v113R2;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.minecraft.server.v1_13_R2.PacketPlayOutChat;
+import net.minecraft.server.v1_13_R2.PacketPlayOutLogin;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.GameMode;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
-import org.shulker.core.impl.reflect.entity.ReflectShulkerPlayer;
-import org.shulker.core.impl.reflect.wrappers.ReflectChatComponentWrapper;
-import org.shulker.core.impl.reflect.wrappers.ReflectPlayerWrapper;
 import org.shulker.core.impl.reflect.wrappers.ReflectServerPingWrapper;
+import org.shulker.core.impl.v113R2.entity.ShulkerPlayerV113R2;
+import org.shulker.core.impl.v113R2.packets.ShulkerPacketJoinGameV113R2;
+import org.shulker.core.impl.v113R2.packets.ShulkerPacketPlayOutChatV113R2;
+import org.shulker.core.impl.v113R2.wrappers.*;
+import org.shulker.core.packets.mc.play.ShulkerPacketJoinGame;
+import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.wrappers.*;
 
-public class MinecraftManagerV113R1 extends ReflectMinecraftManager
+public class MinecraftManagerV113R2 extends ReflectMinecraftManager
 {
     private static final WrapperManagerV113R1 WRAPPER_MANAGER = new WrapperManagerV113R1();
 
@@ -58,7 +65,41 @@ public class MinecraftManagerV113R1 extends ReflectMinecraftManager
     public void add_player(@NotNull Player player)
     {
         if (!players.containsKey(player.getUniqueId()))
-            players.put(player.getUniqueId(), new ReflectShulkerPlayer(player));
+            players.put(player.getUniqueId(), new ShulkerPlayerV113R2(player));
+    }
+
+    @Override
+    public ShulkerPacketPlayOutChat<?> new_packet_play_out_chat()
+    {
+        return new ShulkerPacketPlayOutChatV113R2();
+    }
+
+    @Override
+    public ShulkerPacketPlayOutChat<?> new_packet_play_out_chat(BaseComponent... components)
+    {
+        return new ShulkerPacketPlayOutChatV113R2(components);
+    }
+
+    @Override
+    public ShulkerPacketPlayOutChat<?> new_packet_play_out_chat(Object packet)
+    {
+        if (!(packet instanceof PacketPlayOutChat))
+            throw new IllegalArgumentException("packet must be of type PacketPlayOutChat.");
+        return new ShulkerPacketPlayOutChatV113R2((PacketPlayOutChat) packet);
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(int entity_id, GameMode game_mode, boolean hardcore, int dimension, int max_players, String level_type, int render_distance, boolean reduced_debug_info)
+    {
+        return new ShulkerPacketJoinGameV113R2(entity_id, game_mode, hardcore, dimension, max_players, level_type, reduced_debug_info);
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(Object packet)
+    {
+        if (!(packet instanceof PacketPlayOutLogin))
+            throw new IllegalArgumentException("packet must be of type PacketPlayOutLogin.");
+        return new ShulkerPacketJoinGameV113R2((PacketPlayOutLogin) packet);
     }
 
     @Override
@@ -70,7 +111,7 @@ public class MinecraftManagerV113R1 extends ReflectMinecraftManager
     @Override
     public @NotNull String get_name()
     {
-        return "Minecraft v1.13.R1";
+        return "Minecraft v1.13.R2";
     }
 
     public static class WrapperManagerV113R1 implements WrapperManager
@@ -78,37 +119,37 @@ public class MinecraftManagerV113R1 extends ReflectMinecraftManager
         @Override
         public ChatComponentWrapper get_chat_componenet_wrapper()
         {
-            return ReflectChatComponentWrapper.INSTANCE;
+            return ChatComponentWrapperV113R2.INSTANCE;
         }
 
         @Override
         public ChatMessageTypeWrapper get_chat_message_type_wrapper()
         {
-            return null;
+            return ChatMessageTypeWrapperV113R2.INSTANCE;
         }
 
         @Override
         public ChatVisibilityWrapper get_chat_visibility_wrapper()
         {
-            return null;
+            return ChatVisibilityWrapperV113R2.INSTANCE;
         }
 
         @Override
         public TitleActionWrapper get_title_action_wrapper()
         {
-            return null;
+            return TitleActionWrapperV113R2.INSTANCE;
         }
 
         @Override
         public ItemStackWrapper get_item_stack_wrapper()
         {
-            return null;
+            return ItemStackWrapperV113R2.INSTANCE;
         }
 
         @Override
         public PlayerWrapper get_player_wrapper()
         {
-            return ReflectPlayerWrapper.INSTANCE;
+            return PlayerWrapperV113R2.INSTANCE;
         }
 
         @Override
@@ -120,7 +161,7 @@ public class MinecraftManagerV113R1 extends ReflectMinecraftManager
         @Override
         public @NotNull String get_name()
         {
-            return "WrapperManager v1.13.R1";
+            return "WrapperManager v1.13.R2";
         }
     }
 }

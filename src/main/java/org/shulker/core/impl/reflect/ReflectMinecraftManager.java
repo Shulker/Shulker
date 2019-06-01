@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.GameMode;
 import org.mcelytra.core.ServerPing;
 import org.shulker.core.MinecraftManager;
 import org.shulker.core.entity.ShulkerPlayer;
@@ -44,8 +45,9 @@ public class ReflectMinecraftManager extends MinecraftManager
         decoders.put("PacketStatusOutServerInfo", this::new_packet_status_out_server_info);
         // Play
         decoders.put("PacketPlayOutChat", this::new_packet_play_out_chat);
-        decoders.put("PacketPlayOutPlayerListHeaderFooter", this::new_packet_play_out_playerlist_header_footer);
+        decoders.put("PacketPlayOutLogin", this::new_packet_join_game);
         decoders.put("PacketPlayOutOpenWindow", this::new_packet_play_out_open_window);
+        decoders.put("PacketPlayOutPlayerListHeaderFooter", this::new_packet_play_out_playerlist_header_footer);
         decoders.put("PacketPlayOutSetSlot", this::new_packet_play_out_set_slot);
         decoders.put("PacketPlayOutTitle", this::new_packet_title);
         decoders.put("PacketPlayOutWindowData", this::new_packet_play_out_window_property);
@@ -137,6 +139,18 @@ public class ReflectMinecraftManager extends MinecraftManager
     public ShulkerPacketTitle<?> new_packet_title(Object packet)
     {
         return new ReflectPacketTitle(packet);
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(int entity_id, GameMode game_mode, boolean hardcore, int dimension, int max_players, String level_type, int render_distance, boolean reduced_debug_info)
+    {
+        return null;
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(Object packet)
+    {
+        return null;
     }
 
     @Override

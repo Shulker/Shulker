@@ -11,10 +11,12 @@ package org.shulker.core;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.aperlambda.lambdacommon.utils.Nameable;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.GameMode;
 import org.mcelytra.core.ServerPing;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.packets.DefaultShulkerPacket;
@@ -93,6 +95,19 @@ public abstract class MinecraftManager implements Nameable
     public abstract ShulkerPacketTitle<?> new_packet_title(@NotNull ShulkerPacketTitle.TitleAction action, int fadeIn, int stay, int fadeOut);
 
     public abstract ShulkerPacketTitle<?> new_packet_title(Object packet);
+
+    /*
+        Basics
+     */
+
+    public ShulkerPacketJoinGame<?> new_packet_join_game()
+    {
+        return this.new_packet_join_game(0, GameMode.SURVIVAL, false, 0, Bukkit.getMaxPlayers(), "default", Bukkit.getViewDistance(), false);
+    }
+
+    public abstract ShulkerPacketJoinGame<?> new_packet_join_game(int entity_id, GameMode game_mode, boolean hardcore, int dimension, int max_players, String level_type, int render_distance, boolean reduced_debug_info);
+
+    public abstract ShulkerPacketJoinGame<?> new_packet_join_game(Object packet);
 
 	/*
 		Inventory

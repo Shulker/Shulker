@@ -20,37 +20,40 @@ sourceCompatibility = 10
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
+    // For Spigot and NMS - NB: First build spigot with BuildTools
+    mavenLocal()
     maven { url = 'https://aperlambda.github.io/maven' }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://mcelytra.github.io/maven/' }
     maven { url = 'https://libraries.minecraft.net/' }
     mavenCentral()
-    // For Spigot and NMS - NB: First build spigot with BuildTools
-    mavenLocal()
 }
 
 configurations {
     provided
+    provided112
     compile.extendsFrom provided
 }
 
 configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 1, 'hours'
-    resolutionStrategy.cacheChangingModulesFor 1, 'hours'
+    resolutionStrategy.cacheDynamicVersionsFor 4, 'hours'
+    resolutionStrategy.cacheChangingModulesFor 0, 'hours'
 }
 
 dependencies {
-    compile 'org.aperlambda:lambdajcommon:1.6.2'
+    compile 'org.aperlambda:lambdajcommon:1.6.3'
     compile(group: 'org.aperlambda', name: 'kimiko', version: '1.1.0') {
         exclude group: 'org.aperlambda'
     }
-    compile(group: 'org.mcelytra', name: 'elytra-core', version: '1.0.0-SNAPSHOT', changing: true) {
+    compile(group: 'org.mcelytra', name: 'elytra-core', version: 'latest.integration', changing: true) {
         exclude group: 'com.mojang'
         exclude group: 'org.aperlambda'
         exclude group: 'net.md-5'
     }
-    provided 'net.md-5:bungeecord-chat:1.12-SNAPSHOT'
-    provided 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
+    provided 'net.md-5:bungeecord-chat:1.13-SNAPSHOT'
+    provided 'org.spigotmc:spigot:1.13.2-R0.1-SNAPSHOT'
+    provided112 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
+    provided files("$buildDir/deps/spigot-1.12.2-R0.1-SNAPSHOT.jar")
 }
 
 processResources {
@@ -86,6 +89,12 @@ jar {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+task libs(type: Sync) {
+    from configurations.provided
+    from configurations.provided112
+    into "$buildDir/deps"
 }
 
 artifacts {

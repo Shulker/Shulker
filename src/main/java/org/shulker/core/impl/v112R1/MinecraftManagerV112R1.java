@@ -11,16 +11,20 @@ package org.shulker.core.impl.v112R1;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_12_R1.PacketPlayOutLogin;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcelytra.core.GameMode;
 import org.shulker.core.entity.ShulkerPlayer;
 import org.shulker.core.impl.reflect.ReflectMinecraftManager;
 import org.shulker.core.impl.reflect.wrappers.ReflectPlayerWrapper;
 import org.shulker.core.impl.reflect.wrappers.ReflectServerPingWrapper;
 import org.shulker.core.impl.v112R1.entity.ShulkerPlayerV112R1;
+import org.shulker.core.impl.v112R1.packets.ShulkerPacketJoinGameV112R1;
 import org.shulker.core.impl.v112R1.packets.ShulkerPacketPlayOutChatV112R1;
 import org.shulker.core.impl.v112R1.wrappers.*;
+import org.shulker.core.packets.mc.play.ShulkerPacketJoinGame;
 import org.shulker.core.packets.mc.play.ShulkerPacketPlayOutChat;
 import org.shulker.core.wrappers.*;
 
@@ -66,6 +70,20 @@ public class MinecraftManagerV112R1 extends ReflectMinecraftManager
         if (!(packet instanceof PacketPlayOutChat))
             throw new IllegalArgumentException("packet must be of type PacketPlayOutChat.");
         return new ShulkerPacketPlayOutChatV112R1((PacketPlayOutChat) packet);
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(int entity_id, GameMode game_mode, boolean hardcore, int dimension, int max_players, String level_type, int render_distance, boolean reduced_debug_info)
+    {
+        return new ShulkerPacketJoinGameV112R1(entity_id, game_mode, hardcore, dimension, max_players, level_type, reduced_debug_info);
+    }
+
+    @Override
+    public ShulkerPacketJoinGame<?> new_packet_join_game(Object packet)
+    {
+        if (!(packet instanceof PacketPlayOutLogin))
+            throw new IllegalArgumentException("packet must be of type PacketPlayOutLogin.");
+        return new ShulkerPacketJoinGameV112R1((PacketPlayOutLogin) packet);
     }
 
     @Override

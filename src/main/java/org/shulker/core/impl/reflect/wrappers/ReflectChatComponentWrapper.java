@@ -11,7 +11,6 @@ package org.shulker.core.impl.reflect.wrappers;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import org.shulker.core.wrappers.ChatComponentWrapper;
 import org.shulker.spigot.ShulkerSpigotPlugin;
 
@@ -59,6 +58,6 @@ public class ReflectChatComponentWrapper extends ChatComponentWrapper
     @Override
     public Class<?> get_object_class()
     {
-        return IChatBaseComponent.class;
+        return ShulkerSpigotPlugin.get_nms_class("IChatBaseComponent");
     }
 }

@@ -4,6 +4,7 @@ authors: ${authors}
 description: An API to links NMS and make things easier.
 
 main: org.shulker.spigot.ShulkerSpigotPlugin
+api-version: 1.13
 load: startup
 
 permissions:
